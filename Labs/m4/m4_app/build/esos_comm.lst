@@ -1,0 +1,2365 @@
+ARM GAS  /tmp/ccSpbPej.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_comm.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.__esos_InitCommSystem,"ax",%progbits
+  20              		.align	1
+  21              		.global	__esos_InitCommSystem
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	__esos_InitCommSystem:
+  27              	.LFB0:
+  28              		.file 1 "/home/ben/esos32/src/esos_comm.c"
+   1:/home/ben/esos32/src/esos_comm.c **** /*
+   2:/home/ben/esos32/src/esos_comm.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:/home/ben/esos32/src/esos_comm.c ****  * All rights reserved.
+   4:/home/ben/esos32/src/esos_comm.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/home/ben/esos32/src/esos_comm.c ****  *
+   6:/home/ben/esos32/src/esos_comm.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/home/ben/esos32/src/esos_comm.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/home/ben/esos32/src/esos_comm.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/home/ben/esos32/src/esos_comm.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/home/ben/esos32/src/esos_comm.c ****  *
+  11:/home/ben/esos32/src/esos_comm.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/home/ben/esos32/src/esos_comm.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/home/ben/esos32/src/esos_comm.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/home/ben/esos32/src/esos_comm.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/home/ben/esos32/src/esos_comm.c ****  *
+  16:/home/ben/esos32/src/esos_comm.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/home/ben/esos32/src/esos_comm.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/home/ben/esos32/src/esos_comm.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/home/ben/esos32/src/esos_comm.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/home/ben/esos32/src/esos_comm.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/home/ben/esos32/src/esos_comm.c ****  *
+  22:/home/ben/esos32/src/esos_comm.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/home/ben/esos32/src/esos_comm.c ****  * these files.
+  24:/home/ben/esos32/src/esos_comm.c ****  *
+  25:/home/ben/esos32/src/esos_comm.c ****  *
+  26:/home/ben/esos32/src/esos_comm.c ****  */
+  27:/home/ben/esos32/src/esos_comm.c **** 
+  28:/home/ben/esos32/src/esos_comm.c **** /** \file
+  29:/home/ben/esos32/src/esos_comm.c ****  * \brief Hardware independent code for ESOS32 Communications service
+  30:/home/ben/esos32/src/esos_comm.c ****  *
+ARM GAS  /tmp/ccSpbPej.s 			page 2
+
+
+  31:/home/ben/esos32/src/esos_comm.c ****  */
+  32:/home/ben/esos32/src/esos_comm.c **** 
+  33:/home/ben/esos32/src/esos_comm.c **** 
+  34:/home/ben/esos32/src/esos_comm.c **** #include    "esos.h"
+  35:/home/ben/esos32/src/esos_comm.c **** #include  	"esos_cb.h"
+  36:/home/ben/esos32/src/esos_comm.c **** #include    "esos_comm.h"
+  37:/home/ben/esos32/src/esos_comm.c **** 
+  38:/home/ben/esos32/src/esos_comm.c **** // ******** G L O B A L S ***************
+  39:/home/ben/esos32/src/esos_comm.c **** volatile uint8_t                __esos_comm_tx_buff[ESOS_SERIAL_IN_EP_SIZE];
+  40:/home/ben/esos32/src/esos_comm.c **** volatile uint8_t                __esos_comm_rx_buff[ESOS_SERIAL_OUT_EP_SIZE];
+  41:/home/ben/esos32/src/esos_comm.c **** CBUFFER                   __st_CB_Tx, __st_CB_Rx;
+  42:/home/ben/esos32/src/esos_comm.c **** CBUFFER*                    __pst_CB_Tx;
+  43:/home/ben/esos32/src/esos_comm.c **** CBUFFER*              __pst_CB_Rx;
+  44:/home/ben/esos32/src/esos_comm.c **** volatile struct    stTask   __stChildTaskTx, __stChildTaskRx;
+  45:/home/ben/esos32/src/esos_comm.c **** 
+  46:/home/ben/esos32/src/esos_comm.c **** /****************************************************************
+  47:/home/ben/esos32/src/esos_comm.c **** ** F U N C T I O N S
+  48:/home/ben/esos32/src/esos_comm.c **** ****************************************************************/
+  49:/home/ben/esos32/src/esos_comm.c **** void __esos_InitCommSystem(void) {
+  29              		.loc 1 49 34 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  50:/home/ben/esos32/src/esos_comm.c ****   // setup the circular buffers & their descriptors
+  51:/home/ben/esos32/src/esos_comm.c ****   __pst_CB_Rx = &__st_CB_Rx;
+  38              		.loc 1 51 3 view .LVU1
+  39              		.loc 1 51 15 is_stmt 0 view .LVU2
+  40 0002 094C     		ldr	r4, .L3
+  41 0004 094B     		ldr	r3, .L3+4
+  42 0006 2360     		str	r3, [r4]
+  52:/home/ben/esos32/src/esos_comm.c ****   __pst_CB_Tx = &__st_CB_Tx;
+  43              		.loc 1 52 3 is_stmt 1 view .LVU3
+  44              		.loc 1 52 15 is_stmt 0 view .LVU4
+  45 0008 0948     		ldr	r0, .L3+8
+  46 000a 0A4B     		ldr	r3, .L3+12
+  47 000c 1860     		str	r0, [r3]
+  53:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_Init( __pst_CB_Tx, __esos_comm_tx_buff, ESOS_SERIAL_IN_EP_SIZE);
+  48              		.loc 1 53 3 is_stmt 1 view .LVU5
+  49 000e 4022     		movs	r2, #64
+  50 0010 0949     		ldr	r1, .L3+16
+  51 0012 FFF7FEFF 		bl	__esos_CB_Init
+  52              	.LVL0:
+  54:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_Init( __pst_CB_Rx, __esos_comm_rx_buff, ESOS_SERIAL_OUT_EP_SIZE);
+  53              		.loc 1 54 3 view .LVU6
+  54 0016 4022     		movs	r2, #64
+  55 0018 0849     		ldr	r1, .L3+20
+  56 001a 2068     		ldr	r0, [r4]
+  57 001c FFF7FEFF 		bl	__esos_CB_Init
+  58              	.LVL1:
+  55:/home/ben/esos32/src/esos_comm.c **** 
+  56:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_InitCommSystem();
+  59              		.loc 1 56 3 view .LVU7
+ARM GAS  /tmp/ccSpbPej.s 			page 3
+
+
+  60 0020 FFF7FEFF 		bl	__esos_hw_InitCommSystem
+  61              	.LVL2:
+  57:/home/ben/esos32/src/esos_comm.c **** 
+  58:/home/ben/esos32/src/esos_comm.c **** } // endof esos_Init_CommSystem()
+  62              		.loc 1 58 1 is_stmt 0 view .LVU8
+  63 0024 10BD     		pop	{r4, pc}
+  64              	.L4:
+  65 0026 00BF     		.align	2
+  66              	.L3:
+  67 0028 00000000 		.word	.LANCHOR0
+  68 002c 00000000 		.word	.LANCHOR1
+  69 0030 00000000 		.word	.LANCHOR3
+  70 0034 00000000 		.word	.LANCHOR2
+  71 0038 00000000 		.word	.LANCHOR4
+  72 003c 00000000 		.word	.LANCHOR5
+  73              		.cfi_endproc
+  74              	.LFE0:
+  76              		.section	.text.__esos_u8_GetMSBHexCharFromUint8,"ax",%progbits
+  77              		.align	1
+  78              		.global	__esos_u8_GetMSBHexCharFromUint8
+  79              		.syntax unified
+  80              		.thumb
+  81              		.thumb_func
+  83              	__esos_u8_GetMSBHexCharFromUint8:
+  84              	.LVL3:
+  85              	.LFB1:
+  59:/home/ben/esos32/src/esos_comm.c **** 
+  60:/home/ben/esos32/src/esos_comm.c **** uint8_t __esos_u8_GetMSBHexCharFromUint8(uint8_t u8_x) {
+  86              		.loc 1 60 56 is_stmt 1 view -0
+  87              		.cfi_startproc
+  88              		@ args = 0, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90              		@ link register save eliminated.
+  61:/home/ben/esos32/src/esos_comm.c ****   uint8_t u8_c;
+  91              		.loc 1 61 3 view .LVU10
+  62:/home/ben/esos32/src/esos_comm.c **** 
+  63:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u8_x>>4)& 0xf;
+  92              		.loc 1 63 3 view .LVU11
+  93              		.loc 1 63 8 is_stmt 0 view .LVU12
+  94 0000 0309     		lsrs	r3, r0, #4
+  95              	.LVL4:
+  64:/home/ben/esos32/src/esos_comm.c ****   if (u8_c > 9) return('A'+u8_c-10);
+  96              		.loc 1 64 3 is_stmt 1 view .LVU13
+  97              		.loc 1 64 6 is_stmt 0 view .LVU14
+  98 0002 9F28     		cmp	r0, #159
+  99 0004 02D9     		bls	.L6
+ 100              		.loc 1 64 17 is_stmt 1 discriminator 1 view .LVU15
+ 101              		.loc 1 64 32 is_stmt 0 discriminator 1 view .LVU16
+ 102 0006 03F13700 		add	r0, r3, #55
+ 103              	.LVL5:
+ 104              		.loc 1 64 32 discriminator 1 view .LVU17
+ 105 000a 7047     		bx	lr
+ 106              	.LVL6:
+ 107              	.L6:
+  65:/home/ben/esos32/src/esos_comm.c ****   else return('0'+u8_c);
+ 108              		.loc 1 65 8 is_stmt 1 view .LVU18
+ 109              		.loc 1 65 18 is_stmt 0 view .LVU19
+ARM GAS  /tmp/ccSpbPej.s 			page 4
+
+
+ 110 000c 03F13000 		add	r0, r3, #48
+ 111              	.LVL7:
+  66:/home/ben/esos32/src/esos_comm.c **** }
+ 112              		.loc 1 66 1 view .LVU20
+ 113 0010 7047     		bx	lr
+ 114              		.cfi_endproc
+ 115              	.LFE1:
+ 117              		.section	.text.__esos_u8_GetLSBHexCharFromUint8,"ax",%progbits
+ 118              		.align	1
+ 119              		.global	__esos_u8_GetLSBHexCharFromUint8
+ 120              		.syntax unified
+ 121              		.thumb
+ 122              		.thumb_func
+ 124              	__esos_u8_GetLSBHexCharFromUint8:
+ 125              	.LVL8:
+ 126              	.LFB2:
+  67:/home/ben/esos32/src/esos_comm.c **** 
+  68:/home/ben/esos32/src/esos_comm.c **** uint8_t __esos_u8_GetLSBHexCharFromUint8(uint8_t u8_x) {
+ 127              		.loc 1 68 56 is_stmt 1 view -0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131              		@ link register save eliminated.
+  69:/home/ben/esos32/src/esos_comm.c ****   uint8_t u8_c;
+ 132              		.loc 1 69 3 view .LVU22
+  70:/home/ben/esos32/src/esos_comm.c **** 
+  71:/home/ben/esos32/src/esos_comm.c ****   u8_c = u8_x & 0xf;
+ 133              		.loc 1 71 3 view .LVU23
+ 134              		.loc 1 71 8 is_stmt 0 view .LVU24
+ 135 0000 00F00F00 		and	r0, r0, #15
+ 136              	.LVL9:
+  72:/home/ben/esos32/src/esos_comm.c ****   if (u8_c > 9) return('A'+u8_c-10);
+ 137              		.loc 1 72 3 is_stmt 1 view .LVU25
+ 138              		.loc 1 72 6 is_stmt 0 view .LVU26
+ 139 0004 0928     		cmp	r0, #9
+ 140 0006 01D9     		bls	.L9
+ 141              		.loc 1 72 17 is_stmt 1 discriminator 1 view .LVU27
+ 142              		.loc 1 72 32 is_stmt 0 discriminator 1 view .LVU28
+ 143 0008 3730     		adds	r0, r0, #55
+ 144              	.LVL10:
+ 145              		.loc 1 72 32 discriminator 1 view .LVU29
+ 146 000a 7047     		bx	lr
+ 147              	.LVL11:
+ 148              	.L9:
+  73:/home/ben/esos32/src/esos_comm.c ****   else return('0'+u8_c);
+ 149              		.loc 1 73 8 is_stmt 1 view .LVU30
+ 150              		.loc 1 73 18 is_stmt 0 view .LVU31
+ 151 000c 3030     		adds	r0, r0, #48
+ 152              	.LVL12:
+  74:/home/ben/esos32/src/esos_comm.c **** }
+ 153              		.loc 1 74 1 view .LVU32
+ 154 000e 7047     		bx	lr
+ 155              		.cfi_endproc
+ 156              	.LFE2:
+ 158              		.section	.text.__esos_OutChar,"ax",%progbits
+ 159              		.align	1
+ 160              		.global	__esos_OutChar
+ARM GAS  /tmp/ccSpbPej.s 			page 5
+
+
+ 161              		.syntax unified
+ 162              		.thumb
+ 163              		.thumb_func
+ 165              	__esos_OutChar:
+ 166              	.LVL13:
+ 167              	.LFB3:
+  75:/home/ben/esos32/src/esos_comm.c **** 
+  76:/home/ben/esos32/src/esos_comm.c **** 
+  77:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutChar, uint8_t u8_c) {
+ 168              		.loc 1 77 48 is_stmt 1 view -0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172              		.loc 1 77 48 is_stmt 0 view .LVU34
+ 173 0000 10B5     		push	{r4, lr}
+ 174              	.LCFI1:
+ 175              		.cfi_def_cfa_offset 8
+ 176              		.cfi_offset 4, -8
+ 177              		.cfi_offset 14, -4
+ 178 0002 0446     		mov	r4, r0
+  78:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        u8_localChar;
+ 179              		.loc 1 78 3 is_stmt 1 view .LVU35
+  79:/home/ben/esos32/src/esos_comm.c **** 
+  80:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 180              		.loc 1 80 3 view .LVU36
+ 181 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 182 0006 43F08003 		orr	r3, r3, #128
+ 183 000a 8370     		strb	r3, [r0, #2]
+ 184              		.loc 1 80 3 view .LVU37
+ 185 000c 0288     		ldrh	r2, [r0]
+ 186 000e 3AB1     		cbz	r2, .L12
+ 187 0010 542A     		cmp	r2, #84
+ 188 0012 09D0     		beq	.L13
+ 189              	.LVL14:
+ 190              	.L14:
+  81:/home/ben/esos32/src/esos_comm.c ****   u8_localChar = u8_c;
+  82:/home/ben/esos32/src/esos_comm.c **** 
+  83:/home/ben/esos32/src/esos_comm.c ****   // wait for room in the TX CB to appear
+  84:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_WHILE_CB_IS_FULL( __pst_CB_Tx );
+  85:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+  86:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8( __pst_CB_Tx, u8_localChar);
+  87:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+  88:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+  89:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+  90:/home/ben/esos32/src/esos_comm.c **** 
+  91:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 191              		.loc 1 91 3 view .LVU38
+ 192              		.loc 1 91 3 view .LVU39
+ 193 0014 0823     		movs	r3, #8
+ 194 0016 A370     		strb	r3, [r4, #2]
+ 195              		.loc 1 91 3 view .LVU40
+ 196 0018 0023     		movs	r3, #0
+ 197 001a 2380     		strh	r3, [r4]	@ movhi
+ 198              		.loc 1 91 3 view .LVU41
+ 199              		.loc 1 91 3 view .LVU42
+ 200              		.loc 1 91 3 view .LVU43
+ 201 001c 0320     		movs	r0, #3
+ARM GAS  /tmp/ccSpbPej.s 			page 6
+
+
+ 202              	.L16:
+ 203              		.loc 1 91 18 discriminator 1 view .LVU44
+  92:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutChar
+ 204              		.loc 1 92 1 is_stmt 0 discriminator 1 view .LVU45
+ 205 001e 10BD     		pop	{r4, pc}
+ 206              	.LVL15:
+ 207              	.L12:
+  80:/home/ben/esos32/src/esos_comm.c ****   u8_localChar = u8_c;
+ 208              		.loc 1 80 20 is_stmt 1 discriminator 1 view .LVU46
+  81:/home/ben/esos32/src/esos_comm.c ****   u8_localChar = u8_c;
+ 209              		.loc 1 81 3 discriminator 1 view .LVU47
+  81:/home/ben/esos32/src/esos_comm.c ****   u8_localChar = u8_c;
+ 210              		.loc 1 81 16 is_stmt 0 discriminator 1 view .LVU48
+ 211 0020 124A     		ldr	r2, .L21
+ 212 0022 1170     		strb	r1, [r2]
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 213              		.loc 1 84 3 is_stmt 1 discriminator 1 view .LVU49
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 214              		.loc 1 84 3 discriminator 1 view .LVU50
+ 215 0024 5422     		movs	r2, #84
+ 216 0026 0280     		strh	r2, [r0]	@ movhi
+ 217              	.L13:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 218              		.loc 1 84 3 discriminator 1 view .LVU51
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 219              		.loc 1 84 3 discriminator 1 view .LVU52
+ 220 0028 13F00400 		ands	r0, r3, #4
+ 221              	.LVL16:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 222              		.loc 1 84 3 is_stmt 0 discriminator 1 view .LVU53
+ 223 002c 15D1     		bne	.L20
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 224              		.loc 1 84 3 is_stmt 1 discriminator 3 view .LVU54
+ 225 002e 104A     		ldr	r2, .L21+4
+ 226 0030 1268     		ldr	r2, [r2]
+ 227 0032 1188     		ldrh	r1, [r2]
+ 228              	.LVL17:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 229              		.loc 1 84 3 is_stmt 0 discriminator 3 view .LVU55
+ 230 0034 9288     		ldrh	r2, [r2, #4]
+ 231 0036 9142     		cmp	r1, r2
+ 232 0038 13D0     		beq	.L17
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 233              		.loc 1 84 3 is_stmt 1 discriminator 4 view .LVU56
+ 234 003a 23F00103 		bic	r3, r3, #1
+ 235 003e A370     		strb	r3, [r4, #2]
+ 236              	.L18:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 237              		.loc 1 84 3 discriminator 7 view .LVU57
+ 238 0040 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 239 0042 13F0010F 		tst	r3, #1
+ 240 0046 EAD1     		bne	.L16
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 241              		.loc 1 84 3 discriminator 9 view .LVU58
+  86:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 242              		.loc 1 86 3 discriminator 9 view .LVU59
+ 243 0048 084B     		ldr	r3, .L21
+ARM GAS  /tmp/ccSpbPej.s 			page 7
+
+
+ 244 004a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 245 004c 084B     		ldr	r3, .L21+4
+ 246 004e 1868     		ldr	r0, [r3]
+ 247 0050 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 248              	.LVL18:
+  89:/home/ben/esos32/src/esos_comm.c **** 
+ 249              		.loc 1 89 3 discriminator 9 view .LVU60
+ 250 0054 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 251              	.LVL19:
+ 252 0058 DCE7     		b	.L14
+ 253              	.LVL20:
+ 254              	.L20:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 255              		.loc 1 84 3 discriminator 2 view .LVU61
+ 256 005a 0423     		movs	r3, #4
+ 257 005c A370     		strb	r3, [r4, #2]
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 258              		.loc 1 84 3 discriminator 2 view .LVU62
+ 259 005e 0320     		movs	r0, #3
+ 260 0060 DDE7     		b	.L16
+ 261              	.LVL21:
+ 262              	.L17:
+  84:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 263              		.loc 1 84 3 discriminator 5 view .LVU63
+ 264 0062 43F00103 		orr	r3, r3, #1
+ 265 0066 A370     		strb	r3, [r4, #2]
+ 266 0068 EAE7     		b	.L18
+ 267              	.L22:
+ 268 006a 00BF     		.align	2
+ 269              	.L21:
+ 270 006c 00000000 		.word	.LANCHOR6
+ 271 0070 00000000 		.word	.LANCHOR2
+ 272              		.cfi_endproc
+ 273              	.LFE3:
+ 275              		.section	.text.__esos_OutUint8AsHexString,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	__esos_OutUint8AsHexString
+ 278              		.syntax unified
+ 279              		.thumb
+ 280              		.thumb_func
+ 282              	__esos_OutUint8AsHexString:
+ 283              	.LVL22:
+ 284              	.LFB4:
+  93:/home/ben/esos32/src/esos_comm.c **** 
+  94:/home/ben/esos32/src/esos_comm.c **** 
+  95:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutUint8AsHexString, uint8_t u8_x) {
+ 285              		.loc 1 95 60 view -0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 0
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              		.loc 1 95 60 is_stmt 0 view .LVU65
+ 290 0000 70B5     		push	{r4, r5, r6, lr}
+ 291              	.LCFI2:
+ 292              		.cfi_def_cfa_offset 16
+ 293              		.cfi_offset 4, -16
+ 294              		.cfi_offset 5, -12
+ 295              		.cfi_offset 6, -8
+ARM GAS  /tmp/ccSpbPej.s 			page 8
+
+
+ 296              		.cfi_offset 14, -4
+ 297 0002 0446     		mov	r4, r0
+  96:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        au8_String[5];
+ 298              		.loc 1 96 3 is_stmt 1 view .LVU66
+  97:/home/ben/esos32/src/esos_comm.c **** 
+  98:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 299              		.loc 1 98 3 view .LVU67
+ 300 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 301 0006 63F07F03 		orn	r3, r3, #127
+ 302 000a 8370     		strb	r3, [r0, #2]
+ 303              		.loc 1 98 3 view .LVU68
+ 304 000c 0388     		ldrh	r3, [r0]
+ 305 000e 3BB1     		cbz	r3, .L24
+ 306 0010 692B     		cmp	r3, #105
+ 307 0012 17D0     		beq	.L25
+ 308              	.LVL23:
+ 309              	.L26:
+  99:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 100:/home/ben/esos32/src/esos_comm.c ****   au8_String[1] = 'x';
+ 101:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_x);
+ 102:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_x);
+ 103:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = 0;
+ 104:/home/ben/esos32/src/esos_comm.c **** 
+ 105:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, 4);
+ 106:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 107:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 108:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+ 109:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+ 110:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 310              		.loc 1 110 3 view .LVU69
+ 311              		.loc 1 110 3 view .LVU70
+ 312 0014 0823     		movs	r3, #8
+ 313 0016 A370     		strb	r3, [r4, #2]
+ 314              		.loc 1 110 3 view .LVU71
+ 315 0018 0023     		movs	r3, #0
+ 316 001a 2380     		strh	r3, [r4]	@ movhi
+ 317              		.loc 1 110 3 view .LVU72
+ 318              		.loc 1 110 3 view .LVU73
+ 319              		.loc 1 110 3 view .LVU74
+ 320 001c 0320     		movs	r0, #3
+ 321              	.L28:
+ 322              		.loc 1 110 18 discriminator 1 view .LVU75
+ 111:/home/ben/esos32/src/esos_comm.c **** 
+ 112:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutUint8AsHexString()
+ 323              		.loc 1 112 1 is_stmt 0 discriminator 1 view .LVU76
+ 324 001e 70BD     		pop	{r4, r5, r6, pc}
+ 325              	.LVL24:
+ 326              	.L24:
+ 327              		.loc 1 112 1 discriminator 1 view .LVU77
+ 328 0020 0D46     		mov	r5, r1
+  98:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 329              		.loc 1 98 20 is_stmt 1 discriminator 1 view .LVU78
+  99:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 330              		.loc 1 99 3 discriminator 1 view .LVU79
+  99:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 331              		.loc 1 99 17 is_stmt 0 discriminator 1 view .LVU80
+ 332 0022 1A4E     		ldr	r6, .L33
+ARM GAS  /tmp/ccSpbPej.s 			page 9
+
+
+ 333 0024 3023     		movs	r3, #48
+ 334 0026 3370     		strb	r3, [r6]
+ 100:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_x);
+ 335              		.loc 1 100 3 is_stmt 1 discriminator 1 view .LVU81
+ 100:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_x);
+ 336              		.loc 1 100 17 is_stmt 0 discriminator 1 view .LVU82
+ 337 0028 7823     		movs	r3, #120
+ 338 002a 7370     		strb	r3, [r6, #1]
+ 101:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_x);
+ 339              		.loc 1 101 3 is_stmt 1 discriminator 1 view .LVU83
+ 101:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_x);
+ 340              		.loc 1 101 19 is_stmt 0 discriminator 1 view .LVU84
+ 341 002c 0846     		mov	r0, r1
+ 342              	.LVL25:
+ 101:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_x);
+ 343              		.loc 1 101 19 discriminator 1 view .LVU85
+ 344 002e FFF7FEFF 		bl	__esos_u8_GetMSBHexCharFromUint8
+ 345              	.LVL26:
+ 101:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_x);
+ 346              		.loc 1 101 17 discriminator 1 view .LVU86
+ 347 0032 B070     		strb	r0, [r6, #2]
+ 102:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = 0;
+ 348              		.loc 1 102 3 is_stmt 1 discriminator 1 view .LVU87
+ 102:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = 0;
+ 349              		.loc 1 102 19 is_stmt 0 discriminator 1 view .LVU88
+ 350 0034 2846     		mov	r0, r5
+ 351 0036 FFF7FEFF 		bl	__esos_u8_GetLSBHexCharFromUint8
+ 352              	.LVL27:
+ 102:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = 0;
+ 353              		.loc 1 102 17 discriminator 1 view .LVU89
+ 354 003a F070     		strb	r0, [r6, #3]
+ 103:/home/ben/esos32/src/esos_comm.c **** 
+ 355              		.loc 1 103 3 is_stmt 1 discriminator 1 view .LVU90
+ 103:/home/ben/esos32/src/esos_comm.c **** 
+ 356              		.loc 1 103 17 is_stmt 0 discriminator 1 view .LVU91
+ 357 003c 0023     		movs	r3, #0
+ 358 003e 3371     		strb	r3, [r6, #4]
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 359              		.loc 1 105 3 is_stmt 1 discriminator 1 view .LVU92
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 360              		.loc 1 105 3 discriminator 1 view .LVU93
+ 361 0040 6923     		movs	r3, #105
+ 362 0042 2380     		strh	r3, [r4]	@ movhi
+ 363              	.L25:
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 364              		.loc 1 105 3 discriminator 1 view .LVU94
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 365              		.loc 1 105 3 discriminator 1 view .LVU95
+ 366 0044 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 367 0046 13F00400 		ands	r0, r3, #4
+ 368 004a 16D1     		bne	.L32
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 369              		.loc 1 105 3 discriminator 3 view .LVU96
+ 370 004c 104A     		ldr	r2, .L33+4
+ 371 004e 1168     		ldr	r1, [r2]
+ 372 0050 0A88     		ldrh	r2, [r1]
+ 373 0052 8988     		ldrh	r1, [r1, #4]
+ARM GAS  /tmp/ccSpbPej.s 			page 10
+
+
+ 374 0054 521A     		subs	r2, r2, r1
+ 375 0056 032A     		cmp	r2, #3
+ 376 0058 13DD     		ble	.L29
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 377              		.loc 1 105 3 discriminator 4 view .LVU97
+ 378 005a 23F00103 		bic	r3, r3, #1
+ 379 005e A370     		strb	r3, [r4, #2]
+ 380              	.L30:
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 381              		.loc 1 105 3 discriminator 7 view .LVU98
+ 382 0060 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 383 0062 13F0010F 		tst	r3, #1
+ 384 0066 DAD1     		bne	.L28
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 385              		.loc 1 105 3 discriminator 9 view .LVU99
+ 106:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 386              		.loc 1 106 3 discriminator 9 view .LVU100
+ 387 0068 0422     		movs	r2, #4
+ 388 006a 0849     		ldr	r1, .L33
+ 389 006c 084B     		ldr	r3, .L33+4
+ 390 006e 1868     		ldr	r0, [r3]
+ 391 0070 FFF7FEFF 		bl	__esos_CB_WriteUINT8Buffer
+ 392              	.LVL28:
+ 109:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 393              		.loc 1 109 3 discriminator 9 view .LVU101
+ 394 0074 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 395              	.LVL29:
+ 396 0078 CCE7     		b	.L26
+ 397              	.L32:
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 398              		.loc 1 105 3 discriminator 2 view .LVU102
+ 399 007a 0423     		movs	r3, #4
+ 400 007c A370     		strb	r3, [r4, #2]
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 401              		.loc 1 105 3 discriminator 2 view .LVU103
+ 402 007e 0320     		movs	r0, #3
+ 403 0080 CDE7     		b	.L28
+ 404              	.L29:
+ 105:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 4 );
+ 405              		.loc 1 105 3 discriminator 5 view .LVU104
+ 406 0082 43F00103 		orr	r3, r3, #1
+ 407 0086 A370     		strb	r3, [r4, #2]
+ 408 0088 EAE7     		b	.L30
+ 409              	.L34:
+ 410 008a 00BF     		.align	2
+ 411              	.L33:
+ 412 008c 00000000 		.word	.LANCHOR7
+ 413 0090 00000000 		.word	.LANCHOR2
+ 414              		.cfi_endproc
+ 415              	.LFE4:
+ 417              		.section	.text.__esos_OutUint8AsDecString,"ax",%progbits
+ 418              		.align	1
+ 419              		.global	__esos_OutUint8AsDecString
+ 420              		.syntax unified
+ 421              		.thumb
+ 422              		.thumb_func
+ 424              	__esos_OutUint8AsDecString:
+ARM GAS  /tmp/ccSpbPej.s 			page 11
+
+
+ 425              	.LVL30:
+ 426              	.LFB5:
+ 113:/home/ben/esos32/src/esos_comm.c **** 
+ 114:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutUint8AsDecString, uint8_t u8_x) {
+ 427              		.loc 1 114 60 view -0
+ 428              		.cfi_startproc
+ 429              		@ args = 0, pretend = 0, frame = 0
+ 430              		@ frame_needed = 0, uses_anonymous_args = 0
+ 431              		.loc 1 114 60 is_stmt 0 view .LVU106
+ 432 0000 10B5     		push	{r4, lr}
+ 433              	.LCFI3:
+ 434              		.cfi_def_cfa_offset 8
+ 435              		.cfi_offset 4, -8
+ 436              		.cfi_offset 14, -4
+ 437 0002 0446     		mov	r4, r0
+ 115:/home/ben/esos32/src/esos_comm.c ****   // code provided by Gary Weasel
+ 116:/home/ben/esos32/src/esos_comm.c ****   static uint8_t      au8_String[5];
+ 438              		.loc 1 116 3 is_stmt 1 view .LVU107
+ 117:/home/ben/esos32/src/esos_comm.c ****   static uint8_t      u8_c;
+ 439              		.loc 1 117 3 view .LVU108
+ 118:/home/ben/esos32/src/esos_comm.c ****   static uint8_t      u8_digit;
+ 440              		.loc 1 118 3 view .LVU109
+ 119:/home/ben/esos32/src/esos_comm.c **** 
+ 120:/home/ben/esos32/src/esos_comm.c **** 
+ 121:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 441              		.loc 1 121 3 view .LVU110
+ 442 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 443 0006 63F07F03 		orn	r3, r3, #127
+ 444 000a 8370     		strb	r3, [r0, #2]
+ 445              		.loc 1 121 3 view .LVU111
+ 446 000c 0388     		ldrh	r3, [r0]
+ 447 000e 3BB1     		cbz	r3, .L36
+ 448 0010 842B     		cmp	r3, #132
+ 449 0012 47D0     		beq	.L37
+ 450              	.LVL31:
+ 451              	.L38:
+ 122:/home/ben/esos32/src/esos_comm.c ****   u8_digit = 0;
+ 123:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 99)
+ 124:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + u8_x / 100;
+ 125:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 9)
+ 126:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + (u8_x % 100) / 10;
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 128:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 129:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 130:/home/ben/esos32/src/esos_comm.c ****   while (u8_c < u8_digit) {
+ 131:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 132:/home/ben/esos32/src/esos_comm.c ****     ESOS_TASK_WAIT_WHILE_CB_IS_FULL( __pst_CB_Tx );
+ 133:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 134:/home/ben/esos32/src/esos_comm.c ****     __esos_CB_WriteUINT8( __pst_CB_Tx, au8_String[u8_c++] );
+ 135:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 136:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 137:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+ 138:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+ 139:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 452              		.loc 1 139 3 view .LVU112
+ 453              		.loc 1 139 3 view .LVU113
+ 454 0014 0823     		movs	r3, #8
+ARM GAS  /tmp/ccSpbPej.s 			page 12
+
+
+ 455 0016 A370     		strb	r3, [r4, #2]
+ 456              		.loc 1 139 3 view .LVU114
+ 457 0018 0023     		movs	r3, #0
+ 458 001a 2380     		strh	r3, [r4]	@ movhi
+ 459              		.loc 1 139 3 view .LVU115
+ 460              		.loc 1 139 3 view .LVU116
+ 461              		.loc 1 139 3 view .LVU117
+ 462 001c 0320     		movs	r0, #3
+ 463              	.L43:
+ 464              		.loc 1 139 18 discriminator 1 view .LVU118
+ 140:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutUint8AsDecString
+ 465              		.loc 1 140 1 is_stmt 0 discriminator 1 view .LVU119
+ 466 001e 10BD     		pop	{r4, pc}
+ 467              	.LVL32:
+ 468              	.L36:
+ 121:/home/ben/esos32/src/esos_comm.c ****   u8_digit = 0;
+ 469              		.loc 1 121 20 is_stmt 1 discriminator 1 view .LVU120
+ 122:/home/ben/esos32/src/esos_comm.c ****   u8_digit = 0;
+ 470              		.loc 1 122 3 discriminator 1 view .LVU121
+ 122:/home/ben/esos32/src/esos_comm.c ****   u8_digit = 0;
+ 471              		.loc 1 122 12 is_stmt 0 discriminator 1 view .LVU122
+ 472 0020 344B     		ldr	r3, .L50
+ 473 0022 0022     		movs	r2, #0
+ 474 0024 1A70     		strb	r2, [r3]
+ 123:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + u8_x / 100;
+ 475              		.loc 1 123 3 is_stmt 1 discriminator 1 view .LVU123
+ 123:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + u8_x / 100;
+ 476              		.loc 1 123 6 is_stmt 0 discriminator 1 view .LVU124
+ 477 0026 6329     		cmp	r1, #99
+ 478 0028 08D9     		bls	.L39
+ 124:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 9)
+ 479              		.loc 1 124 5 is_stmt 1 view .LVU125
+ 124:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 9)
+ 480              		.loc 1 124 24 is_stmt 0 view .LVU126
+ 481 002a 0122     		movs	r2, #1
+ 482 002c 1A70     		strb	r2, [r3]
+ 124:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 9)
+ 483              		.loc 1 124 34 view .LVU127
+ 484 002e 324B     		ldr	r3, .L50+4
+ 485 0030 A3FB0123 		umull	r2, r3, r3, r1
+ 486 0034 5B09     		lsrs	r3, r3, #5
+ 487 0036 3033     		adds	r3, r3, #48
+ 124:/home/ben/esos32/src/esos_comm.c ****   if (u8_x > 9)
+ 488              		.loc 1 124 28 view .LVU128
+ 489 0038 304A     		ldr	r2, .L50+8
+ 490 003a 1370     		strb	r3, [r2]
+ 491              	.L39:
+ 125:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + (u8_x % 100) / 10;
+ 492              		.loc 1 125 3 is_stmt 1 view .LVU129
+ 125:/home/ben/esos32/src/esos_comm.c ****     au8_String[u8_digit++] = '0' + (u8_x % 100) / 10;
+ 493              		.loc 1 125 6 is_stmt 0 view .LVU130
+ 494 003c 0929     		cmp	r1, #9
+ 495 003e 12D9     		bls	.L40
+ 126:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 496              		.loc 1 126 5 is_stmt 1 view .LVU131
+ 126:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 497              		.loc 1 126 24 is_stmt 0 view .LVU132
+ARM GAS  /tmp/ccSpbPej.s 			page 13
+
+
+ 498 0040 2C4B     		ldr	r3, .L50
+ 499 0042 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 500 0044 501C     		adds	r0, r2, #1
+ 501              	.LVL33:
+ 126:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 502              		.loc 1 126 24 view .LVU133
+ 503 0046 1870     		strb	r0, [r3]
+ 126:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 504              		.loc 1 126 34 view .LVU134
+ 505 0048 2B4B     		ldr	r3, .L50+4
+ 506 004a A3FB0103 		umull	r0, r3, r3, r1
+ 507 004e 5B09     		lsrs	r3, r3, #5
+ 508 0050 6420     		movs	r0, #100
+ 509 0052 00FB1313 		mls	r3, r0, r3, r1
+ 510 0056 DBB2     		uxtb	r3, r3
+ 511 0058 2948     		ldr	r0, .L50+12
+ 512 005a A0FB0303 		umull	r0, r3, r0, r3
+ 513 005e DB08     		lsrs	r3, r3, #3
+ 514 0060 3033     		adds	r3, r3, #48
+ 126:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit++] = '0' + (u8_x % 10);
+ 515              		.loc 1 126 28 view .LVU135
+ 516 0062 2648     		ldr	r0, .L50+8
+ 517 0064 8354     		strb	r3, [r0, r2]
+ 518              	.L40:
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 519              		.loc 1 127 3 is_stmt 1 view .LVU136
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 520              		.loc 1 127 22 is_stmt 0 view .LVU137
+ 521 0066 234B     		ldr	r3, .L50
+ 522 0068 93F800C0 		ldrb	ip, [r3]	@ zero_extendqisi2
+ 523 006c 0CF10102 		add	r2, ip, #1
+ 524 0070 D2B2     		uxtb	r2, r2
+ 525 0072 1A70     		strb	r2, [r3]
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 526              		.loc 1 127 32 view .LVU138
+ 527 0074 224B     		ldr	r3, .L50+12
+ 528 0076 A3FB0103 		umull	r0, r3, r3, r1
+ 529 007a DB08     		lsrs	r3, r3, #3
+ 530 007c 03EB8303 		add	r3, r3, r3, lsl #2
+ 531 0080 A1EB4301 		sub	r1, r1, r3, lsl #1
+ 532              	.LVL34:
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 533              		.loc 1 127 32 view .LVU139
+ 534 0084 3031     		adds	r1, r1, #48
+ 127:/home/ben/esos32/src/esos_comm.c ****   au8_String[u8_digit] = 0;
+ 535              		.loc 1 127 26 view .LVU140
+ 536 0086 1D48     		ldr	r0, .L50+8
+ 537 0088 00F80C10 		strb	r1, [r0, ip]
+ 128:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 538              		.loc 1 128 3 is_stmt 1 view .LVU141
+ 128:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 539              		.loc 1 128 24 is_stmt 0 view .LVU142
+ 540 008c 0023     		movs	r3, #0
+ 541 008e 8354     		strb	r3, [r0, r2]
+ 129:/home/ben/esos32/src/esos_comm.c ****   while (u8_c < u8_digit) {
+ 542              		.loc 1 129 3 is_stmt 1 view .LVU143
+ 129:/home/ben/esos32/src/esos_comm.c ****   while (u8_c < u8_digit) {
+ARM GAS  /tmp/ccSpbPej.s 			page 14
+
+
+ 543              		.loc 1 129 8 is_stmt 0 view .LVU144
+ 544 0090 1C4A     		ldr	r2, .L50+16
+ 545 0092 1370     		strb	r3, [r2]
+ 130:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 546              		.loc 1 130 3 is_stmt 1 view .LVU145
+ 547              	.L41:
+ 130:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 548              		.loc 1 130 9 view .LVU146
+ 130:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 549              		.loc 1 130 15 is_stmt 0 view .LVU147
+ 550 0094 1B4B     		ldr	r3, .L50+16
+ 551 0096 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 552 0098 164B     		ldr	r3, .L50
+ 553 009a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 130:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 554              		.loc 1 130 9 view .LVU148
+ 555 009c 9A42     		cmp	r2, r3
+ 556 009e 25D2     		bcs	.L48
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 557              		.loc 1 132 5 is_stmt 1 view .LVU149
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 558              		.loc 1 132 5 view .LVU150
+ 559 00a0 8423     		movs	r3, #132
+ 560 00a2 2380     		strh	r3, [r4]	@ movhi
+ 561              	.L37:
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 562              		.loc 1 132 5 discriminator 1 view .LVU151
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 563              		.loc 1 132 5 discriminator 1 view .LVU152
+ 564 00a4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 565 00a6 13F00400 		ands	r0, r3, #4
+ 566 00aa 17D1     		bne	.L49
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 567              		.loc 1 132 5 discriminator 3 view .LVU153
+ 568 00ac 164A     		ldr	r2, .L50+20
+ 569 00ae 1268     		ldr	r2, [r2]
+ 570 00b0 1188     		ldrh	r1, [r2]
+ 571 00b2 9288     		ldrh	r2, [r2, #4]
+ 572 00b4 9142     		cmp	r1, r2
+ 573 00b6 15D0     		beq	.L44
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 574              		.loc 1 132 5 discriminator 4 view .LVU154
+ 575 00b8 23F00103 		bic	r3, r3, #1
+ 576 00bc A370     		strb	r3, [r4, #2]
+ 577              	.L45:
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 578              		.loc 1 132 5 discriminator 7 view .LVU155
+ 579 00be A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 580 00c0 13F0010F 		tst	r3, #1
+ 581 00c4 ABD1     		bne	.L43
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 582              		.loc 1 132 5 discriminator 9 view .LVU156
+ 134:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 583              		.loc 1 134 5 discriminator 9 view .LVU157
+ 134:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 584              		.loc 1 134 55 is_stmt 0 discriminator 9 view .LVU158
+ 585 00c6 0F4A     		ldr	r2, .L50+16
+ARM GAS  /tmp/ccSpbPej.s 			page 15
+
+
+ 586 00c8 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 587 00ca 591C     		adds	r1, r3, #1
+ 588 00cc 1170     		strb	r1, [r2]
+ 134:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 589              		.loc 1 134 5 discriminator 9 view .LVU159
+ 590 00ce 0B4A     		ldr	r2, .L50+8
+ 591 00d0 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 592 00d2 0D4B     		ldr	r3, .L50+20
+ 593 00d4 1868     		ldr	r0, [r3]
+ 594 00d6 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 595              	.LVL35:
+ 596 00da DBE7     		b	.L41
+ 597              	.L49:
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 598              		.loc 1 132 5 is_stmt 1 discriminator 2 view .LVU160
+ 599 00dc 0423     		movs	r3, #4
+ 600 00de A370     		strb	r3, [r4, #2]
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 601              		.loc 1 132 5 discriminator 2 view .LVU161
+ 602 00e0 0320     		movs	r0, #3
+ 603 00e2 9CE7     		b	.L43
+ 604              	.L44:
+ 132:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 605              		.loc 1 132 5 discriminator 5 view .LVU162
+ 606 00e4 43F00103 		orr	r3, r3, #1
+ 607 00e8 A370     		strb	r3, [r4, #2]
+ 608 00ea E8E7     		b	.L45
+ 609              	.L48:
+ 138:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 610              		.loc 1 138 3 view .LVU163
+ 611 00ec FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 612              	.LVL36:
+ 613 00f0 90E7     		b	.L38
+ 614              	.L51:
+ 615 00f2 00BF     		.align	2
+ 616              	.L50:
+ 617 00f4 00000000 		.word	.LANCHOR8
+ 618 00f8 1F85EB51 		.word	1374389535
+ 619 00fc 00000000 		.word	.LANCHOR9
+ 620 0100 CDCCCCCC 		.word	-858993459
+ 621 0104 00000000 		.word	.LANCHOR10
+ 622 0108 00000000 		.word	.LANCHOR2
+ 623              		.cfi_endproc
+ 624              	.LFE5:
+ 626              		.section	.text.__esos_OutUint32AsHexString,"ax",%progbits
+ 627              		.align	1
+ 628              		.global	__esos_OutUint32AsHexString
+ 629              		.syntax unified
+ 630              		.thumb
+ 631              		.thumb_func
+ 633              	__esos_OutUint32AsHexString:
+ 634              	.LVL37:
+ 635              	.LFB6:
+ 141:/home/ben/esos32/src/esos_comm.c **** 
+ 142:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutUint32AsHexString, uint32_t u32_x) {
+ 636              		.loc 1 142 63 view -0
+ 637              		.cfi_startproc
+ARM GAS  /tmp/ccSpbPej.s 			page 16
+
+
+ 638              		@ args = 0, pretend = 0, frame = 0
+ 639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 640              		.loc 1 142 63 is_stmt 0 view .LVU165
+ 641 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 642              	.LCFI4:
+ 643              		.cfi_def_cfa_offset 24
+ 644              		.cfi_offset 4, -24
+ 645              		.cfi_offset 5, -20
+ 646              		.cfi_offset 6, -16
+ 647              		.cfi_offset 7, -12
+ 648              		.cfi_offset 8, -8
+ 649              		.cfi_offset 14, -4
+ 650 0004 0446     		mov	r4, r0
+ 143:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        au8_String[11];
+ 651              		.loc 1 143 3 is_stmt 1 view .LVU166
+ 144:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        u8_c;
+ 652              		.loc 1 144 3 view .LVU167
+ 145:/home/ben/esos32/src/esos_comm.c **** 
+ 146:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 653              		.loc 1 146 3 view .LVU168
+ 654 0006 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 655 0008 63F07F03 		orn	r3, r3, #127
+ 656 000c 8370     		strb	r3, [r0, #2]
+ 657              		.loc 1 146 3 view .LVU169
+ 658 000e 0388     		ldrh	r3, [r0]
+ 659 0010 43B1     		cbz	r3, .L53
+ 660 0012 A42B     		cmp	r3, #164
+ 661 0014 40D0     		beq	.L54
+ 662              	.LVL38:
+ 663              	.L55:
+ 147:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 148:/home/ben/esos32/src/esos_comm.c ****   au8_String[1] = 'x';
+ 149:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 24);
+ 150:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 151:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 152:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 16);
+ 153:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 154:/home/ben/esos32/src/esos_comm.c ****   au8_String[5] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 155:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 8);
+ 156:/home/ben/esos32/src/esos_comm.c ****   au8_String[6] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 157:/home/ben/esos32/src/esos_comm.c ****   au8_String[7] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 158:/home/ben/esos32/src/esos_comm.c ****   u8_c = u32_x;
+ 159:/home/ben/esos32/src/esos_comm.c ****   au8_String[8] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 160:/home/ben/esos32/src/esos_comm.c ****   au8_String[9] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 161:/home/ben/esos32/src/esos_comm.c ****   au8_String[10] = 0;
+ 162:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 163:/home/ben/esos32/src/esos_comm.c **** 
+ 164:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, 10);
+ 165:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 166:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 167:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+ 168:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+ 169:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 664              		.loc 1 169 3 view .LVU170
+ 665              		.loc 1 169 3 view .LVU171
+ 666 0016 0823     		movs	r3, #8
+ 667 0018 A370     		strb	r3, [r4, #2]
+ARM GAS  /tmp/ccSpbPej.s 			page 17
+
+
+ 668              		.loc 1 169 3 view .LVU172
+ 669 001a 0023     		movs	r3, #0
+ 670 001c 2380     		strh	r3, [r4]	@ movhi
+ 671              		.loc 1 169 3 view .LVU173
+ 672              		.loc 1 169 3 view .LVU174
+ 673              		.loc 1 169 3 view .LVU175
+ 674 001e 0320     		movs	r0, #3
+ 675              	.L57:
+ 676              		.loc 1 169 18 discriminator 1 view .LVU176
+ 170:/home/ben/esos32/src/esos_comm.c **** 
+ 171:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutUint32AsHexString()
+ 677              		.loc 1 171 1 is_stmt 0 discriminator 1 view .LVU177
+ 678 0020 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 679              	.LVL39:
+ 680              	.L53:
+ 681              		.loc 1 171 1 discriminator 1 view .LVU178
+ 682 0024 0D46     		mov	r5, r1
+ 146:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 683              		.loc 1 146 20 is_stmt 1 discriminator 1 view .LVU179
+ 147:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 684              		.loc 1 147 3 discriminator 1 view .LVU180
+ 147:/home/ben/esos32/src/esos_comm.c ****   au8_String[0] = '0';
+ 685              		.loc 1 147 17 is_stmt 0 discriminator 1 view .LVU181
+ 686 0026 2E4E     		ldr	r6, .L62
+ 687 0028 3023     		movs	r3, #48
+ 688 002a 3370     		strb	r3, [r6]
+ 148:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 24);
+ 689              		.loc 1 148 3 is_stmt 1 discriminator 1 view .LVU182
+ 148:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 24);
+ 690              		.loc 1 148 17 is_stmt 0 discriminator 1 view .LVU183
+ 691 002c 7823     		movs	r3, #120
+ 692 002e 7370     		strb	r3, [r6, #1]
+ 149:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 693              		.loc 1 149 3 is_stmt 1 discriminator 1 view .LVU184
+ 149:/home/ben/esos32/src/esos_comm.c ****   au8_String[2] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 694              		.loc 1 149 8 is_stmt 0 discriminator 1 view .LVU185
+ 695 0030 4FEA1168 		lsr	r8, r1, #24
+ 696 0034 2B4F     		ldr	r7, .L62+4
+ 697 0036 87F80080 		strb	r8, [r7]
+ 150:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 698              		.loc 1 150 3 is_stmt 1 discriminator 1 view .LVU186
+ 150:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 699              		.loc 1 150 19 is_stmt 0 discriminator 1 view .LVU187
+ 700 003a 4046     		mov	r0, r8
+ 701              	.LVL40:
+ 150:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 702              		.loc 1 150 19 discriminator 1 view .LVU188
+ 703 003c FFF7FEFF 		bl	__esos_u8_GetMSBHexCharFromUint8
+ 704              	.LVL41:
+ 150:/home/ben/esos32/src/esos_comm.c ****   au8_String[3] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 705              		.loc 1 150 17 discriminator 1 view .LVU189
+ 706 0040 B070     		strb	r0, [r6, #2]
+ 151:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 16);
+ 707              		.loc 1 151 3 is_stmt 1 discriminator 1 view .LVU190
+ 151:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 16);
+ 708              		.loc 1 151 19 is_stmt 0 discriminator 1 view .LVU191
+ 709 0042 4046     		mov	r0, r8
+ARM GAS  /tmp/ccSpbPej.s 			page 18
+
+
+ 710 0044 FFF7FEFF 		bl	__esos_u8_GetLSBHexCharFromUint8
+ 711              	.LVL42:
+ 151:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 16);
+ 712              		.loc 1 151 17 discriminator 1 view .LVU192
+ 713 0048 F070     		strb	r0, [r6, #3]
+ 152:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 714              		.loc 1 152 3 is_stmt 1 discriminator 1 view .LVU193
+ 152:/home/ben/esos32/src/esos_comm.c ****   au8_String[4] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 715              		.loc 1 152 8 is_stmt 0 discriminator 1 view .LVU194
+ 716 004a C5F30748 		ubfx	r8, r5, #16, #8
+ 717 004e 87F80080 		strb	r8, [r7]
+ 153:/home/ben/esos32/src/esos_comm.c ****   au8_String[5] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 718              		.loc 1 153 3 is_stmt 1 discriminator 1 view .LVU195
+ 153:/home/ben/esos32/src/esos_comm.c ****   au8_String[5] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 719              		.loc 1 153 19 is_stmt 0 discriminator 1 view .LVU196
+ 720 0052 4046     		mov	r0, r8
+ 721 0054 FFF7FEFF 		bl	__esos_u8_GetMSBHexCharFromUint8
+ 722              	.LVL43:
+ 153:/home/ben/esos32/src/esos_comm.c ****   au8_String[5] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 723              		.loc 1 153 17 discriminator 1 view .LVU197
+ 724 0058 3071     		strb	r0, [r6, #4]
+ 154:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 8);
+ 725              		.loc 1 154 3 is_stmt 1 discriminator 1 view .LVU198
+ 154:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 8);
+ 726              		.loc 1 154 19 is_stmt 0 discriminator 1 view .LVU199
+ 727 005a 4046     		mov	r0, r8
+ 728 005c FFF7FEFF 		bl	__esos_u8_GetLSBHexCharFromUint8
+ 729              	.LVL44:
+ 154:/home/ben/esos32/src/esos_comm.c ****   u8_c = (u32_x >> 8);
+ 730              		.loc 1 154 17 discriminator 1 view .LVU200
+ 731 0060 7071     		strb	r0, [r6, #5]
+ 155:/home/ben/esos32/src/esos_comm.c ****   au8_String[6] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 732              		.loc 1 155 3 is_stmt 1 discriminator 1 view .LVU201
+ 155:/home/ben/esos32/src/esos_comm.c ****   au8_String[6] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 733              		.loc 1 155 8 is_stmt 0 discriminator 1 view .LVU202
+ 734 0062 C5F30728 		ubfx	r8, r5, #8, #8
+ 735 0066 87F80080 		strb	r8, [r7]
+ 156:/home/ben/esos32/src/esos_comm.c ****   au8_String[7] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 736              		.loc 1 156 3 is_stmt 1 discriminator 1 view .LVU203
+ 156:/home/ben/esos32/src/esos_comm.c ****   au8_String[7] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 737              		.loc 1 156 19 is_stmt 0 discriminator 1 view .LVU204
+ 738 006a 4046     		mov	r0, r8
+ 739 006c FFF7FEFF 		bl	__esos_u8_GetMSBHexCharFromUint8
+ 740              	.LVL45:
+ 156:/home/ben/esos32/src/esos_comm.c ****   au8_String[7] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 741              		.loc 1 156 17 discriminator 1 view .LVU205
+ 742 0070 B071     		strb	r0, [r6, #6]
+ 157:/home/ben/esos32/src/esos_comm.c ****   u8_c = u32_x;
+ 743              		.loc 1 157 3 is_stmt 1 discriminator 1 view .LVU206
+ 157:/home/ben/esos32/src/esos_comm.c ****   u8_c = u32_x;
+ 744              		.loc 1 157 19 is_stmt 0 discriminator 1 view .LVU207
+ 745 0072 4046     		mov	r0, r8
+ 746 0074 FFF7FEFF 		bl	__esos_u8_GetLSBHexCharFromUint8
+ 747              	.LVL46:
+ 157:/home/ben/esos32/src/esos_comm.c ****   u8_c = u32_x;
+ 748              		.loc 1 157 17 discriminator 1 view .LVU208
+ 749 0078 F071     		strb	r0, [r6, #7]
+ARM GAS  /tmp/ccSpbPej.s 			page 19
+
+
+ 158:/home/ben/esos32/src/esos_comm.c ****   au8_String[8] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 750              		.loc 1 158 3 is_stmt 1 discriminator 1 view .LVU209
+ 158:/home/ben/esos32/src/esos_comm.c ****   au8_String[8] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 751              		.loc 1 158 8 is_stmt 0 discriminator 1 view .LVU210
+ 752 007a EDB2     		uxtb	r5, r5
+ 753              	.LVL47:
+ 158:/home/ben/esos32/src/esos_comm.c ****   au8_String[8] = __esos_u8_GetMSBHexCharFromUint8(u8_c);
+ 754              		.loc 1 158 8 discriminator 1 view .LVU211
+ 755 007c 3D70     		strb	r5, [r7]
+ 159:/home/ben/esos32/src/esos_comm.c ****   au8_String[9] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 756              		.loc 1 159 3 is_stmt 1 discriminator 1 view .LVU212
+ 159:/home/ben/esos32/src/esos_comm.c ****   au8_String[9] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 757              		.loc 1 159 19 is_stmt 0 discriminator 1 view .LVU213
+ 758 007e 2846     		mov	r0, r5
+ 759 0080 FFF7FEFF 		bl	__esos_u8_GetMSBHexCharFromUint8
+ 760              	.LVL48:
+ 159:/home/ben/esos32/src/esos_comm.c ****   au8_String[9] = __esos_u8_GetLSBHexCharFromUint8(u8_c);
+ 761              		.loc 1 159 17 discriminator 1 view .LVU214
+ 762 0084 3072     		strb	r0, [r6, #8]
+ 160:/home/ben/esos32/src/esos_comm.c ****   au8_String[10] = 0;
+ 763              		.loc 1 160 3 is_stmt 1 discriminator 1 view .LVU215
+ 160:/home/ben/esos32/src/esos_comm.c ****   au8_String[10] = 0;
+ 764              		.loc 1 160 19 is_stmt 0 discriminator 1 view .LVU216
+ 765 0086 2846     		mov	r0, r5
+ 766 0088 FFF7FEFF 		bl	__esos_u8_GetLSBHexCharFromUint8
+ 767              	.LVL49:
+ 160:/home/ben/esos32/src/esos_comm.c ****   au8_String[10] = 0;
+ 768              		.loc 1 160 17 discriminator 1 view .LVU217
+ 769 008c 7072     		strb	r0, [r6, #9]
+ 161:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 770              		.loc 1 161 3 is_stmt 1 discriminator 1 view .LVU218
+ 161:/home/ben/esos32/src/esos_comm.c ****   u8_c = 0;
+ 771              		.loc 1 161 18 is_stmt 0 discriminator 1 view .LVU219
+ 772 008e 0023     		movs	r3, #0
+ 773 0090 B372     		strb	r3, [r6, #10]
+ 162:/home/ben/esos32/src/esos_comm.c **** 
+ 774              		.loc 1 162 3 is_stmt 1 discriminator 1 view .LVU220
+ 162:/home/ben/esos32/src/esos_comm.c **** 
+ 775              		.loc 1 162 8 is_stmt 0 discriminator 1 view .LVU221
+ 776 0092 3B70     		strb	r3, [r7]
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 777              		.loc 1 164 3 is_stmt 1 discriminator 1 view .LVU222
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 778              		.loc 1 164 3 discriminator 1 view .LVU223
+ 779 0094 A423     		movs	r3, #164
+ 780 0096 2380     		strh	r3, [r4]	@ movhi
+ 781              	.L54:
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 782              		.loc 1 164 3 discriminator 1 view .LVU224
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 783              		.loc 1 164 3 discriminator 1 view .LVU225
+ 784 0098 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 785 009a 13F00400 		ands	r0, r3, #4
+ 786 009e 16D1     		bne	.L61
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 787              		.loc 1 164 3 discriminator 3 view .LVU226
+ 788 00a0 114A     		ldr	r2, .L62+8
+ARM GAS  /tmp/ccSpbPej.s 			page 20
+
+
+ 789 00a2 1168     		ldr	r1, [r2]
+ 790 00a4 0A88     		ldrh	r2, [r1]
+ 791 00a6 8988     		ldrh	r1, [r1, #4]
+ 792 00a8 521A     		subs	r2, r2, r1
+ 793 00aa 092A     		cmp	r2, #9
+ 794 00ac 13DD     		ble	.L58
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 795              		.loc 1 164 3 discriminator 4 view .LVU227
+ 796 00ae 23F00103 		bic	r3, r3, #1
+ 797 00b2 A370     		strb	r3, [r4, #2]
+ 798              	.L59:
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 799              		.loc 1 164 3 discriminator 7 view .LVU228
+ 800 00b4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 801 00b6 13F0010F 		tst	r3, #1
+ 802 00ba B1D1     		bne	.L57
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 803              		.loc 1 164 3 discriminator 9 view .LVU229
+ 165:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 804              		.loc 1 165 3 discriminator 9 view .LVU230
+ 805 00bc 0A22     		movs	r2, #10
+ 806 00be 0849     		ldr	r1, .L62
+ 807 00c0 094B     		ldr	r3, .L62+8
+ 808 00c2 1868     		ldr	r0, [r3]
+ 809 00c4 FFF7FEFF 		bl	__esos_CB_WriteUINT8Buffer
+ 810              	.LVL50:
+ 168:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 811              		.loc 1 168 3 discriminator 9 view .LVU231
+ 812 00c8 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 813              	.LVL51:
+ 814 00cc A3E7     		b	.L55
+ 815              	.L61:
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 816              		.loc 1 164 3 discriminator 2 view .LVU232
+ 817 00ce 0423     		movs	r3, #4
+ 818 00d0 A370     		strb	r3, [r4, #2]
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 819              		.loc 1 164 3 discriminator 2 view .LVU233
+ 820 00d2 0320     		movs	r0, #3
+ 821 00d4 A4E7     		b	.L57
+ 822              	.L58:
+ 164:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, &au8_String[0], 10 );
+ 823              		.loc 1 164 3 discriminator 5 view .LVU234
+ 824 00d6 43F00103 		orr	r3, r3, #1
+ 825 00da A370     		strb	r3, [r4, #2]
+ 826 00dc EAE7     		b	.L59
+ 827              	.L63:
+ 828 00de 00BF     		.align	2
+ 829              	.L62:
+ 830 00e0 00000000 		.word	.LANCHOR11
+ 831 00e4 00000000 		.word	.LANCHOR12
+ 832 00e8 00000000 		.word	.LANCHOR2
+ 833              		.cfi_endproc
+ 834              	.LFE6:
+ 836              		.section	.text.__esos_OutCharBuffer,"ax",%progbits
+ 837              		.align	1
+ 838              		.global	__esos_OutCharBuffer
+ARM GAS  /tmp/ccSpbPej.s 			page 21
+
+
+ 839              		.syntax unified
+ 840              		.thumb
+ 841              		.thumb_func
+ 843              	__esos_OutCharBuffer:
+ 844              	.LVL52:
+ 845              	.LFB7:
+ 172:/home/ben/esos32/src/esos_comm.c **** 
+ 173:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutCharBuffer, uint8_t* pu8_out, uint8_t u8_len) {
+ 846              		.loc 1 173 74 view -0
+ 847              		.cfi_startproc
+ 848              		@ args = 0, pretend = 0, frame = 0
+ 849              		@ frame_needed = 0, uses_anonymous_args = 0
+ 850              		.loc 1 173 74 is_stmt 0 view .LVU236
+ 851 0000 38B5     		push	{r3, r4, r5, lr}
+ 852              	.LCFI5:
+ 853              		.cfi_def_cfa_offset 16
+ 854              		.cfi_offset 3, -16
+ 855              		.cfi_offset 4, -12
+ 856              		.cfi_offset 5, -8
+ 857              		.cfi_offset 14, -4
+ 858 0002 0446     		mov	r4, r0
+ 174:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 859              		.loc 1 174 3 is_stmt 1 view .LVU237
+ 860 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 861 0006 43F08003 		orr	r3, r3, #128
+ 862 000a 8370     		strb	r3, [r0, #2]
+ 863              		.loc 1 174 3 view .LVU238
+ 864 000c 0088     		ldrh	r0, [r0]
+ 865              	.LVL53:
+ 866              		.loc 1 174 3 is_stmt 0 view .LVU239
+ 867 000e 38B1     		cbz	r0, .L65
+ 868 0010 AF28     		cmp	r0, #175
+ 869 0012 07D0     		beq	.L66
+ 870              	.LVL54:
+ 871              	.L67:
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 176:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, pu8_out, u8_len );
+ 177:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 178:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+ 179:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+ 180:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 872              		.loc 1 180 3 is_stmt 1 view .LVU240
+ 873              		.loc 1 180 3 view .LVU241
+ 874 0014 0823     		movs	r3, #8
+ 875 0016 A370     		strb	r3, [r4, #2]
+ 876              		.loc 1 180 3 view .LVU242
+ 877 0018 0023     		movs	r3, #0
+ 878 001a 2380     		strh	r3, [r4]	@ movhi
+ 879              		.loc 1 180 3 view .LVU243
+ 880              		.loc 1 180 3 view .LVU244
+ 881              		.loc 1 180 3 view .LVU245
+ 882 001c 0320     		movs	r0, #3
+ 883              	.L69:
+ 884              		.loc 1 180 18 discriminator 1 view .LVU246
+ 181:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutCharBuffer
+ 885              		.loc 1 181 1 is_stmt 0 discriminator 1 view .LVU247
+ 886 001e 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  /tmp/ccSpbPej.s 			page 22
+
+
+ 887              	.LVL55:
+ 888              	.L65:
+ 174:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 889              		.loc 1 174 20 is_stmt 1 discriminator 1 view .LVU248
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 890              		.loc 1 175 3 discriminator 1 view .LVU249
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 891              		.loc 1 175 3 discriminator 1 view .LVU250
+ 892 0020 AF20     		movs	r0, #175
+ 893 0022 2080     		strh	r0, [r4]	@ movhi
+ 894              	.L66:
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 895              		.loc 1 175 3 discriminator 1 view .LVU251
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 896              		.loc 1 175 3 discriminator 1 view .LVU252
+ 897 0024 13F00400 		ands	r0, r3, #4
+ 898 0028 16D1     		bne	.L73
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 899              		.loc 1 175 3 discriminator 3 view .LVU253
+ 900 002a 0F4D     		ldr	r5, .L74
+ 901 002c 2D68     		ldr	r5, [r5]
+ 902 002e B5F800C0 		ldrh	ip, [r5]
+ 903 0032 AD88     		ldrh	r5, [r5, #4]
+ 904 0034 ACEB050C 		sub	ip, ip, r5
+ 905 0038 9445     		cmp	ip, r2
+ 906 003a 11DB     		blt	.L70
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 907              		.loc 1 175 3 discriminator 4 view .LVU254
+ 908 003c 23F00103 		bic	r3, r3, #1
+ 909 0040 A370     		strb	r3, [r4, #2]
+ 910              	.L71:
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 911              		.loc 1 175 3 discriminator 7 view .LVU255
+ 912 0042 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 913 0044 13F0010F 		tst	r3, #1
+ 914 0048 E9D1     		bne	.L69
+ 175:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_WAIT_UNTIL_CB_HAS_AVAILABLE_AT_LEAST( __pst_CB_Tx, u8_len);
+ 915              		.loc 1 175 3 discriminator 9 view .LVU256
+ 176:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 916              		.loc 1 176 3 discriminator 9 view .LVU257
+ 917 004a 074B     		ldr	r3, .L74
+ 918 004c 1868     		ldr	r0, [r3]
+ 919 004e FFF7FEFF 		bl	__esos_CB_WriteUINT8Buffer
+ 920              	.LVL56:
+ 179:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 921              		.loc 1 179 3 discriminator 9 view .LVU258
+ 922 0052 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 923              	.LVL57:
+ 924 0056 DDE7     		b	.L67
+ 925              	.LVL58:
+ 926              	.L73:
+ 175:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, pu8_out, u8_len );
+ 927              		.loc 1 175 3 discriminator 2 view .LVU259
+ 928 0058 0423     		movs	r3, #4
+ 929 005a A370     		strb	r3, [r4, #2]
+ 175:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, pu8_out, u8_len );
+ 930              		.loc 1 175 3 discriminator 2 view .LVU260
+ARM GAS  /tmp/ccSpbPej.s 			page 23
+
+
+ 931 005c 0320     		movs	r0, #3
+ 932 005e DEE7     		b	.L69
+ 933              	.L70:
+ 175:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8Buffer( __pst_CB_Tx, pu8_out, u8_len );
+ 934              		.loc 1 175 3 discriminator 5 view .LVU261
+ 935 0060 43F00103 		orr	r3, r3, #1
+ 936 0064 A370     		strb	r3, [r4, #2]
+ 937 0066 ECE7     		b	.L71
+ 938              	.L75:
+ 939              		.align	2
+ 940              	.L74:
+ 941 0068 00000000 		.word	.LANCHOR2
+ 942              		.cfi_endproc
+ 943              	.LFE7:
+ 945              		.section	.text.__esos_OutString,"ax",%progbits
+ 946              		.align	1
+ 947              		.global	__esos_OutString
+ 948              		.syntax unified
+ 949              		.thumb
+ 950              		.thumb_func
+ 952              	__esos_OutString:
+ 953              	.LVL59:
+ 954              	.LFB8:
+ 182:/home/ben/esos32/src/esos_comm.c **** 
+ 183:/home/ben/esos32/src/esos_comm.c **** 
+ 184:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_OutString, char* psz_out ) {
+ 955              		.loc 1 184 52 view -0
+ 956              		.cfi_startproc
+ 957              		@ args = 0, pretend = 0, frame = 0
+ 958              		@ frame_needed = 0, uses_anonymous_args = 0
+ 959              		.loc 1 184 52 is_stmt 0 view .LVU263
+ 960 0000 10B5     		push	{r4, lr}
+ 961              	.LCFI6:
+ 962              		.cfi_def_cfa_offset 8
+ 963              		.cfi_offset 4, -8
+ 964              		.cfi_offset 14, -4
+ 965 0002 0446     		mov	r4, r0
+ 185:/home/ben/esos32/src/esos_comm.c ****   static char*        psz_local;
+ 966              		.loc 1 185 3 is_stmt 1 view .LVU264
+ 186:/home/ben/esos32/src/esos_comm.c **** 
+ 187:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 967              		.loc 1 187 3 view .LVU265
+ 968 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 969 0006 63F07F03 		orn	r3, r3, #127
+ 970 000a 8370     		strb	r3, [r0, #2]
+ 971              		.loc 1 187 3 view .LVU266
+ 972 000c 0388     		ldrh	r3, [r0]
+ 973 000e 3BB1     		cbz	r3, .L77
+ 974 0010 BF2B     		cmp	r3, #191
+ 975 0012 0ED0     		beq	.L78
+ 976              	.LVL60:
+ 977              	.L79:
+ 188:/home/ben/esos32/src/esos_comm.c ****   psz_local = psz_out;
+ 189:/home/ben/esos32/src/esos_comm.c ****   while ( *psz_local ) {
+ 190:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 191:/home/ben/esos32/src/esos_comm.c ****     ESOS_TASK_WAIT_WHILE_CB_IS_FULL( __pst_CB_Tx );
+ 192:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ARM GAS  /tmp/ccSpbPej.s 			page 24
+
+
+ 193:/home/ben/esos32/src/esos_comm.c ****     __esos_CB_WriteUINT8( __pst_CB_Tx, *psz_local++ );
+ 194:/home/ben/esos32/src/esos_comm.c ****     __esos_hw_signal_start_tx();
+ 195:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 196:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 978              		.loc 1 196 3 view .LVU267
+ 979              		.loc 1 196 3 view .LVU268
+ 980 0014 0823     		movs	r3, #8
+ 981 0016 A370     		strb	r3, [r4, #2]
+ 982              		.loc 1 196 3 view .LVU269
+ 983 0018 0023     		movs	r3, #0
+ 984 001a 2380     		strh	r3, [r4]	@ movhi
+ 985              		.loc 1 196 3 view .LVU270
+ 986              		.loc 1 196 3 view .LVU271
+ 987              		.loc 1 196 3 view .LVU272
+ 988 001c 0320     		movs	r0, #3
+ 989              	.L82:
+ 990              		.loc 1 196 18 discriminator 1 view .LVU273
+ 197:/home/ben/esos32/src/esos_comm.c **** } // end __esos_OutString
+ 991              		.loc 1 197 1 is_stmt 0 discriminator 1 view .LVU274
+ 992 001e 10BD     		pop	{r4, pc}
+ 993              	.LVL61:
+ 994              	.L77:
+ 187:/home/ben/esos32/src/esos_comm.c ****   psz_local = psz_out;
+ 995              		.loc 1 187 20 is_stmt 1 discriminator 1 view .LVU275
+ 188:/home/ben/esos32/src/esos_comm.c ****   psz_local = psz_out;
+ 996              		.loc 1 188 3 discriminator 1 view .LVU276
+ 188:/home/ben/esos32/src/esos_comm.c ****   psz_local = psz_out;
+ 997              		.loc 1 188 13 is_stmt 0 discriminator 1 view .LVU277
+ 998 0020 164B     		ldr	r3, .L88
+ 999 0022 1960     		str	r1, [r3]
+ 189:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 1000              		.loc 1 189 3 is_stmt 1 discriminator 1 view .LVU278
+ 1001              	.LVL62:
+ 1002              	.L80:
+ 189:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 1003              		.loc 1 189 9 view .LVU279
+ 189:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 1004              		.loc 1 189 11 is_stmt 0 view .LVU280
+ 1005 0024 154B     		ldr	r3, .L88
+ 1006 0026 1B68     		ldr	r3, [r3]
+ 1007 0028 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 189:/home/ben/esos32/src/esos_comm.c ****     // wait for room in the TX CB to appear
+ 1008              		.loc 1 189 9 view .LVU281
+ 1009 002a 002B     		cmp	r3, #0
+ 1010 002c F2D0     		beq	.L79
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1011              		.loc 1 191 5 is_stmt 1 view .LVU282
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1012              		.loc 1 191 5 view .LVU283
+ 1013 002e BF23     		movs	r3, #191
+ 1014 0030 2380     		strh	r3, [r4]	@ movhi
+ 1015              	.L78:
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1016              		.loc 1 191 5 discriminator 1 view .LVU284
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1017              		.loc 1 191 5 discriminator 1 view .LVU285
+ 1018 0032 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ARM GAS  /tmp/ccSpbPej.s 			page 25
+
+
+ 1019 0034 13F00400 		ands	r0, r3, #4
+ 1020 0038 18D1     		bne	.L87
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1021              		.loc 1 191 5 discriminator 3 view .LVU286
+ 1022 003a 114A     		ldr	r2, .L88+4
+ 1023 003c 1268     		ldr	r2, [r2]
+ 1024 003e 1188     		ldrh	r1, [r2]
+ 1025 0040 9288     		ldrh	r2, [r2, #4]
+ 1026 0042 9142     		cmp	r1, r2
+ 1027 0044 16D0     		beq	.L83
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1028              		.loc 1 191 5 discriminator 4 view .LVU287
+ 1029 0046 23F00103 		bic	r3, r3, #1
+ 1030 004a A370     		strb	r3, [r4, #2]
+ 1031              	.L84:
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1032              		.loc 1 191 5 discriminator 7 view .LVU288
+ 1033 004c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1034 004e 13F0010F 		tst	r3, #1
+ 1035 0052 E4D1     		bne	.L82
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1036              		.loc 1 191 5 discriminator 9 view .LVU289
+ 193:/home/ben/esos32/src/esos_comm.c ****     __esos_hw_signal_start_tx();
+ 1037              		.loc 1 193 5 discriminator 9 view .LVU290
+ 193:/home/ben/esos32/src/esos_comm.c ****     __esos_hw_signal_start_tx();
+ 1038              		.loc 1 193 50 is_stmt 0 discriminator 9 view .LVU291
+ 1039 0054 094A     		ldr	r2, .L88
+ 1040 0056 1368     		ldr	r3, [r2]
+ 1041 0058 591C     		adds	r1, r3, #1
+ 1042 005a 1160     		str	r1, [r2]
+ 193:/home/ben/esos32/src/esos_comm.c ****     __esos_hw_signal_start_tx();
+ 1043              		.loc 1 193 5 discriminator 9 view .LVU292
+ 1044 005c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 1045 005e 084B     		ldr	r3, .L88+4
+ 1046 0060 1868     		ldr	r0, [r3]
+ 1047 0062 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 1048              	.LVL63:
+ 194:/home/ben/esos32/src/esos_comm.c ****   } //end while()
+ 1049              		.loc 1 194 5 is_stmt 1 discriminator 9 view .LVU293
+ 1050 0066 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 1051              	.LVL64:
+ 1052 006a DBE7     		b	.L80
+ 1053              	.L87:
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1054              		.loc 1 191 5 discriminator 2 view .LVU294
+ 1055 006c 0423     		movs	r3, #4
+ 1056 006e A370     		strb	r3, [r4, #2]
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1057              		.loc 1 191 5 discriminator 2 view .LVU295
+ 1058 0070 0320     		movs	r0, #3
+ 1059 0072 D4E7     		b	.L82
+ 1060              	.L83:
+ 191:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 1061              		.loc 1 191 5 discriminator 5 view .LVU296
+ 1062 0074 43F00103 		orr	r3, r3, #1
+ 1063 0078 A370     		strb	r3, [r4, #2]
+ 1064 007a E7E7     		b	.L84
+ARM GAS  /tmp/ccSpbPej.s 			page 26
+
+
+ 1065              	.L89:
+ 1066              		.align	2
+ 1067              	.L88:
+ 1068 007c 00000000 		.word	.LANCHOR13
+ 1069 0080 00000000 		.word	.LANCHOR2
+ 1070              		.cfi_endproc
+ 1071              	.LFE8:
+ 1073              		.section	.text.__esos_getBuffer,"ax",%progbits
+ 1074              		.align	1
+ 1075              		.global	__esos_getBuffer
+ 1076              		.syntax unified
+ 1077              		.thumb
+ 1078              		.thumb_func
+ 1080              	__esos_getBuffer:
+ 1081              	.LVL65:
+ 1082              	.LFB9:
+ 198:/home/ben/esos32/src/esos_comm.c **** 
+ 199:/home/ben/esos32/src/esos_comm.c **** 
+ 200:/home/ben/esos32/src/esos_comm.c **** /* ***********************************
+ 201:/home/ben/esos32/src/esos_comm.c ****  *  INCOMING COMM CHILD TASKS
+ 202:/home/ben/esos32/src/esos_comm.c ****  *************************************
+ 203:/home/ben/esos32/src/esos_comm.c **** */
+ 204:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_getBuffer, uint8_t* pau8_buff, uint8_t u8_size) {
+ 1083              		.loc 1 204 73 view -0
+ 1084              		.cfi_startproc
+ 1085              		@ args = 0, pretend = 0, frame = 0
+ 1086              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1087              		.loc 1 204 73 is_stmt 0 view .LVU298
+ 1088 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1089              	.LCFI7:
+ 1090              		.cfi_def_cfa_offset 24
+ 1091              		.cfi_offset 3, -24
+ 1092              		.cfi_offset 4, -20
+ 1093              		.cfi_offset 5, -16
+ 1094              		.cfi_offset 6, -12
+ 1095              		.cfi_offset 7, -8
+ 1096              		.cfi_offset 14, -4
+ 1097 0002 0446     		mov	r4, r0
+ 205:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        u8_i;
+ 1098              		.loc 1 205 3 is_stmt 1 view .LVU299
+ 206:/home/ben/esos32/src/esos_comm.c ****   static uint8_t*       pau8_LocalPtr;
+ 1099              		.loc 1 206 3 view .LVU300
+ 207:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        u8_LocalSize;
+ 1100              		.loc 1 207 3 view .LVU301
+ 208:/home/ben/esos32/src/esos_comm.c **** 
+ 209:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 1101              		.loc 1 209 3 view .LVU302
+ 1102 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 1103 0006 63F07F03 		orn	r3, r3, #127
+ 1104 000a 8370     		strb	r3, [r0, #2]
+ 1105              		.loc 1 209 3 view .LVU303
+ 1106 000c 0388     		ldrh	r3, [r0]
+ 1107 000e 3BB1     		cbz	r3, .L91
+ 1108 0010 D72B     		cmp	r3, #215
+ 1109 0012 14D0     		beq	.L92
+ 1110              	.LVL66:
+ 1111              	.L93:
+ARM GAS  /tmp/ccSpbPej.s 			page 27
+
+
+ 210:/home/ben/esos32/src/esos_comm.c ****   u8_LocalSize = u8_size;
+ 211:/home/ben/esos32/src/esos_comm.c ****   pau8_LocalPtr = pau8_buff;
+ 212:/home/ben/esos32/src/esos_comm.c **** 
+ 213:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<u8_LocalSize; u8_i++) {
+ 214:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 215:/home/ben/esos32/src/esos_comm.c ****     ESOS_TASK_WAIT_WHILE ( __ESOS_CB_IS_EMPTY( __pst_CB_Rx ) );
+ 216:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 217:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 218:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 1112              		.loc 1 218 3 view .LVU304
+ 1113              		.loc 1 218 3 view .LVU305
+ 1114 0014 0823     		movs	r3, #8
+ 1115 0016 A370     		strb	r3, [r4, #2]
+ 1116              		.loc 1 218 3 view .LVU306
+ 1117 0018 0023     		movs	r3, #0
+ 1118 001a 2380     		strh	r3, [r4]	@ movhi
+ 1119              		.loc 1 218 3 view .LVU307
+ 1120              		.loc 1 218 3 view .LVU308
+ 1121              		.loc 1 218 3 view .LVU309
+ 1122 001c 0320     		movs	r0, #3
+ 1123              	.L96:
+ 1124              		.loc 1 218 18 discriminator 1 view .LVU310
+ 219:/home/ben/esos32/src/esos_comm.c **** } // end __esos_getBuffer
+ 1125              		.loc 1 219 1 is_stmt 0 discriminator 1 view .LVU311
+ 1126 001e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1127              	.LVL67:
+ 1128              	.L91:
+ 209:/home/ben/esos32/src/esos_comm.c ****   u8_LocalSize = u8_size;
+ 1129              		.loc 1 209 20 is_stmt 1 discriminator 1 view .LVU312
+ 210:/home/ben/esos32/src/esos_comm.c ****   u8_LocalSize = u8_size;
+ 1130              		.loc 1 210 3 discriminator 1 view .LVU313
+ 210:/home/ben/esos32/src/esos_comm.c ****   u8_LocalSize = u8_size;
+ 1131              		.loc 1 210 16 is_stmt 0 discriminator 1 view .LVU314
+ 1132 0020 194B     		ldr	r3, .L102
+ 1133 0022 1A70     		strb	r2, [r3]
+ 211:/home/ben/esos32/src/esos_comm.c **** 
+ 1134              		.loc 1 211 3 is_stmt 1 discriminator 1 view .LVU315
+ 211:/home/ben/esos32/src/esos_comm.c **** 
+ 1135              		.loc 1 211 17 is_stmt 0 discriminator 1 view .LVU316
+ 1136 0024 194B     		ldr	r3, .L102+4
+ 1137 0026 1960     		str	r1, [r3]
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1138              		.loc 1 213 3 is_stmt 1 discriminator 1 view .LVU317
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1139              		.loc 1 213 12 is_stmt 0 discriminator 1 view .LVU318
+ 1140 0028 194B     		ldr	r3, .L102+8
+ 1141 002a 0022     		movs	r2, #0
+ 1142              	.LVL68:
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1143              		.loc 1 213 12 discriminator 1 view .LVU319
+ 1144 002c 1A70     		strb	r2, [r3]
+ 1145              	.LVL69:
+ 1146              	.L94:
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1147              		.loc 1 213 16 is_stmt 1 discriminator 2 view .LVU320
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1148              		.loc 1 213 20 is_stmt 0 discriminator 2 view .LVU321
+ARM GAS  /tmp/ccSpbPej.s 			page 28
+
+
+ 1149 002e 184B     		ldr	r3, .L102+8
+ 1150 0030 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 1151 0032 154B     		ldr	r3, .L102
+ 1152 0034 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1153              		.loc 1 213 3 discriminator 2 view .LVU322
+ 1154 0036 9A42     		cmp	r2, r3
+ 1155 0038 ECD2     		bcs	.L93
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1156              		.loc 1 215 5 is_stmt 1 view .LVU323
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1157              		.loc 1 215 5 view .LVU324
+ 1158 003a D723     		movs	r3, #215
+ 1159 003c 2380     		strh	r3, [r4]	@ movhi
+ 1160              	.L92:
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1161              		.loc 1 215 5 discriminator 1 view .LVU325
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1162              		.loc 1 215 5 discriminator 1 view .LVU326
+ 1163 003e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1164 0040 13F00400 		ands	r0, r3, #4
+ 1165 0044 17D1     		bne	.L101
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1166              		.loc 1 215 5 discriminator 3 view .LVU327
+ 1167 0046 134A     		ldr	r2, .L102+12
+ 1168 0048 1268     		ldr	r2, [r2]
+ 1169 004a 9288     		ldrh	r2, [r2, #4]
+ 1170 004c BAB1     		cbz	r2, .L97
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1171              		.loc 1 215 5 discriminator 4 view .LVU328
+ 1172 004e 23F00103 		bic	r3, r3, #1
+ 1173 0052 A370     		strb	r3, [r4, #2]
+ 1174              	.L98:
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1175              		.loc 1 215 5 discriminator 7 view .LVU329
+ 1176 0054 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1177 0056 13F0010F 		tst	r3, #1
+ 1178 005a E0D1     		bne	.L96
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1179              		.loc 1 215 5 discriminator 9 view .LVU330
+ 216:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1180              		.loc 1 216 5 discriminator 9 view .LVU331
+ 216:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1181              		.loc 1 216 18 is_stmt 0 discriminator 9 view .LVU332
+ 1182 005c 0C4D     		ldr	r5, .L102+8
+ 1183 005e 2E78     		ldrb	r6, [r5]	@ zero_extendqisi2
+ 1184 0060 0A4B     		ldr	r3, .L102+4
+ 1185 0062 1F68     		ldr	r7, [r3]
+ 216:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1186              		.loc 1 216 27 discriminator 9 view .LVU333
+ 1187 0064 0B4B     		ldr	r3, .L102+12
+ 1188 0066 1868     		ldr	r0, [r3]
+ 1189 0068 FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 1190              	.LVL70:
+ 216:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1191              		.loc 1 216 25 discriminator 9 view .LVU334
+ 1192 006c B855     		strb	r0, [r7, r6]
+ARM GAS  /tmp/ccSpbPej.s 			page 29
+
+
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1193              		.loc 1 213 35 is_stmt 1 discriminator 9 view .LVU335
+ 213:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1194              		.loc 1 213 39 is_stmt 0 discriminator 9 view .LVU336
+ 1195 006e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 1196 0070 0133     		adds	r3, r3, #1
+ 1197 0072 2B70     		strb	r3, [r5]
+ 1198 0074 DBE7     		b	.L94
+ 1199              	.L101:
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1200              		.loc 1 215 5 is_stmt 1 discriminator 2 view .LVU337
+ 1201 0076 0423     		movs	r3, #4
+ 1202 0078 A370     		strb	r3, [r4, #2]
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1203              		.loc 1 215 5 discriminator 2 view .LVU338
+ 1204 007a 0320     		movs	r0, #3
+ 1205 007c CFE7     		b	.L96
+ 1206              	.L97:
+ 215:/home/ben/esos32/src/esos_comm.c ****     pau8_LocalPtr[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1207              		.loc 1 215 5 discriminator 5 view .LVU339
+ 1208 007e 43F00103 		orr	r3, r3, #1
+ 1209 0082 A370     		strb	r3, [r4, #2]
+ 1210 0084 E6E7     		b	.L98
+ 1211              	.L103:
+ 1212 0086 00BF     		.align	2
+ 1213              	.L102:
+ 1214 0088 00000000 		.word	.LANCHOR14
+ 1215 008c 00000000 		.word	.LANCHOR15
+ 1216 0090 00000000 		.word	.LANCHOR16
+ 1217 0094 00000000 		.word	.LANCHOR0
+ 1218              		.cfi_endproc
+ 1219              	.LFE9:
+ 1221              		.section	.text.__esos_getString,"ax",%progbits
+ 1222              		.align	1
+ 1223              		.global	__esos_getString
+ 1224              		.syntax unified
+ 1225              		.thumb
+ 1226              		.thumb_func
+ 1228              	__esos_getString:
+ 1229              	.LVL71:
+ 1230              	.LFB10:
+ 220:/home/ben/esos32/src/esos_comm.c **** 
+ 221:/home/ben/esos32/src/esos_comm.c **** // ************************************************************
+ 222:/home/ben/esos32/src/esos_comm.c **** // THIS FUNCTION IS POTENTIALLY VERY DANGEROUS!!!!!!
+ 223:/home/ben/esos32/src/esos_comm.c **** // ************************************************************
+ 224:/home/ben/esos32/src/esos_comm.c **** // The return data buffer pau8_buff must be at least as big as
+ 225:/home/ben/esos32/src/esos_comm.c **** // the ESOS coming incoming buffer -- ESOS_SERIAL_OUT_EP_SIZE
+ 226:/home/ben/esos32/src/esos_comm.c **** //
+ 227:/home/ben/esos32/src/esos_comm.c **** // Will suck down data until we get a zero-terminator, or
+ 228:/home/ben/esos32/src/esos_comm.c **** // carriage return/newline type character.  Will also return when
+ 229:/home/ben/esos32/src/esos_comm.c **** // the number of characters received is the size of the ESOS
+ 230:/home/ben/esos32/src/esos_comm.c **** // incoming data buffer -- ESOS_SERIAL_OUT_EP_SIZE
+ 231:/home/ben/esos32/src/esos_comm.c **** //
+ 232:/home/ben/esos32/src/esos_comm.c **** ESOS_CHILD_TASK( __esos_getString, char* pau8_buff) {
+ 1231              		.loc 1 232 53 view -0
+ 1232              		.cfi_startproc
+ 1233              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccSpbPej.s 			page 30
+
+
+ 1234              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1235              		.loc 1 232 53 is_stmt 0 view .LVU341
+ 1236 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1237              	.LCFI8:
+ 1238              		.cfi_def_cfa_offset 24
+ 1239              		.cfi_offset 3, -24
+ 1240              		.cfi_offset 4, -20
+ 1241              		.cfi_offset 5, -16
+ 1242              		.cfi_offset 6, -12
+ 1243              		.cfi_offset 7, -8
+ 1244              		.cfi_offset 14, -4
+ 1245 0002 0446     		mov	r4, r0
+ 1246 0004 0D46     		mov	r5, r1
+ 233:/home/ben/esos32/src/esos_comm.c ****   static uint8_t        u8_i;
+ 1247              		.loc 1 233 3 is_stmt 1 view .LVU342
+ 234:/home/ben/esos32/src/esos_comm.c **** 
+ 235:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_BEGIN();
+ 1248              		.loc 1 235 3 view .LVU343
+ 1249 0006 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 1250 0008 63F07F03 		orn	r3, r3, #127
+ 1251 000c 8370     		strb	r3, [r0, #2]
+ 1252              		.loc 1 235 3 view .LVU344
+ 1253 000e 0388     		ldrh	r3, [r0]
+ 1254 0010 3BB1     		cbz	r3, .L105
+ 1255 0012 EE2B     		cmp	r3, #238
+ 1256 0014 0ED0     		beq	.L106
+ 1257              	.LVL72:
+ 1258              	.L107:
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 237:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 238:/home/ben/esos32/src/esos_comm.c ****     ESOS_TASK_WAIT_WHILE ( __ESOS_CB_IS_EMPTY( __pst_CB_Rx ) );
+ 239:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 240:/home/ben/esos32/src/esos_comm.c ****     if ((pau8_buff[u8_i] == '\n') || (pau8_buff[u8_i] == '\r') || (pau8_buff[u8_i] == 0)) break;
+ 241:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 242:/home/ben/esos32/src/esos_comm.c ****   pau8_buff[u8_i] = 0;
+ 243:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 1259              		.loc 1 243 3 view .LVU345
+ 1260              		.loc 1 243 3 view .LVU346
+ 1261 0016 0823     		movs	r3, #8
+ 1262 0018 A370     		strb	r3, [r4, #2]
+ 1263              		.loc 1 243 3 view .LVU347
+ 1264 001a 0023     		movs	r3, #0
+ 1265 001c 2380     		strh	r3, [r4]	@ movhi
+ 1266              		.loc 1 243 3 view .LVU348
+ 1267              		.loc 1 243 3 view .LVU349
+ 1268              		.loc 1 243 3 view .LVU350
+ 1269 001e 0320     		movs	r0, #3
+ 1270              	.L110:
+ 1271              		.loc 1 243 18 discriminator 1 view .LVU351
+ 244:/home/ben/esos32/src/esos_comm.c **** } // end __esos_getString
+ 1272              		.loc 1 244 1 is_stmt 0 discriminator 1 view .LVU352
+ 1273 0020 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1274              	.LVL73:
+ 1275              	.L105:
+ 235:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 1276              		.loc 1 235 20 is_stmt 1 discriminator 1 view .LVU353
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ARM GAS  /tmp/ccSpbPej.s 			page 31
+
+
+ 1277              		.loc 1 236 3 discriminator 1 view .LVU354
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 1278              		.loc 1 236 12 is_stmt 0 discriminator 1 view .LVU355
+ 1279 0022 1B4B     		ldr	r3, .L117
+ 1280 0024 0022     		movs	r2, #0
+ 1281 0026 1A70     		strb	r2, [r3]
+ 1282              	.LVL74:
+ 1283              	.L108:
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 1284              		.loc 1 236 16 is_stmt 1 discriminator 1 view .LVU356
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 1285              		.loc 1 236 20 is_stmt 0 discriminator 1 view .LVU357
+ 1286 0028 194B     		ldr	r3, .L117
+ 1287 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 236:/home/ben/esos32/src/esos_comm.c ****   for (u8_i=0; u8_i<(ESOS_SERIAL_OUT_EP_SIZE-1); u8_i++) {
+ 1288              		.loc 1 236 3 discriminator 1 view .LVU358
+ 1289 002c 3E2B     		cmp	r3, #62
+ 1290 002e 29D8     		bhi	.L113
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1291              		.loc 1 238 5 is_stmt 1 view .LVU359
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1292              		.loc 1 238 5 view .LVU360
+ 1293 0030 EE23     		movs	r3, #238
+ 1294 0032 2380     		strh	r3, [r4]	@ movhi
+ 1295              	.L106:
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1296              		.loc 1 238 5 discriminator 1 view .LVU361
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1297              		.loc 1 238 5 discriminator 1 view .LVU362
+ 1298 0034 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1299 0036 13F00400 		ands	r0, r3, #4
+ 1300 003a 1BD1     		bne	.L116
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1301              		.loc 1 238 5 discriminator 3 view .LVU363
+ 1302 003c 154A     		ldr	r2, .L117+4
+ 1303 003e 1268     		ldr	r2, [r2]
+ 1304 0040 9288     		ldrh	r2, [r2, #4]
+ 1305 0042 DAB1     		cbz	r2, .L111
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1306              		.loc 1 238 5 discriminator 4 view .LVU364
+ 1307 0044 23F00103 		bic	r3, r3, #1
+ 1308 0048 A370     		strb	r3, [r4, #2]
+ 1309              	.L112:
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1310              		.loc 1 238 5 discriminator 7 view .LVU365
+ 1311 004a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1312 004c 13F0010F 		tst	r3, #1
+ 1313 0050 E6D1     		bne	.L110
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1314              		.loc 1 238 5 discriminator 9 view .LVU366
+ 239:/home/ben/esos32/src/esos_comm.c ****     if ((pau8_buff[u8_i] == '\n') || (pau8_buff[u8_i] == '\r') || (pau8_buff[u8_i] == 0)) break;
+ 1315              		.loc 1 239 5 discriminator 9 view .LVU367
+ 239:/home/ben/esos32/src/esos_comm.c ****     if ((pau8_buff[u8_i] == '\n') || (pau8_buff[u8_i] == '\r') || (pau8_buff[u8_i] == 0)) break;
+ 1316              		.loc 1 239 14 is_stmt 0 discriminator 9 view .LVU368
+ 1317 0052 0F4E     		ldr	r6, .L117
+ 1318 0054 3778     		ldrb	r7, [r6]	@ zero_extendqisi2
+ 239:/home/ben/esos32/src/esos_comm.c ****     if ((pau8_buff[u8_i] == '\n') || (pau8_buff[u8_i] == '\r') || (pau8_buff[u8_i] == 0)) break;
+ARM GAS  /tmp/ccSpbPej.s 			page 32
+
+
+ 1319              		.loc 1 239 23 discriminator 9 view .LVU369
+ 1320 0056 0F4B     		ldr	r3, .L117+4
+ 1321 0058 1868     		ldr	r0, [r3]
+ 1322 005a FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 1323              	.LVL75:
+ 239:/home/ben/esos32/src/esos_comm.c ****     if ((pau8_buff[u8_i] == '\n') || (pau8_buff[u8_i] == '\r') || (pau8_buff[u8_i] == 0)) break;
+ 1324              		.loc 1 239 21 discriminator 9 view .LVU370
+ 1325 005e E855     		strb	r0, [r5, r7]
+ 240:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1326              		.loc 1 240 5 is_stmt 1 discriminator 9 view .LVU371
+ 240:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1327              		.loc 1 240 19 is_stmt 0 discriminator 9 view .LVU372
+ 1328 0060 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 1329 0062 AB5C     		ldrb	r3, [r5, r2]	@ zero_extendqisi2
+ 240:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1330              		.loc 1 240 8 discriminator 9 view .LVU373
+ 1331 0064 0A2B     		cmp	r3, #10
+ 1332 0066 0DD0     		beq	.L113
+ 240:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1333              		.loc 1 240 35 discriminator 1 view .LVU374
+ 1334 0068 0D2B     		cmp	r3, #13
+ 1335 006a 0BD0     		beq	.L113
+ 240:/home/ben/esos32/src/esos_comm.c ****   } // end for(...)
+ 1336              		.loc 1 240 64 discriminator 2 view .LVU375
+ 1337 006c 53B1     		cbz	r3, .L113
+ 236:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1338              		.loc 1 236 50 is_stmt 1 discriminator 2 view .LVU376
+ 236:/home/ben/esos32/src/esos_comm.c ****     //wait for the RX character to arrive
+ 1339              		.loc 1 236 54 is_stmt 0 discriminator 2 view .LVU377
+ 1340 006e 0132     		adds	r2, r2, #1
+ 1341 0070 3270     		strb	r2, [r6]
+ 1342 0072 D9E7     		b	.L108
+ 1343              	.L116:
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1344              		.loc 1 238 5 is_stmt 1 discriminator 2 view .LVU378
+ 1345 0074 0423     		movs	r3, #4
+ 1346 0076 A370     		strb	r3, [r4, #2]
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1347              		.loc 1 238 5 discriminator 2 view .LVU379
+ 1348 0078 0320     		movs	r0, #3
+ 1349 007a D1E7     		b	.L110
+ 1350              	.L111:
+ 238:/home/ben/esos32/src/esos_comm.c ****     pau8_buff[u8_i] = __esos_CB_ReadUINT8( __pst_CB_Rx );
+ 1351              		.loc 1 238 5 discriminator 5 view .LVU380
+ 1352 007c 43F00103 		orr	r3, r3, #1
+ 1353 0080 A370     		strb	r3, [r4, #2]
+ 1354 0082 E2E7     		b	.L112
+ 1355              	.L113:
+ 242:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 1356              		.loc 1 242 3 view .LVU381
+ 242:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 1357              		.loc 1 242 12 is_stmt 0 view .LVU382
+ 1358 0084 024B     		ldr	r3, .L117
+ 1359 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 242:/home/ben/esos32/src/esos_comm.c ****   ESOS_TASK_END();
+ 1360              		.loc 1 242 19 view .LVU383
+ 1361 0088 0022     		movs	r2, #0
+ARM GAS  /tmp/ccSpbPej.s 			page 33
+
+
+ 1362 008a EA54     		strb	r2, [r5, r3]
+ 1363 008c C3E7     		b	.L107
+ 1364              	.L118:
+ 1365 008e 00BF     		.align	2
+ 1366              	.L117:
+ 1367 0090 00000000 		.word	.LANCHOR17
+ 1368 0094 00000000 		.word	.LANCHOR0
+ 1369              		.cfi_endproc
+ 1370              	.LFE10:
+ 1372              		.section	.text.__esos_unsafe_PutUint8,"ax",%progbits
+ 1373              		.align	1
+ 1374              		.global	__esos_unsafe_PutUint8
+ 1375              		.syntax unified
+ 1376              		.thumb
+ 1377              		.thumb_func
+ 1379              	__esos_unsafe_PutUint8:
+ 1380              	.LVL76:
+ 1381              	.LFB11:
+ 245:/home/ben/esos32/src/esos_comm.c **** 
+ 246:/home/ben/esos32/src/esos_comm.c **** 
+ 247:/home/ben/esos32/src/esos_comm.c **** // ================================================================
+ 248:/home/ben/esos32/src/esos_comm.c **** // UNSAFE I/O functions.  Only use when you can be absolutely sure
+ 249:/home/ben/esos32/src/esos_comm.c **** //  that they will not hang the communications or ESOS scheduler.
+ 250:/home/ben/esos32/src/esos_comm.c **** // Usually used during init of ESOS before the comm system or scheduler
+ 251:/home/ben/esos32/src/esos_comm.c **** //  are even running.
+ 252:/home/ben/esos32/src/esos_comm.c **** // ================================================================
+ 253:/home/ben/esos32/src/esos_comm.c **** 
+ 254:/home/ben/esos32/src/esos_comm.c **** // This routine is UNSAFE.  It can HANG the system!!!!
+ 255:/home/ben/esos32/src/esos_comm.c **** void __esos_unsafe_PutUint8(uint8_t u8_c) {
+ 1382              		.loc 1 255 43 is_stmt 1 view -0
+ 1383              		.cfi_startproc
+ 1384              		@ args = 0, pretend = 0, frame = 0
+ 1385              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1386              		.loc 1 255 43 is_stmt 0 view .LVU385
+ 1387 0000 08B5     		push	{r3, lr}
+ 1388              	.LCFI9:
+ 1389              		.cfi_def_cfa_offset 8
+ 1390              		.cfi_offset 3, -8
+ 1391              		.cfi_offset 14, -4
+ 1392 0002 0146     		mov	r1, r0
+ 256:/home/ben/esos32/src/esos_comm.c ****   // hang while CB is full
+ 257:/home/ben/esos32/src/esos_comm.c ****   while (__ESOS_CB_IS_FULL( __pst_CB_Tx ));
+ 1393              		.loc 1 257 3 is_stmt 1 view .LVU386
+ 1394              	.LVL77:
+ 1395              	.L120:
+ 1396              		.loc 1 257 43 discriminator 1 view .LVU387
+ 1397              		.loc 1 257 9 discriminator 1 view .LVU388
+ 1398              		.loc 1 257 10 is_stmt 0 discriminator 1 view .LVU389
+ 1399 0004 054B     		ldr	r3, .L122
+ 1400 0006 1868     		ldr	r0, [r3]
+ 1401 0008 0288     		ldrh	r2, [r0]
+ 1402 000a 8388     		ldrh	r3, [r0, #4]
+ 1403              		.loc 1 257 9 discriminator 1 view .LVU390
+ 1404 000c 9A42     		cmp	r2, r3
+ 1405 000e F9D0     		beq	.L120
+ 258:/home/ben/esos32/src/esos_comm.c ****   // write the data in the TX CB
+ 259:/home/ben/esos32/src/esos_comm.c ****   __esos_CB_WriteUINT8( __pst_CB_Tx, u8_c);
+ARM GAS  /tmp/ccSpbPej.s 			page 34
+
+
+ 1406              		.loc 1 259 3 is_stmt 1 view .LVU391
+ 1407 0010 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 1408              	.LVL78:
+ 260:/home/ben/esos32/src/esos_comm.c ****   // signal the hardware that a xfer should be started if
+ 261:/home/ben/esos32/src/esos_comm.c ****   // not already ongoing
+ 262:/home/ben/esos32/src/esos_comm.c ****   __esos_hw_signal_start_tx();
+ 1409              		.loc 1 262 3 view .LVU392
+ 1410 0014 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 1411              	.LVL79:
+ 263:/home/ben/esos32/src/esos_comm.c **** } //end of __esos_unsafe_PutUint8()
+ 1412              		.loc 1 263 1 is_stmt 0 view .LVU393
+ 1413 0018 08BD     		pop	{r3, pc}
+ 1414              	.L123:
+ 1415 001a 00BF     		.align	2
+ 1416              	.L122:
+ 1417 001c 00000000 		.word	.LANCHOR2
+ 1418              		.cfi_endproc
+ 1419              	.LFE11:
+ 1421              		.section	.text.__esos_unsafe_PutString,"ax",%progbits
+ 1422              		.align	1
+ 1423              		.global	__esos_unsafe_PutString
+ 1424              		.syntax unified
+ 1425              		.thumb
+ 1426              		.thumb_func
+ 1428              	__esos_unsafe_PutString:
+ 1429              	.LVL80:
+ 1430              	.LFB12:
+ 264:/home/ben/esos32/src/esos_comm.c **** 
+ 265:/home/ben/esos32/src/esos_comm.c **** // This routine is UNSAFE.  It can HANG the system!!!!
+ 266:/home/ben/esos32/src/esos_comm.c **** void __esos_unsafe_PutString(char* psz_in) {
+ 1431              		.loc 1 266 44 is_stmt 1 view -0
+ 1432              		.cfi_startproc
+ 1433              		@ args = 0, pretend = 0, frame = 0
+ 1434              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1435              		.loc 1 266 44 is_stmt 0 view .LVU395
+ 1436 0000 10B5     		push	{r4, lr}
+ 1437              	.LCFI10:
+ 1438              		.cfi_def_cfa_offset 8
+ 1439              		.cfi_offset 4, -8
+ 1440              		.cfi_offset 14, -4
+ 1441 0002 0446     		mov	r4, r0
+ 267:/home/ben/esos32/src/esos_comm.c ****   while ( *psz_in ) {
+ 1442              		.loc 1 267 3 is_stmt 1 view .LVU396
+ 1443              		.loc 1 267 9 is_stmt 0 view .LVU397
+ 1444 0004 0AE0     		b	.L125
+ 1445              	.LVL81:
+ 1446              	.L126:
+ 268:/home/ben/esos32/src/esos_comm.c ****     // hang while CB is full
+ 269:/home/ben/esos32/src/esos_comm.c ****     while (__ESOS_CB_IS_FULL( __pst_CB_Tx ));
+ 1447              		.loc 1 269 45 is_stmt 1 discriminator 1 view .LVU398
+ 1448              		.loc 1 269 11 discriminator 1 view .LVU399
+ 1449              		.loc 1 269 12 is_stmt 0 discriminator 1 view .LVU400
+ 1450 0006 074B     		ldr	r3, .L128
+ 1451 0008 1868     		ldr	r0, [r3]
+ 1452 000a 0288     		ldrh	r2, [r0]
+ 1453 000c 8388     		ldrh	r3, [r0, #4]
+ 1454              		.loc 1 269 11 discriminator 1 view .LVU401
+ARM GAS  /tmp/ccSpbPej.s 			page 35
+
+
+ 1455 000e 9A42     		cmp	r2, r3
+ 1456 0010 F9D0     		beq	.L126
+ 270:/home/ben/esos32/src/esos_comm.c ****     // write the data in the TX CB
+ 271:/home/ben/esos32/src/esos_comm.c ****     __esos_CB_WriteUINT8( __pst_CB_Tx, *psz_in++);
+ 1457              		.loc 1 271 5 is_stmt 1 view .LVU402
+ 1458              		.loc 1 271 47 is_stmt 0 view .LVU403
+ 1459 0012 0134     		adds	r4, r4, #1
+ 1460              	.LVL82:
+ 1461              		.loc 1 271 5 view .LVU404
+ 1462 0014 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 1463              	.LVL83:
+ 272:/home/ben/esos32/src/esos_comm.c ****     // signal the hardware that a xfer should be started if
+ 273:/home/ben/esos32/src/esos_comm.c ****     // not already ongoing
+ 274:/home/ben/esos32/src/esos_comm.c ****     __esos_hw_signal_start_tx();
+ 1464              		.loc 1 274 5 is_stmt 1 view .LVU405
+ 1465 0018 FFF7FEFF 		bl	__esos_hw_signal_start_tx
+ 1466              	.LVL84:
+ 1467              	.L125:
+ 267:/home/ben/esos32/src/esos_comm.c ****     // hang while CB is full
+ 1468              		.loc 1 267 9 view .LVU406
+ 267:/home/ben/esos32/src/esos_comm.c ****     // hang while CB is full
+ 1469              		.loc 1 267 11 is_stmt 0 view .LVU407
+ 1470 001c 2178     		ldrb	r1, [r4]	@ zero_extendqisi2
+ 267:/home/ben/esos32/src/esos_comm.c ****     // hang while CB is full
+ 1471              		.loc 1 267 9 view .LVU408
+ 1472 001e 0029     		cmp	r1, #0
+ 1473 0020 F1D1     		bne	.L126
+ 275:/home/ben/esos32/src/esos_comm.c ****   } //end while
+ 276:/home/ben/esos32/src/esos_comm.c **** } // end __esos_unsafe_PutString()
+ 1474              		.loc 1 276 1 view .LVU409
+ 1475 0022 10BD     		pop	{r4, pc}
+ 1476              	.LVL85:
+ 1477              	.L129:
+ 1478              		.loc 1 276 1 view .LVU410
+ 1479              		.align	2
+ 1480              	.L128:
+ 1481 0024 00000000 		.word	.LANCHOR2
+ 1482              		.cfi_endproc
+ 1483              	.LFE12:
+ 1485              		.section	.text.__esos_unsafe_GetUint8,"ax",%progbits
+ 1486              		.align	1
+ 1487              		.global	__esos_unsafe_GetUint8
+ 1488              		.syntax unified
+ 1489              		.thumb
+ 1490              		.thumb_func
+ 1492              	__esos_unsafe_GetUint8:
+ 1493              	.LFB13:
+ 277:/home/ben/esos32/src/esos_comm.c **** 
+ 278:/home/ben/esos32/src/esos_comm.c **** // This routine is UNSAFE.  It can HANG the system!!!!
+ 279:/home/ben/esos32/src/esos_comm.c **** uint8_t __esos_unsafe_GetUint8(void) {
+ 1494              		.loc 1 279 38 is_stmt 1 view -0
+ 1495              		.cfi_startproc
+ 1496              		@ args = 0, pretend = 0, frame = 0
+ 1497              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1498 0000 08B5     		push	{r3, lr}
+ 1499              	.LCFI11:
+ 1500              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/ccSpbPej.s 			page 36
+
+
+ 1501              		.cfi_offset 3, -8
+ 1502              		.cfi_offset 14, -4
+ 1503              	.L131:
+ 280:/home/ben/esos32/src/esos_comm.c ****   //wait for the RX character to arrive -- CAN HANG HERE!
+ 281:/home/ben/esos32/src/esos_comm.c ****   while (__ESOS_CB_IS_EMPTY( __pst_CB_Rx ));
+ 1504              		.loc 1 281 44 discriminator 1 view .LVU412
+ 1505              		.loc 1 281 9 discriminator 1 view .LVU413
+ 1506              		.loc 1 281 10 is_stmt 0 discriminator 1 view .LVU414
+ 1507 0002 044B     		ldr	r3, .L133
+ 1508 0004 1868     		ldr	r0, [r3]
+ 1509 0006 8388     		ldrh	r3, [r0, #4]
+ 1510              		.loc 1 281 9 discriminator 1 view .LVU415
+ 1511 0008 002B     		cmp	r3, #0
+ 1512 000a FAD0     		beq	.L131
+ 282:/home/ben/esos32/src/esos_comm.c ****   return __esos_CB_ReadUINT8( __pst_CB_Rx );  //return the character
+ 1513              		.loc 1 282 3 is_stmt 1 view .LVU416
+ 1514              		.loc 1 282 10 is_stmt 0 view .LVU417
+ 1515 000c FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 1516              	.LVL86:
+ 283:/home/ben/esos32/src/esos_comm.c **** }
+ 1517              		.loc 1 283 1 view .LVU418
+ 1518 0010 08BD     		pop	{r3, pc}
+ 1519              	.L134:
+ 1520 0012 00BF     		.align	2
+ 1521              	.L133:
+ 1522 0014 00000000 		.word	.LANCHOR0
+ 1523              		.cfi_endproc
+ 1524              	.LFE13:
+ 1526              		.global	__stChildTaskRx
+ 1527              		.global	__stChildTaskTx
+ 1528              		.global	__pst_CB_Rx
+ 1529              		.global	__pst_CB_Tx
+ 1530              		.global	__st_CB_Rx
+ 1531              		.global	__st_CB_Tx
+ 1532              		.global	__esos_comm_rx_buff
+ 1533              		.global	__esos_comm_tx_buff
+ 1534              		.section	.bss.__esos_comm_rx_buff,"aw",%nobits
+ 1535              		.align	2
+ 1536              		.set	.LANCHOR5,. + 0
+ 1539              	__esos_comm_rx_buff:
+ 1540 0000 00000000 		.space	64
+ 1540      00000000 
+ 1540      00000000 
+ 1540      00000000 
+ 1540      00000000 
+ 1541              		.section	.bss.__esos_comm_tx_buff,"aw",%nobits
+ 1542              		.align	2
+ 1543              		.set	.LANCHOR4,. + 0
+ 1546              	__esos_comm_tx_buff:
+ 1547 0000 00000000 		.space	64
+ 1547      00000000 
+ 1547      00000000 
+ 1547      00000000 
+ 1547      00000000 
+ 1548              		.section	.bss.__pst_CB_Rx,"aw",%nobits
+ 1549              		.align	2
+ 1550              		.set	.LANCHOR0,. + 0
+ARM GAS  /tmp/ccSpbPej.s 			page 37
+
+
+ 1553              	__pst_CB_Rx:
+ 1554 0000 00000000 		.space	4
+ 1555              		.section	.bss.__pst_CB_Tx,"aw",%nobits
+ 1556              		.align	2
+ 1557              		.set	.LANCHOR2,. + 0
+ 1560              	__pst_CB_Tx:
+ 1561 0000 00000000 		.space	4
+ 1562              		.section	.bss.__stChildTaskRx,"aw",%nobits
+ 1563              		.align	2
+ 1566              	__stChildTaskRx:
+ 1567 0000 00000000 		.space	24
+ 1567      00000000 
+ 1567      00000000 
+ 1567      00000000 
+ 1567      00000000 
+ 1568              		.section	.bss.__stChildTaskTx,"aw",%nobits
+ 1569              		.align	2
+ 1572              	__stChildTaskTx:
+ 1573 0000 00000000 		.space	24
+ 1573      00000000 
+ 1573      00000000 
+ 1573      00000000 
+ 1573      00000000 
+ 1574              		.section	.bss.__st_CB_Rx,"aw",%nobits
+ 1575              		.align	2
+ 1576              		.set	.LANCHOR1,. + 0
+ 1579              	__st_CB_Rx:
+ 1580 0000 00000000 		.space	12
+ 1580      00000000 
+ 1580      00000000 
+ 1581              		.section	.bss.__st_CB_Tx,"aw",%nobits
+ 1582              		.align	2
+ 1583              		.set	.LANCHOR3,. + 0
+ 1586              	__st_CB_Tx:
+ 1587 0000 00000000 		.space	12
+ 1587      00000000 
+ 1587      00000000 
+ 1588              		.section	.bss.au8_String.10,"aw",%nobits
+ 1589              		.align	2
+ 1590              		.set	.LANCHOR7,. + 0
+ 1593              	au8_String.10:
+ 1594 0000 00000000 		.space	5
+ 1594      00
+ 1595              		.section	.bss.au8_String.6,"aw",%nobits
+ 1596              		.align	2
+ 1597              		.set	.LANCHOR11,. + 0
+ 1600              	au8_String.6:
+ 1601 0000 00000000 		.space	11
+ 1601      00000000 
+ 1601      000000
+ 1602              		.section	.bss.au8_String.8,"aw",%nobits
+ 1603              		.align	2
+ 1604              		.set	.LANCHOR9,. + 0
+ 1607              	au8_String.8:
+ 1608 0000 00000000 		.space	5
+ 1608      00
+ 1609              		.section	.bss.pau8_LocalPtr.2,"aw",%nobits
+ARM GAS  /tmp/ccSpbPej.s 			page 38
+
+
+ 1610              		.align	2
+ 1611              		.set	.LANCHOR15,. + 0
+ 1614              	pau8_LocalPtr.2:
+ 1615 0000 00000000 		.space	4
+ 1616              		.section	.bss.psz_local.4,"aw",%nobits
+ 1617              		.align	2
+ 1618              		.set	.LANCHOR13,. + 0
+ 1621              	psz_local.4:
+ 1622 0000 00000000 		.space	4
+ 1623              		.section	.bss.u8_LocalSize.3,"aw",%nobits
+ 1624              		.set	.LANCHOR14,. + 0
+ 1627              	u8_LocalSize.3:
+ 1628 0000 00       		.space	1
+ 1629              		.section	.bss.u8_c.5,"aw",%nobits
+ 1630              		.set	.LANCHOR12,. + 0
+ 1633              	u8_c.5:
+ 1634 0000 00       		.space	1
+ 1635              		.section	.bss.u8_c.7,"aw",%nobits
+ 1636              		.set	.LANCHOR10,. + 0
+ 1639              	u8_c.7:
+ 1640 0000 00       		.space	1
+ 1641              		.section	.bss.u8_digit.9,"aw",%nobits
+ 1642              		.set	.LANCHOR8,. + 0
+ 1645              	u8_digit.9:
+ 1646 0000 00       		.space	1
+ 1647              		.section	.bss.u8_i.0,"aw",%nobits
+ 1648              		.set	.LANCHOR17,. + 0
+ 1651              	u8_i.0:
+ 1652 0000 00       		.space	1
+ 1653              		.section	.bss.u8_i.1,"aw",%nobits
+ 1654              		.set	.LANCHOR16,. + 0
+ 1657              	u8_i.1:
+ 1658 0000 00       		.space	1
+ 1659              		.section	.bss.u8_localChar.11,"aw",%nobits
+ 1660              		.set	.LANCHOR6,. + 0
+ 1663              	u8_localChar.11:
+ 1664 0000 00       		.space	1
+ 1665              		.text
+ 1666              	.Letext0:
+ 1667              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 1668              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ 1669              		.file 4 "/home/ben/esos32/include/lc-switch.h"
+ 1670              		.file 5 "/home/ben/esos32/include/esos_cb.h"
+ 1671              		.file 6 "/home/ben/esos32/include/esos_mail.h"
+ 1672              		.file 7 "/home/ben/esos32/include/esos_task.h"
+ 1673              		.file 8 "/home/ben/esos32/include/esos_comm.h"
+ARM GAS  /tmp/ccSpbPej.s 			page 39
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_comm.c
+     /tmp/ccSpbPej.s:20     .text.__esos_InitCommSystem:0000000000000000 $t
+     /tmp/ccSpbPej.s:26     .text.__esos_InitCommSystem:0000000000000000 __esos_InitCommSystem
+     /tmp/ccSpbPej.s:67     .text.__esos_InitCommSystem:0000000000000028 $d
+     /tmp/ccSpbPej.s:77     .text.__esos_u8_GetMSBHexCharFromUint8:0000000000000000 $t
+     /tmp/ccSpbPej.s:83     .text.__esos_u8_GetMSBHexCharFromUint8:0000000000000000 __esos_u8_GetMSBHexCharFromUint8
+     /tmp/ccSpbPej.s:118    .text.__esos_u8_GetLSBHexCharFromUint8:0000000000000000 $t
+     /tmp/ccSpbPej.s:124    .text.__esos_u8_GetLSBHexCharFromUint8:0000000000000000 __esos_u8_GetLSBHexCharFromUint8
+     /tmp/ccSpbPej.s:159    .text.__esos_OutChar:0000000000000000 $t
+     /tmp/ccSpbPej.s:165    .text.__esos_OutChar:0000000000000000 __esos_OutChar
+     /tmp/ccSpbPej.s:270    .text.__esos_OutChar:000000000000006c $d
+     /tmp/ccSpbPej.s:276    .text.__esos_OutUint8AsHexString:0000000000000000 $t
+     /tmp/ccSpbPej.s:282    .text.__esos_OutUint8AsHexString:0000000000000000 __esos_OutUint8AsHexString
+     /tmp/ccSpbPej.s:412    .text.__esos_OutUint8AsHexString:000000000000008c $d
+     /tmp/ccSpbPej.s:418    .text.__esos_OutUint8AsDecString:0000000000000000 $t
+     /tmp/ccSpbPej.s:424    .text.__esos_OutUint8AsDecString:0000000000000000 __esos_OutUint8AsDecString
+     /tmp/ccSpbPej.s:617    .text.__esos_OutUint8AsDecString:00000000000000f4 $d
+     /tmp/ccSpbPej.s:627    .text.__esos_OutUint32AsHexString:0000000000000000 $t
+     /tmp/ccSpbPej.s:633    .text.__esos_OutUint32AsHexString:0000000000000000 __esos_OutUint32AsHexString
+     /tmp/ccSpbPej.s:830    .text.__esos_OutUint32AsHexString:00000000000000e0 $d
+     /tmp/ccSpbPej.s:837    .text.__esos_OutCharBuffer:0000000000000000 $t
+     /tmp/ccSpbPej.s:843    .text.__esos_OutCharBuffer:0000000000000000 __esos_OutCharBuffer
+     /tmp/ccSpbPej.s:941    .text.__esos_OutCharBuffer:0000000000000068 $d
+     /tmp/ccSpbPej.s:946    .text.__esos_OutString:0000000000000000 $t
+     /tmp/ccSpbPej.s:952    .text.__esos_OutString:0000000000000000 __esos_OutString
+     /tmp/ccSpbPej.s:1068   .text.__esos_OutString:000000000000007c $d
+     /tmp/ccSpbPej.s:1074   .text.__esos_getBuffer:0000000000000000 $t
+     /tmp/ccSpbPej.s:1080   .text.__esos_getBuffer:0000000000000000 __esos_getBuffer
+     /tmp/ccSpbPej.s:1214   .text.__esos_getBuffer:0000000000000088 $d
+     /tmp/ccSpbPej.s:1222   .text.__esos_getString:0000000000000000 $t
+     /tmp/ccSpbPej.s:1228   .text.__esos_getString:0000000000000000 __esos_getString
+     /tmp/ccSpbPej.s:1367   .text.__esos_getString:0000000000000090 $d
+     /tmp/ccSpbPej.s:1373   .text.__esos_unsafe_PutUint8:0000000000000000 $t
+     /tmp/ccSpbPej.s:1379   .text.__esos_unsafe_PutUint8:0000000000000000 __esos_unsafe_PutUint8
+     /tmp/ccSpbPej.s:1417   .text.__esos_unsafe_PutUint8:000000000000001c $d
+     /tmp/ccSpbPej.s:1422   .text.__esos_unsafe_PutString:0000000000000000 $t
+     /tmp/ccSpbPej.s:1428   .text.__esos_unsafe_PutString:0000000000000000 __esos_unsafe_PutString
+     /tmp/ccSpbPej.s:1481   .text.__esos_unsafe_PutString:0000000000000024 $d
+     /tmp/ccSpbPej.s:1486   .text.__esos_unsafe_GetUint8:0000000000000000 $t
+     /tmp/ccSpbPej.s:1492   .text.__esos_unsafe_GetUint8:0000000000000000 __esos_unsafe_GetUint8
+     /tmp/ccSpbPej.s:1522   .text.__esos_unsafe_GetUint8:0000000000000014 $d
+     /tmp/ccSpbPej.s:1566   .bss.__stChildTaskRx:0000000000000000 __stChildTaskRx
+     /tmp/ccSpbPej.s:1572   .bss.__stChildTaskTx:0000000000000000 __stChildTaskTx
+     /tmp/ccSpbPej.s:1553   .bss.__pst_CB_Rx:0000000000000000 __pst_CB_Rx
+     /tmp/ccSpbPej.s:1560   .bss.__pst_CB_Tx:0000000000000000 __pst_CB_Tx
+     /tmp/ccSpbPej.s:1579   .bss.__st_CB_Rx:0000000000000000 __st_CB_Rx
+     /tmp/ccSpbPej.s:1586   .bss.__st_CB_Tx:0000000000000000 __st_CB_Tx
+     /tmp/ccSpbPej.s:1539   .bss.__esos_comm_rx_buff:0000000000000000 __esos_comm_rx_buff
+     /tmp/ccSpbPej.s:1546   .bss.__esos_comm_tx_buff:0000000000000000 __esos_comm_tx_buff
+     /tmp/ccSpbPej.s:1535   .bss.__esos_comm_rx_buff:0000000000000000 $d
+     /tmp/ccSpbPej.s:1542   .bss.__esos_comm_tx_buff:0000000000000000 $d
+     /tmp/ccSpbPej.s:1549   .bss.__pst_CB_Rx:0000000000000000 $d
+     /tmp/ccSpbPej.s:1556   .bss.__pst_CB_Tx:0000000000000000 $d
+     /tmp/ccSpbPej.s:1563   .bss.__stChildTaskRx:0000000000000000 $d
+     /tmp/ccSpbPej.s:1569   .bss.__stChildTaskTx:0000000000000000 $d
+     /tmp/ccSpbPej.s:1575   .bss.__st_CB_Rx:0000000000000000 $d
+ARM GAS  /tmp/ccSpbPej.s 			page 40
+
+
+     /tmp/ccSpbPej.s:1582   .bss.__st_CB_Tx:0000000000000000 $d
+     /tmp/ccSpbPej.s:1589   .bss.au8_String.10:0000000000000000 $d
+     /tmp/ccSpbPej.s:1593   .bss.au8_String.10:0000000000000000 au8_String.10
+     /tmp/ccSpbPej.s:1596   .bss.au8_String.6:0000000000000000 $d
+     /tmp/ccSpbPej.s:1600   .bss.au8_String.6:0000000000000000 au8_String.6
+     /tmp/ccSpbPej.s:1603   .bss.au8_String.8:0000000000000000 $d
+     /tmp/ccSpbPej.s:1607   .bss.au8_String.8:0000000000000000 au8_String.8
+     /tmp/ccSpbPej.s:1610   .bss.pau8_LocalPtr.2:0000000000000000 $d
+     /tmp/ccSpbPej.s:1614   .bss.pau8_LocalPtr.2:0000000000000000 pau8_LocalPtr.2
+     /tmp/ccSpbPej.s:1617   .bss.psz_local.4:0000000000000000 $d
+     /tmp/ccSpbPej.s:1621   .bss.psz_local.4:0000000000000000 psz_local.4
+     /tmp/ccSpbPej.s:1627   .bss.u8_LocalSize.3:0000000000000000 u8_LocalSize.3
+     /tmp/ccSpbPej.s:1628   .bss.u8_LocalSize.3:0000000000000000 $d
+     /tmp/ccSpbPej.s:1633   .bss.u8_c.5:0000000000000000 u8_c.5
+     /tmp/ccSpbPej.s:1634   .bss.u8_c.5:0000000000000000 $d
+     /tmp/ccSpbPej.s:1639   .bss.u8_c.7:0000000000000000 u8_c.7
+     /tmp/ccSpbPej.s:1640   .bss.u8_c.7:0000000000000000 $d
+     /tmp/ccSpbPej.s:1645   .bss.u8_digit.9:0000000000000000 u8_digit.9
+     /tmp/ccSpbPej.s:1646   .bss.u8_digit.9:0000000000000000 $d
+     /tmp/ccSpbPej.s:1651   .bss.u8_i.0:0000000000000000 u8_i.0
+     /tmp/ccSpbPej.s:1652   .bss.u8_i.0:0000000000000000 $d
+     /tmp/ccSpbPej.s:1657   .bss.u8_i.1:0000000000000000 u8_i.1
+     /tmp/ccSpbPej.s:1658   .bss.u8_i.1:0000000000000000 $d
+     /tmp/ccSpbPej.s:1663   .bss.u8_localChar.11:0000000000000000 u8_localChar.11
+     /tmp/ccSpbPej.s:1664   .bss.u8_localChar.11:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__esos_CB_Init
+__esos_hw_InitCommSystem
+__esos_CB_WriteUINT8
+__esos_hw_signal_start_tx
+__esos_CB_WriteUINT8Buffer
+__esos_CB_ReadUINT8

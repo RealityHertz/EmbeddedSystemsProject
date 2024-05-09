@@ -1,0 +1,260 @@
+ARM GAS  /tmp/ccXqcbiH.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_stm32l4_utils.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.__esos_hw_PRNG_u32,"ax",%progbits
+  20              		.align	1
+  21              		.global	__esos_hw_PRNG_u32
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	__esos_hw_PRNG_u32:
+  27              	.LFB0:
+  28              		.file 1 "/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c"
+   1:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /*
+   2:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * All rights reserved.
+   4:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+   6:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+  11:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+  16:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+  22:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * these files.
+  24:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+  25:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  *
+  26:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  */
+  27:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  28:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** // Documentation for this file. If the \file tag isn't present,
+  29:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** // this file won't be documented.
+  30:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /** \file
+ARM GAS  /tmp/ccXqcbiH.s 			page 2
+
+
+  31:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \brief STM32L4xx hardware support for various ESOS utilities
+  32:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * random numbers, CRC, hashes, etc.  executed in hardware, *if available*
+  33:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** */
+  34:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  35:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** // Include any HW-specific header files to pick up the HW register
+  36:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** //  definitions, macros, etc.
+  37:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #include    "esos_stm32l4.h"
+  38:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #include	"esos_stm32l4_utils.h"
+  39:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  40:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** // VARIABLES
+  41:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #ifdef STM32L452xx
+  42:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** //RNG_HandleTypeDef hrng;
+  43:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #endif
+  44:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  45:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /***************************************************
+  46:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * 
+  47:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * HARDWARE-specific ESOS utility functions
+  48:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * 
+  49:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****  * *************************************************/
+  50:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  51:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /* ******************************************************
+  52:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \brief HW pseudo-random number generation...
+  53:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+  54:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \note All hardware must implement this function.
+  55:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+  56:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying hardware has PRNG on-board, it can
+  57:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * implement it here and return the uint32 "random" number.
+  58:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+  59:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying HW does not have PRNG on-board, it
+  60:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * can call the hidden ESOS function for software RNG
+  61:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *         uint32 __esos_get_PRNG_RandomUint32(void)
+  62:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * and return that value.
+  63:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+  64:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** ********************************************************/
+  65:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** uint32_t   __esos_hw_PRNG_u32(void) {
+  29              		.loc 1 65 37 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  66:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** //#ifdef STM32L452xx
+  67:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #if 0
+  68:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   uint32_t		u32_randomNum;
+  69:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   
+  70:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   #if 1
+  71:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	rng_get_random(&u32_randomNum);
+  72:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   #else
+  73:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****     // not sure why this doesn't work...... should be
+  74:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****     // faster than above as we will read last RNG and then
+  75:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****     //  kick off the RNG hardware to make a new RNG before
+  76:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****     //  our next read.   Need to study HAL more to figure this out.
+  77:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  78:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   #endif
+ARM GAS  /tmp/ccXqcbiH.s 			page 3
+
+
+  79:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   return u32_randomNum;
+  80:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #else
+  81:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   return ( __esos_get_PRNG_RandomUint32() );
+  38              		.loc 1 81 3 view .LVU1
+  39              		.loc 1 81 12 is_stmt 0 view .LVU2
+  40 0002 FFF7FEFF 		bl	__esos_get_PRNG_RandomUint32
+  41              	.LVL0:
+  82:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #endif
+  83:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** } // end __esos_hw_PRNG_u32(void)
+  42              		.loc 1 83 1 view .LVU3
+  43 0006 08BD     		pop	{r3, pc}
+  44              		.cfi_endproc
+  45              	.LFE0:
+  47              		.section	.text.__esos_hw_config_PRNG,"ax",%progbits
+  48              		.align	1
+  49              		.global	__esos_hw_config_PRNG
+  50              		.syntax unified
+  51              		.thumb
+  52              		.thumb_func
+  54              	__esos_hw_config_PRNG:
+  55              	.LFB1:
+  84:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  85:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+  86:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /* *******************************************************
+  87:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \brief user-provided function to config the HW RNG
+  88:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+  89:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \note All hardware must implement this function.
+  90:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+  91:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying hardware has PRNG on-board, HW-specific code
+  92:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * for intializing the PRNG hardware goes here.
+  93:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+  94:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying HW does not have PRNG on-board, this
+  95:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * function should just return.
+  96:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+  97:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *******************************************************  */
+  98:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** void   __esos_hw_config_PRNG(void) {
+  56              		.loc 1 98 36 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60 0000 08B5     		push	{r3, lr}
+  61              	.LCFI1:
+  62              		.cfi_def_cfa_offset 8
+  63              		.cfi_offset 3, -8
+  64              		.cfi_offset 14, -4
+  99:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #ifdef STM32L452xx	
+ 100:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   
+ 101:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	//HAL VERSION
+ 102:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	/*hrng.Instance = RNG;
+ 103:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   if (HAL_RNG_Init(&hrng) != HAL_OK)
+ 104:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   {
+ 105:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****     Error_Handler();
+ 106:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   }*/
+ 107:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	
+ 108:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	///////////////
+ 109:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	//CM3 VERSION//
+ 110:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	///////////////
+ARM GAS  /tmp/ccXqcbiH.s 			page 4
+
+
+ 111:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	rng_enable();
+  65              		.loc 1 111 2 view .LVU5
+  66 0002 FFF7FEFF 		bl	rng_enable
+  67              	.LVL1:
+ 112:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 	
+ 113:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #endif
+ 114:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** }  // end __esos_hw_config_PRNG(void)
+  68              		.loc 1 114 1 is_stmt 0 view .LVU6
+  69 0006 08BD     		pop	{r3, pc}
+  70              		.cfi_endproc
+  71              	.LFE1:
+  73              		.section	.text.__esos_hw_set_PRNG_Seed,"ax",%progbits
+  74              		.align	1
+  75              		.global	__esos_hw_set_PRNG_Seed
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  80              	__esos_hw_set_PRNG_Seed:
+  81              	.LVL2:
+  82              	.LFB2:
+ 115:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** 
+ 116:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** /* *******************************************************
+ 117:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \brief seed the HW pseudo-random number generator...
+ 118:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+ 119:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * \note All hardware must implement this function.
+ 120:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+ 121:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying hardware has PRNG on-board, it can
+ 122:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * do what it needs to "seed" the PRNG.
+ 123:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * 
+ 124:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * If the underlying HW does not have PRNG on-board, it
+ 125:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * can call the hidden ESOS function for seeding the
+ 126:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** * ESOS software RNG function
+ 127:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *         void __esos_setSWRNGU32Seed(uint32)
+ 128:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+ 129:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *  \sa __esos_get_PRNG_RandomUint32
+ 130:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** *
+ 131:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** ********************************************************** */
+ 132:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** void __esos_hw_set_PRNG_Seed(uint32_t u32_seed) {
+  83              		.loc 1 132 49 is_stmt 1 view -0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+ 133:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #ifndef STM32L452xx
+ 134:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** // RNG hardware doesn't let us set the seed
+ 135:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****    __esos_set_PRNG_U32Seed(u32_seed);
+ 136:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** #endif
+ 137:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c ****   
+ 138:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_utils.c **** } // end __esos_hw_setPRNG_Seed(uint32)
+  88              		.loc 1 138 1 view .LVU8
+  89 0000 7047     		bx	lr
+  90              		.cfi_endproc
+  91              	.LFE2:
+  93              		.text
+  94              	.Letext0:
+  95              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+  96              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ARM GAS  /tmp/ccXqcbiH.s 			page 5
+
+
+  97              		.file 4 "/home/ben/libopencm3/include/libopencm3/stm32/common/rng_common_v1.h"
+  98              		.file 5 "/home/ben/esos32/include/esos_utils.h"
+ARM GAS  /tmp/ccXqcbiH.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_stm32l4_utils.c
+     /tmp/ccXqcbiH.s:20     .text.__esos_hw_PRNG_u32:0000000000000000 $t
+     /tmp/ccXqcbiH.s:26     .text.__esos_hw_PRNG_u32:0000000000000000 __esos_hw_PRNG_u32
+     /tmp/ccXqcbiH.s:48     .text.__esos_hw_config_PRNG:0000000000000000 $t
+     /tmp/ccXqcbiH.s:54     .text.__esos_hw_config_PRNG:0000000000000000 __esos_hw_config_PRNG
+     /tmp/ccXqcbiH.s:74     .text.__esos_hw_set_PRNG_Seed:0000000000000000 $t
+     /tmp/ccXqcbiH.s:80     .text.__esos_hw_set_PRNG_Seed:0000000000000000 __esos_hw_set_PRNG_Seed
+
+UNDEFINED SYMBOLS
+__esos_get_PRNG_RandomUint32
+rng_enable

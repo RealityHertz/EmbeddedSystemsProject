@@ -1,0 +1,420 @@
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"barrier.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.heartbeat,"ax",%progbits
+  20              		.align	1
+  21              		.global	heartbeat
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	heartbeat:
+  27              	.LVL0:
+  28              	.LFB3:
+  29              		.file 1 "src/barrier.c"
+   1:src/barrier.c **** #include "esos.h"
+   2:src/barrier.c **** #include "m4.h"
+   3:src/barrier.c **** #include "user_app.h"
+   4:src/barrier.c **** #include <stdio.h>
+   5:src/barrier.c **** #include <string.h>
+   6:src/barrier.c **** 
+   7:src/barrier.c **** #ifdef _linux
+   8:src/barrier.c **** /*
+   9:src/barrier.c ****  * Simulate the timer ISR found on a MCU
+  10:src/barrier.c ****  *   The PC doesn't have a timer ISR, so this task will periodically
+  11:src/barrier.c ****  *   call the timer services callback instead.
+  12:src/barrier.c ****  *   USED ONLY FOR DEVELOPMENT AND TESTING ON PC.
+  13:src/barrier.c ****  *   Real MCU hardware doesn't need this task
+  14:src/barrier.c ****  */
+  15:src/barrier.c **** ESOS_USER_TASK(__simulated_isr)
+  16:src/barrier.c **** {
+  17:src/barrier.c ****     ESOS_TASK_BEGIN();
+  18:src/barrier.c ****     while (TRUE)
+  19:src/barrier.c ****     {
+  20:src/barrier.c ****         // call the ESOS timer services callback just like a real H/W ISR would
+  21:src/barrier.c ****         __esos_tmrSvcsExecute();
+  22:src/barrier.c ****         ESOS_TASK_WAIT_TICKS(1);
+  23:src/barrier.c **** 
+  24:src/barrier.c ****     } // endof while(TRUE)
+  25:src/barrier.c ****     ESOS_TASK_END();
+  26:src/barrier.c **** } // end child_task
+  27:src/barrier.c **** #endif
+  28:src/barrier.c **** 
+  29:src/barrier.c **** ESOS_USER_TASK(heartbeat)
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 2
+
+
+  30:src/barrier.c **** {
+  30              		.loc 1 30 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 30 1 is_stmt 0 view .LVU1
+  35 0000 38B5     		push	{r3, r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 3, -16
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 5, -8
+  41              		.cfi_offset 14, -4
+  42 0002 0446     		mov	r4, r0
+  31:src/barrier.c ****     ESOS_TASK_BEGIN();
+  43              		.loc 1 31 5 is_stmt 1 view .LVU2
+  44 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+  45 0006 63F07F03 		orn	r3, r3, #127
+  46 000a 8370     		strb	r3, [r0, #2]
+  47              		.loc 1 31 5 view .LVU3
+  48 000c 0388     		ldrh	r3, [r0]
+  49 000e A3B1     		cbz	r3, .L2
+  50 0010 232B     		cmp	r3, #35
+  51 0012 1FD0     		beq	.L3
+  32:src/barrier.c ****     while (TRUE)
+  33:src/barrier.c ****     {
+  34:src/barrier.c ****         gpio_toggle(LD2_PORT, LD2_PIN);
+  35:src/barrier.c ****         ESOS_TASK_WAIT_TICKS(500);
+  36:src/barrier.c ****     } // endof while(TRUE)
+  37:src/barrier.c ****     ESOS_TASK_END();
+  52              		.loc 1 37 5 view .LVU4
+  53              		.loc 1 37 5 view .LVU5
+  54 0014 0823     		movs	r3, #8
+  55 0016 8370     		strb	r3, [r0, #2]
+  56              		.loc 1 37 5 view .LVU6
+  57 0018 0023     		movs	r3, #0
+  58 001a 0380     		strh	r3, [r0]	@ movhi
+  59              		.loc 1 37 5 view .LVU7
+  60              		.loc 1 37 5 view .LVU8
+  61              		.loc 1 37 5 view .LVU9
+  62 001c 0325     		movs	r5, #3
+  63              	.LVL1:
+  64              	.L6:
+  65              		.loc 1 37 20 discriminator 1 view .LVU10
+  38:src/barrier.c **** } // end flash_LED()
+  66              		.loc 1 38 1 is_stmt 0 discriminator 1 view .LVU11
+  67 001e 2846     		mov	r0, r5
+  68 0020 38BD     		pop	{r3, r4, r5, pc}
+  69              	.LVL2:
+  70              	.L11:
+  35:src/barrier.c ****     } // endof while(TRUE)
+  71              		.loc 1 35 9 is_stmt 1 discriminator 2 view .LVU12
+  72 0022 0423     		movs	r3, #4
+  73 0024 A370     		strb	r3, [r4, #2]
+  35:src/barrier.c ****     } // endof while(TRUE)
+  74              		.loc 1 35 9 discriminator 2 view .LVU13
+  75 0026 0325     		movs	r5, #3
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 3
+
+
+  76 0028 F9E7     		b	.L6
+  77              	.L7:
+  35:src/barrier.c ****     } // endof while(TRUE)
+  78              		.loc 1 35 9 discriminator 5 view .LVU14
+  79 002a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+  80 002c 43F00103 		orr	r3, r3, #1
+  81 0030 A370     		strb	r3, [r4, #2]
+  82              	.L8:
+  35:src/barrier.c ****     } // endof while(TRUE)
+  83              		.loc 1 35 9 discriminator 7 view .LVU15
+  84 0032 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+  85 0034 13F0010F 		tst	r3, #1
+  86 0038 F1D1     		bne	.L6
+  87              	.L2:
+  31:src/barrier.c ****     while (TRUE)
+  88              		.loc 1 31 22 discriminator 1 view .LVU16
+  32:src/barrier.c ****     {
+  89              		.loc 1 32 5 discriminator 1 view .LVU17
+  34:src/barrier.c ****         ESOS_TASK_WAIT_TICKS(500);
+  90              		.loc 1 34 9 discriminator 1 view .LVU18
+  91 003a 2021     		movs	r1, #32
+  92 003c 4FF09040 		mov	r0, #1207959552
+  93 0040 FFF7FEFF 		bl	gpio_toggle
+  94              	.LVL3:
+  35:src/barrier.c ****     } // endof while(TRUE)
+  95              		.loc 1 35 9 discriminator 1 view .LVU19
+  35:src/barrier.c ****     } // endof while(TRUE)
+  96              		.loc 1 35 9 discriminator 1 view .LVU20
+  97 0044 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+  98              	.LVL4:
+  99 0048 A060     		str	r0, [r4, #8]
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 100              		.loc 1 35 9 discriminator 1 view .LVU21
+ 101 004a 4FF4FA73 		mov	r3, #500
+ 102 004e E360     		str	r3, [r4, #12]
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 103              		.loc 1 35 9 discriminator 1 view .LVU22
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 104              		.loc 1 35 9 discriminator 1 view .LVU23
+ 105 0050 2323     		movs	r3, #35
+ 106 0052 2380     		strh	r3, [r4]	@ movhi
+ 107              	.L3:
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 108              		.loc 1 35 9 discriminator 1 view .LVU24
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 109              		.loc 1 35 9 discriminator 1 view .LVU25
+ 110 0054 A078     		ldrb	r0, [r4, #2]	@ zero_extendqisi2
+ 111 0056 10F00405 		ands	r5, r0, #4
+ 112 005a E2D1     		bne	.L11
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 113              		.loc 1 35 9 discriminator 3 view .LVU26
+ 114 005c E168     		ldr	r1, [r4, #12]
+ 115 005e A068     		ldr	r0, [r4, #8]
+ 116 0060 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 117              	.LVL5:
+ 118 0064 0028     		cmp	r0, #0
+ 119 0066 E0D0     		beq	.L7
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 4
+
+
+  35:src/barrier.c ****     } // endof while(TRUE)
+ 120              		.loc 1 35 9 discriminator 4 view .LVU27
+ 121 0068 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 122 006a 23F00103 		bic	r3, r3, #1
+ 123 006e A370     		strb	r3, [r4, #2]
+ 124 0070 DFE7     		b	.L8
+ 125              		.cfi_endproc
+ 126              	.LFE3:
+ 128              		.section	.text.__user_init_hw,"ax",%progbits
+ 129              		.align	1
+ 130              		.global	__user_init_hw
+ 131              		.syntax unified
+ 132              		.thumb
+ 133              		.thumb_func
+ 135              	__user_init_hw:
+ 136              	.LFB4:
+  39:src/barrier.c **** 
+  40:src/barrier.c **** void __user_init_hw(void)
+  41:src/barrier.c **** {
+ 137              		.loc 1 41 1 view -0
+ 138              		.cfi_startproc
+ 139              		@ args = 0, pretend = 0, frame = 0
+ 140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 141 0000 08B5     		push	{r3, lr}
+ 142              	.LCFI1:
+ 143              		.cfi_def_cfa_offset 8
+ 144              		.cfi_offset 3, -8
+ 145              		.cfi_offset 14, -4
+  42:src/barrier.c ****     /* GPIO Ports Clock Enable */
+  43:src/barrier.c ****     rcc_periph_clock_enable(GPIOA);
+ 146              		.loc 1 43 5 view .LVU29
+ 147 0002 0020     		movs	r0, #0
+ 148 0004 FFF7FEFF 		bl	rcc_periph_clock_enable
+ 149              	.LVL6:
+  44:src/barrier.c **** 
+  45:src/barrier.c ****     /*Configure GPIO pin : LED2_Pin */
+  46:src/barrier.c ****     gpio_mode_setup(LD2_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LD2_PIN);
+ 150              		.loc 1 46 5 view .LVU30
+ 151 0008 2023     		movs	r3, #32
+ 152 000a 0022     		movs	r2, #0
+ 153 000c 0121     		movs	r1, #1
+ 154 000e 4FF09040 		mov	r0, #1207959552
+ 155 0012 FFF7FEFF 		bl	gpio_mode_setup
+ 156              	.LVL7:
+  47:src/barrier.c **** }
+ 157              		.loc 1 47 1 is_stmt 0 view .LVU31
+ 158 0016 08BD     		pop	{r3, pc}
+ 159              		.cfi_endproc
+ 160              	.LFE4:
+ 162              		.section	.text.user_init,"ax",%progbits
+ 163              		.align	1
+ 164              		.global	user_init
+ 165              		.syntax unified
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	user_init:
+ 170              	.LFB5:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 5
+
+
+  48:src/barrier.c **** 
+  49:src/barrier.c **** /******************************************************************************
+  50:src/barrier.c ****  * Function:        void user_init(void)
+  51:src/barrier.c ****  *
+  52:src/barrier.c ****  * PreCondition:    None
+  53:src/barrier.c ****  *
+  54:src/barrier.c ****  * Input:           None
+  55:src/barrier.c ****  *
+  56:src/barrier.c ****  * Output:          None
+  57:src/barrier.c ****  *
+  58:src/barrier.c ****  * Side Effects:    None
+  59:src/barrier.c ****  *
+  60:src/barrier.c ****  * Overview:        user_init is a centralized initialization routine where
+  61:src/barrier.c ****  *                  the user can setup their application.   It is called
+  62:src/barrier.c ****  *                  automagically by ES_OS during the operating system
+  63:src/barrier.c ****  *                  initialization.
+  64:src/barrier.c ****  *
+  65:src/barrier.c ****  * Note:            The user should set up any state machines and init
+  66:src/barrier.c ****  *                  all application variables.  They can also turn on
+  67:src/barrier.c ****  *                  any needed peripherals here.
+  68:src/barrier.c ****  *
+  69:src/barrier.c ****  *                  The user SHALL NOT mess with the interrupt hardware
+  70:src/barrier.c ****  *                  directly!!!  The ES_OS must be aware of the interrupts
+  71:src/barrier.c ****  *                  and provides osXXXXXXX functions for the user to use.
+  72:src/barrier.c ****  *                  Using these ES_OS-provided functions, the user may
+  73:src/barrier.c ****  *                  (and probably should) initialize, register, and enable
+  74:src/barrier.c ****  *                  interrupts in this routine.
+  75:src/barrier.c ****  *
+  76:src/barrier.c ****  *                  Furthermore, the user should register AT LEAST one
+  77:src/barrier.c ****  *                  user application task here (via esos_RegisterTask) or
+  78:src/barrier.c ****  *                  the ES_OS scheduler will have nothing to schedule
+  79:src/barrier.c ****  *                  to run when this function returns.
+  80:src/barrier.c ****  *
+  81:src/barrier.c ****  *****************************************************************************/
+  82:src/barrier.c **** void user_init(void)
+  83:src/barrier.c **** {
+ 171              		.loc 1 83 1 is_stmt 1 view -0
+ 172              		.cfi_startproc
+ 173              		@ args = 0, pretend = 0, frame = 0
+ 174              		@ frame_needed = 0, uses_anonymous_args = 0
+ 175 0000 08B5     		push	{r3, lr}
+ 176              	.LCFI2:
+ 177              		.cfi_def_cfa_offset 8
+ 178              		.cfi_offset 3, -8
+ 179              		.cfi_offset 14, -4
+  84:src/barrier.c ****     __user_init_hw();
+ 180              		.loc 1 84 5 view .LVU33
+ 181 0002 FFF7FEFF 		bl	__user_init_hw
+ 182              	.LVL8:
+  85:src/barrier.c **** 
+  86:src/barrier.c ****     ESOS_INIT_SEMAPHORE(mutex, 1);
+ 183              		.loc 1 86 5 view .LVU34
+ 184 0006 114B     		ldr	r3, .L16
+ 185 0008 0122     		movs	r2, #1
+ 186 000a 1A80     		strh	r2, [r3]	@ movhi
+  87:src/barrier.c ****     ESOS_INIT_SEMAPHORE(barrier, 0);
+ 187              		.loc 1 87 5 view .LVU35
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 6
+
+
+ 188 000c 104B     		ldr	r3, .L16+4
+ 189 000e 0022     		movs	r2, #0
+ 190 0010 1A80     		strh	r2, [r3]	@ movhi
+  88:src/barrier.c **** 
+  89:src/barrier.c ****     esos_RegisterTask(heartbeat);
+ 191              		.loc 1 89 5 view .LVU36
+ 192 0012 1048     		ldr	r0, .L16+8
+ 193 0014 FFF7FEFF 		bl	esos_RegisterTask
+ 194              	.LVL9:
+  90:src/barrier.c ****     esos_RegisterTask(thread1);
+ 195              		.loc 1 90 5 view .LVU37
+ 196 0018 0F48     		ldr	r0, .L16+12
+ 197 001a FFF7FEFF 		bl	esos_RegisterTask
+ 198              	.LVL10:
+  91:src/barrier.c ****     esos_RegisterTask(thread2);
+ 199              		.loc 1 91 5 view .LVU38
+ 200 001e 0F48     		ldr	r0, .L16+16
+ 201 0020 FFF7FEFF 		bl	esos_RegisterTask
+ 202              	.LVL11:
+  92:src/barrier.c ****     esos_RegisterTask(thread3);
+ 203              		.loc 1 92 5 view .LVU39
+ 204 0024 0E48     		ldr	r0, .L16+20
+ 205 0026 FFF7FEFF 		bl	esos_RegisterTask
+ 206              	.LVL12:
+  93:src/barrier.c ****     esos_RegisterTask(thread4);
+ 207              		.loc 1 93 5 view .LVU40
+ 208 002a 0E48     		ldr	r0, .L16+24
+ 209 002c FFF7FEFF 		bl	esos_RegisterTask
+ 210              	.LVL13:
+  94:src/barrier.c ****     esos_RegisterTask(thread5);
+ 211              		.loc 1 94 5 view .LVU41
+ 212 0030 0D48     		ldr	r0, .L16+28
+ 213 0032 FFF7FEFF 		bl	esos_RegisterTask
+ 214              	.LVL14:
+  95:src/barrier.c ****     esos_RegisterTask(thread6);
+ 215              		.loc 1 95 5 view .LVU42
+ 216 0036 0D48     		ldr	r0, .L16+32
+ 217 0038 FFF7FEFF 		bl	esos_RegisterTask
+ 218              	.LVL15:
+  96:src/barrier.c ****     esos_RegisterTask(thread7);
+ 219              		.loc 1 96 5 view .LVU43
+ 220 003c 0C48     		ldr	r0, .L16+36
+ 221 003e FFF7FEFF 		bl	esos_RegisterTask
+ 222              	.LVL16:
+  97:src/barrier.c ****     esos_RegisterTask(thread8);
+ 223              		.loc 1 97 5 view .LVU44
+ 224 0042 0C48     		ldr	r0, .L16+40
+ 225 0044 FFF7FEFF 		bl	esos_RegisterTask
+ 226              	.LVL17:
+  98:src/barrier.c **** 
+  99:src/barrier.c **** 
+ 100:src/barrier.c **** } // end user_init()...
+ 227              		.loc 1 100 1 is_stmt 0 view .LVU45
+ 228 0048 08BD     		pop	{r3, pc}
+ 229              	.L17:
+ 230 004a 00BF     		.align	2
+ 231              	.L16:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 7
+
+
+ 232 004c 00000000 		.word	mutex
+ 233 0050 00000000 		.word	barrier
+ 234 0054 00000000 		.word	heartbeat
+ 235 0058 00000000 		.word	thread1
+ 236 005c 00000000 		.word	thread2
+ 237 0060 00000000 		.word	thread3
+ 238 0064 00000000 		.word	thread4
+ 239 0068 00000000 		.word	thread5
+ 240 006c 00000000 		.word	thread6
+ 241 0070 00000000 		.word	thread7
+ 242 0074 00000000 		.word	thread8
+ 243              		.cfi_endproc
+ 244              	.LFE5:
+ 246              		.text
+ 247              	.Letext0:
+ 248              		.file 2 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/m
+ 249              		.file 3 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/s
+ 250              		.file 4 "/Users/user/Desktop/esos32/include/lc-switch.h"
+ 251              		.file 5 "/Users/user/Desktop/esos32/include/esos_cb.h"
+ 252              		.file 6 "/Users/user/Desktop/esos32/include/esos_mail.h"
+ 253              		.file 7 "/Users/user/Desktop/esos32/include/esos_task.h"
+ 254              		.file 8 "include/m4.h"
+ 255              		.file 9 "/Users/user/Desktop/esos32/include/esos.h"
+ 256              		.file 10 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/rcc_common_all.h"
+ 257              		.file 11 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/gpio_common_f234.h"
+ 258              		.file 12 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/gpio_common_all.h"
+ 259              		.file 13 "/Users/user/Desktop/esos32/include/all_generic.h"
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 barrier.c
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:20     .text.heartbeat:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:26     .text.heartbeat:0000000000000000 heartbeat
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:129    .text.__user_init_hw:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:135    .text.__user_init_hw:0000000000000000 __user_init_hw
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:163    .text.user_init:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:169    .text.user_init:0000000000000000 user_init
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccegnNes.s:232    .text.user_init:000000000000004c $d
+
+UNDEFINED SYMBOLS
+gpio_toggle
+__esos_hw_GetSystemTickCount
+__esos_hasTickDurationPassed
+rcc_periph_clock_enable
+gpio_mode_setup
+esos_RegisterTask
+mutex
+barrier
+thread1
+thread2
+thread3
+thread4
+thread5
+thread6
+thread7
+thread8

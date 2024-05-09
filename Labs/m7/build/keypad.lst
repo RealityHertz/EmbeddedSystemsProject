@@ -1,0 +1,441 @@
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"keypad.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.delay,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	delay:
+  26              	.LVL0:
+  27              	.LFB3:
+  28              		.file 1 "src/keypad.c"
+   1:src/keypad.c  **** #ifndef STM32L4
+   2:src/keypad.c  ****    #define STM32L4
+   3:src/keypad.c  **** #endif
+   4:src/keypad.c  **** 
+   5:src/keypad.c  **** #include "keypad.h"
+   6:src/keypad.c  **** #include "ptb.h"
+   7:src/keypad.c  **** #include <stdio.h>
+   8:src/keypad.c  **** #include <stdlib.h>
+   9:src/keypad.c  **** #include <stdint.h>
+  10:src/keypad.c  **** #include <libopencm3/stm32/gpio.h>
+  11:src/keypad.c  **** 
+  12:src/keypad.c  **** #define ROW0_OFFSET 8
+  13:src/keypad.c  **** #define ROW1_OFFSET 9
+  14:src/keypad.c  **** #define ROW2_OFFSET 10
+  15:src/keypad.c  **** #define ROW3_OFFSET 11
+  16:src/keypad.c  **** 
+  17:src/keypad.c  **** #define KEY0_OFFSET 0
+  18:src/keypad.c  **** #define KEY1_OFFSET 1
+  19:src/keypad.c  **** #define KEY2_OFFSET 2
+  20:src/keypad.c  **** #define KEY3_OFFSET 3
+  21:src/keypad.c  **** #define KEY4_OFFSET 4
+  22:src/keypad.c  **** #define KEY5_OFFSET 5
+  23:src/keypad.c  **** #define KEY6_OFFSET 6
+  24:src/keypad.c  **** #define KEY7_OFFSET 7
+  25:src/keypad.c  **** #define KEY8_OFFSET 8
+  26:src/keypad.c  **** #define KEY9_OFFSET 9
+  27:src/keypad.c  **** #define KEYA_OFFSET 10
+  28:src/keypad.c  **** #define KEYB_OFFSET 11
+  29:src/keypad.c  **** #define KEYC_OFFSET 12
+  30:src/keypad.c  **** #define KEYD_OFFSET 13
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 2
+
+
+  31:src/keypad.c  **** #define KEYPOUND_OFFSET 14
+  32:src/keypad.c  **** #define KEYSTAR_OFFSET 15
+  33:src/keypad.c  **** 
+  34:src/keypad.c  **** /*Basic delay loop*/
+  35:src/keypad.c  **** static void delay(int32_t loops)
+  36:src/keypad.c  **** {
+  29              		.loc 1 36 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  37:src/keypad.c  ****     while(loops > 0)
+  34              		.loc 1 37 5 view .LVU1
+  35              		.loc 1 37 10 is_stmt 0 view .LVU2
+  36 0000 01E0     		b	.L2
+  37              	.L3:
+  38:src/keypad.c  ****     {
+  39:src/keypad.c  ****        asm("nop");
+  38              		.loc 1 39 8 is_stmt 1 view .LVU3
+  39              		.syntax unified
+  40              	@ 39 "src/keypad.c" 1
+  41 0002 00BF     		nop
+  42              	@ 0 "" 2
+  40:src/keypad.c  ****        loops--;
+  43              		.loc 1 40 8 view .LVU4
+  44              		.loc 1 40 13 is_stmt 0 view .LVU5
+  45              		.thumb
+  46              		.syntax unified
+  47 0004 0138     		subs	r0, r0, #1
+  48              	.LVL1:
+  49              	.L2:
+  37:src/keypad.c  ****     while(loops > 0)
+  50              		.loc 1 37 10 is_stmt 1 view .LVU6
+  51 0006 0028     		cmp	r0, #0
+  52 0008 FBDC     		bgt	.L3
+  41:src/keypad.c  ****     }
+  42:src/keypad.c  **** }
+  53              		.loc 1 42 1 is_stmt 0 view .LVU7
+  54 000a 7047     		bx	lr
+  55              		.cfi_endproc
+  56              	.LFE3:
+  58              		.section	.text.read_keypad,"ax",%progbits
+  59              		.align	1
+  60              		.global	read_keypad
+  61              		.syntax unified
+  62              		.thumb
+  63              		.thumb_func
+  65              	read_keypad:
+  66              	.LFB4:
+  43:src/keypad.c  **** 
+  44:src/keypad.c  **** /*Reads keypad inputs*/
+  45:src/keypad.c  **** uint16_t read_keypad(void)
+  46:src/keypad.c  **** {
+  67              		.loc 1 46 1 is_stmt 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 3
+
+
+  71 0000 10B5     		push	{r4, lr}
+  72              	.LCFI0:
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 4, -8
+  75              		.cfi_offset 14, -4
+  47:src/keypad.c  ****     uint16_t keys = 0x0000;
+  76              		.loc 1 47 5 view .LVU9
+  77              	.LVL2:
+  48:src/keypad.c  **** 
+  49:src/keypad.c  ****     /*Clears col 0*/
+  50:src/keypad.c  ****     EDUB_KEYPAD_COL0_CLEAR();
+  78              		.loc 1 50 5 view .LVU10
+  79 0002 574C     		ldr	r4, .L6
+  80 0004 0221     		movs	r1, #2
+  81 0006 2046     		mov	r0, r4
+  82 0008 FFF7FEFF 		bl	gpio_clear
+  83              	.LVL3:
+  51:src/keypad.c  ****     EDUB_KEYPAD_COL1_CLEAR();
+  84              		.loc 1 51 5 view .LVU11
+  85 000c 0421     		movs	r1, #4
+  86 000e 2046     		mov	r0, r4
+  87 0010 FFF7FEFF 		bl	gpio_clear
+  88              	.LVL4:
+  52:src/keypad.c  ****     EDUB_KEYPAD_COL2_CLEAR();
+  89              		.loc 1 52 5 view .LVU12
+  90 0014 0821     		movs	r1, #8
+  91 0016 2046     		mov	r0, r4
+  92 0018 FFF7FEFF 		bl	gpio_clear
+  93              	.LVL5:
+  53:src/keypad.c  ****     EDUB_KEYPAD_COL3_CLEAR();
+  94              		.loc 1 53 5 view .LVU13
+  95 001c 1021     		movs	r1, #16
+  96 001e 2046     		mov	r0, r4
+  97 0020 FFF7FEFF 		bl	gpio_clear
+  98              	.LVL6:
+  54:src/keypad.c  ****     EDUB_KEYPAD_COL0_SET();
+  99              		.loc 1 54 5 view .LVU14
+ 100 0024 0221     		movs	r1, #2
+ 101 0026 2046     		mov	r0, r4
+ 102 0028 FFF7FEFF 		bl	gpio_set
+ 103              	.LVL7:
+  55:src/keypad.c  ****     delay(50);
+ 104              		.loc 1 55 5 view .LVU15
+ 105 002c 3220     		movs	r0, #50
+ 106 002e FFF7FEFF 		bl	delay
+ 107              	.LVL8:
+  56:src/keypad.c  **** 
+  57:src/keypad.c  ****     /*Reads all keys on col 0*/
+  58:src/keypad.c  ****     keys |= (EDUB_KEY1_GETVAL() >> ROW0_OFFSET) << KEY1_OFFSET;
+ 108              		.loc 1 58 5 view .LVU16
+ 109              		.loc 1 58 14 is_stmt 0 view .LVU17
+ 110 0032 4FF48071 		mov	r1, #256
+ 111 0036 2046     		mov	r0, r4
+ 112 0038 FFF7FEFF 		bl	gpio_get
+ 113              	.LVL9:
+  59:src/keypad.c  ****     keys |= (EDUB_KEY4_GETVAL() >> ROW1_OFFSET) << KEY4_OFFSET;
+ 114              		.loc 1 59 5 is_stmt 1 view .LVU18
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 4
+
+
+ 115              		.loc 1 59 14 is_stmt 0 view .LVU19
+ 116 003c 4FF40071 		mov	r1, #512
+ 117 0040 2046     		mov	r0, r4
+ 118 0042 FFF7FEFF 		bl	gpio_get
+ 119              	.LVL10:
+  60:src/keypad.c  ****     keys |= (EDUB_KEY7_GETVAL() >> ROW2_OFFSET) << KEY7_OFFSET;
+ 120              		.loc 1 60 5 is_stmt 1 view .LVU20
+ 121              		.loc 1 60 14 is_stmt 0 view .LVU21
+ 122 0046 4FF48061 		mov	r1, #1024
+ 123 004a 2046     		mov	r0, r4
+ 124 004c FFF7FEFF 		bl	gpio_get
+ 125              	.LVL11:
+  61:src/keypad.c  ****     keys |= (EDUB_KEYSTAR_GETVAL() >> ROW3_OFFSET) << KEYSTAR_OFFSET;
+ 126              		.loc 1 61 5 is_stmt 1 view .LVU22
+ 127              		.loc 1 61 14 is_stmt 0 view .LVU23
+ 128 0050 4FF40061 		mov	r1, #2048
+ 129 0054 2046     		mov	r0, r4
+ 130 0056 FFF7FEFF 		bl	gpio_get
+ 131              	.LVL12:
+  62:src/keypad.c  **** 
+  63:src/keypad.c  ****     EDUB_KEYPAD_COL0_CLEAR();
+ 132              		.loc 1 63 5 is_stmt 1 view .LVU24
+ 133 005a 0221     		movs	r1, #2
+ 134 005c 2046     		mov	r0, r4
+ 135 005e FFF7FEFF 		bl	gpio_clear
+ 136              	.LVL13:
+  64:src/keypad.c  ****     EDUB_KEYPAD_COL1_CLEAR();
+ 137              		.loc 1 64 5 view .LVU25
+ 138 0062 0421     		movs	r1, #4
+ 139 0064 2046     		mov	r0, r4
+ 140 0066 FFF7FEFF 		bl	gpio_clear
+ 141              	.LVL14:
+  65:src/keypad.c  ****     EDUB_KEYPAD_COL2_CLEAR();
+ 142              		.loc 1 65 5 view .LVU26
+ 143 006a 0821     		movs	r1, #8
+ 144 006c 2046     		mov	r0, r4
+ 145 006e FFF7FEFF 		bl	gpio_clear
+ 146              	.LVL15:
+  66:src/keypad.c  ****     EDUB_KEYPAD_COL3_CLEAR();
+ 147              		.loc 1 66 5 view .LVU27
+ 148 0072 1021     		movs	r1, #16
+ 149 0074 2046     		mov	r0, r4
+ 150 0076 FFF7FEFF 		bl	gpio_clear
+ 151              	.LVL16:
+  67:src/keypad.c  ****     EDUB_KEYPAD_COL1_SET();
+ 152              		.loc 1 67 5 view .LVU28
+ 153 007a 0421     		movs	r1, #4
+ 154 007c 2046     		mov	r0, r4
+ 155 007e FFF7FEFF 		bl	gpio_set
+ 156              	.LVL17:
+  68:src/keypad.c  ****     delay(50);
+ 157              		.loc 1 68 5 view .LVU29
+ 158 0082 3220     		movs	r0, #50
+ 159 0084 FFF7FEFF 		bl	delay
+ 160              	.LVL18:
+  69:src/keypad.c  **** 
+  70:src/keypad.c  ****     /*Reads all keys on col 1*/
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 5
+
+
+  71:src/keypad.c  ****     keys |= (EDUB_KEY2_GETVAL() >> ROW0_OFFSET) << KEY2_OFFSET;
+ 161              		.loc 1 71 5 view .LVU30
+ 162              		.loc 1 71 14 is_stmt 0 view .LVU31
+ 163 0088 4FF48071 		mov	r1, #256
+ 164 008c 2046     		mov	r0, r4
+ 165 008e FFF7FEFF 		bl	gpio_get
+ 166              	.LVL19:
+  72:src/keypad.c  ****     keys |= (EDUB_KEY5_GETVAL() >> ROW1_OFFSET) << KEY5_OFFSET;
+ 167              		.loc 1 72 5 is_stmt 1 view .LVU32
+ 168              		.loc 1 72 14 is_stmt 0 view .LVU33
+ 169 0092 4FF40071 		mov	r1, #512
+ 170 0096 2046     		mov	r0, r4
+ 171 0098 FFF7FEFF 		bl	gpio_get
+ 172              	.LVL20:
+  73:src/keypad.c  ****     keys |= (EDUB_KEY8_GETVAL() >> ROW2_OFFSET) << KEY8_OFFSET;
+ 173              		.loc 1 73 5 is_stmt 1 view .LVU34
+ 174              		.loc 1 73 14 is_stmt 0 view .LVU35
+ 175 009c 4FF48061 		mov	r1, #1024
+ 176 00a0 2046     		mov	r0, r4
+ 177 00a2 FFF7FEFF 		bl	gpio_get
+ 178              	.LVL21:
+  74:src/keypad.c  ****     keys |= (EDUB_KEY0_GETVAL() >> ROW3_OFFSET) << KEY0_OFFSET;
+ 179              		.loc 1 74 5 is_stmt 1 view .LVU36
+ 180              		.loc 1 74 14 is_stmt 0 view .LVU37
+ 181 00a6 4FF40061 		mov	r1, #2048
+ 182 00aa 2046     		mov	r0, r4
+ 183 00ac FFF7FEFF 		bl	gpio_get
+ 184              	.LVL22:
+  75:src/keypad.c  **** 
+  76:src/keypad.c  ****     EDUB_KEYPAD_COL0_CLEAR();
+ 185              		.loc 1 76 5 is_stmt 1 view .LVU38
+ 186 00b0 0221     		movs	r1, #2
+ 187 00b2 2046     		mov	r0, r4
+ 188 00b4 FFF7FEFF 		bl	gpio_clear
+ 189              	.LVL23:
+  77:src/keypad.c  ****     EDUB_KEYPAD_COL1_CLEAR();
+ 190              		.loc 1 77 5 view .LVU39
+ 191 00b8 0421     		movs	r1, #4
+ 192 00ba 2046     		mov	r0, r4
+ 193 00bc FFF7FEFF 		bl	gpio_clear
+ 194              	.LVL24:
+  78:src/keypad.c  ****     EDUB_KEYPAD_COL2_CLEAR();
+ 195              		.loc 1 78 5 view .LVU40
+ 196 00c0 0821     		movs	r1, #8
+ 197 00c2 2046     		mov	r0, r4
+ 198 00c4 FFF7FEFF 		bl	gpio_clear
+ 199              	.LVL25:
+  79:src/keypad.c  ****     EDUB_KEYPAD_COL3_CLEAR();
+ 200              		.loc 1 79 5 view .LVU41
+ 201 00c8 1021     		movs	r1, #16
+ 202 00ca 2046     		mov	r0, r4
+ 203 00cc FFF7FEFF 		bl	gpio_clear
+ 204              	.LVL26:
+  80:src/keypad.c  ****     EDUB_KEYPAD_COL2_SET();
+ 205              		.loc 1 80 5 view .LVU42
+ 206 00d0 0821     		movs	r1, #8
+ 207 00d2 2046     		mov	r0, r4
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 6
+
+
+ 208 00d4 FFF7FEFF 		bl	gpio_set
+ 209              	.LVL27:
+  81:src/keypad.c  ****     delay(50);
+ 210              		.loc 1 81 5 view .LVU43
+ 211 00d8 3220     		movs	r0, #50
+ 212 00da FFF7FEFF 		bl	delay
+ 213              	.LVL28:
+  82:src/keypad.c  **** 
+  83:src/keypad.c  ****     /*Reads all keys on col 2*/
+  84:src/keypad.c  ****     keys |= (EDUB_KEY3_GETVAL() >> ROW0_OFFSET) << KEY3_OFFSET;
+ 214              		.loc 1 84 5 view .LVU44
+ 215              		.loc 1 84 14 is_stmt 0 view .LVU45
+ 216 00de 4FF48071 		mov	r1, #256
+ 217 00e2 2046     		mov	r0, r4
+ 218 00e4 FFF7FEFF 		bl	gpio_get
+ 219              	.LVL29:
+  85:src/keypad.c  ****     keys |= (EDUB_KEY6_GETVAL() >> ROW1_OFFSET) << KEY6_OFFSET;
+ 220              		.loc 1 85 5 is_stmt 1 view .LVU46
+ 221              		.loc 1 85 14 is_stmt 0 view .LVU47
+ 222 00e8 4FF40071 		mov	r1, #512
+ 223 00ec 2046     		mov	r0, r4
+ 224 00ee FFF7FEFF 		bl	gpio_get
+ 225              	.LVL30:
+  86:src/keypad.c  ****     keys |= (EDUB_KEY9_GETVAL() >> ROW2_OFFSET) << KEY9_OFFSET;
+ 226              		.loc 1 86 5 is_stmt 1 view .LVU48
+ 227              		.loc 1 86 14 is_stmt 0 view .LVU49
+ 228 00f2 4FF48061 		mov	r1, #1024
+ 229 00f6 2046     		mov	r0, r4
+ 230 00f8 FFF7FEFF 		bl	gpio_get
+ 231              	.LVL31:
+  87:src/keypad.c  ****     keys |= (EDUB_KEYPOUND_GETVAL() >> ROW3_OFFSET) << KEYPOUND_OFFSET;
+ 232              		.loc 1 87 5 is_stmt 1 view .LVU50
+ 233              		.loc 1 87 14 is_stmt 0 view .LVU51
+ 234 00fc 4FF40061 		mov	r1, #2048
+ 235 0100 2046     		mov	r0, r4
+ 236 0102 FFF7FEFF 		bl	gpio_get
+ 237              	.LVL32:
+  88:src/keypad.c  **** 
+  89:src/keypad.c  ****     EDUB_KEYPAD_COL0_CLEAR();
+ 238              		.loc 1 89 5 is_stmt 1 view .LVU52
+ 239 0106 0221     		movs	r1, #2
+ 240 0108 2046     		mov	r0, r4
+ 241 010a FFF7FEFF 		bl	gpio_clear
+ 242              	.LVL33:
+  90:src/keypad.c  ****     EDUB_KEYPAD_COL1_CLEAR();
+ 243              		.loc 1 90 5 view .LVU53
+ 244 010e 0421     		movs	r1, #4
+ 245 0110 2046     		mov	r0, r4
+ 246 0112 FFF7FEFF 		bl	gpio_clear
+ 247              	.LVL34:
+  91:src/keypad.c  ****     EDUB_KEYPAD_COL2_CLEAR();
+ 248              		.loc 1 91 5 view .LVU54
+ 249 0116 0821     		movs	r1, #8
+ 250 0118 2046     		mov	r0, r4
+ 251 011a FFF7FEFF 		bl	gpio_clear
+ 252              	.LVL35:
+  92:src/keypad.c  ****     EDUB_KEYPAD_COL3_CLEAR();
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 7
+
+
+ 253              		.loc 1 92 5 view .LVU55
+ 254 011e 1021     		movs	r1, #16
+ 255 0120 2046     		mov	r0, r4
+ 256 0122 FFF7FEFF 		bl	gpio_clear
+ 257              	.LVL36:
+  93:src/keypad.c  ****     EDUB_KEYPAD_COL3_SET();
+ 258              		.loc 1 93 5 view .LVU56
+ 259 0126 1021     		movs	r1, #16
+ 260 0128 2046     		mov	r0, r4
+ 261 012a FFF7FEFF 		bl	gpio_set
+ 262              	.LVL37:
+  94:src/keypad.c  ****     delay(50);
+ 263              		.loc 1 94 5 view .LVU57
+ 264 012e 3220     		movs	r0, #50
+ 265 0130 FFF7FEFF 		bl	delay
+ 266              	.LVL38:
+  95:src/keypad.c  **** 
+  96:src/keypad.c  ****     /*Reads all keys on col 3*/
+  97:src/keypad.c  ****     keys |= (EDUB_KEYA_GETVAL() >> ROW0_OFFSET) << KEYA_OFFSET;
+ 267              		.loc 1 97 5 view .LVU58
+ 268              		.loc 1 97 14 is_stmt 0 view .LVU59
+ 269 0134 4FF48071 		mov	r1, #256
+ 270 0138 2046     		mov	r0, r4
+ 271 013a FFF7FEFF 		bl	gpio_get
+ 272              	.LVL39:
+  98:src/keypad.c  ****     keys |= (EDUB_KEYB_GETVAL() >> ROW1_OFFSET) << KEYB_OFFSET;
+ 273              		.loc 1 98 5 is_stmt 1 view .LVU60
+ 274              		.loc 1 98 14 is_stmt 0 view .LVU61
+ 275 013e 4FF40071 		mov	r1, #512
+ 276 0142 2046     		mov	r0, r4
+ 277 0144 FFF7FEFF 		bl	gpio_get
+ 278              	.LVL40:
+  99:src/keypad.c  ****     keys |= (EDUB_KEYC_GETVAL() >> ROW2_OFFSET) << KEYC_OFFSET;
+ 279              		.loc 1 99 5 is_stmt 1 view .LVU62
+ 280              		.loc 1 99 14 is_stmt 0 view .LVU63
+ 281 0148 4FF48061 		mov	r1, #1024
+ 282 014c 2046     		mov	r0, r4
+ 283 014e FFF7FEFF 		bl	gpio_get
+ 284              	.LVL41:
+ 100:src/keypad.c  ****     keys |= (EDUB_KEYD_GETVAL() >> ROW3_OFFSET) << KEYD_OFFSET;
+ 285              		.loc 1 100 5 is_stmt 1 view .LVU64
+ 286              		.loc 1 100 14 is_stmt 0 view .LVU65
+ 287 0152 4FF40061 		mov	r1, #2048
+ 288 0156 2046     		mov	r0, r4
+ 289 0158 FFF7FEFF 		bl	gpio_get
+ 290              	.LVL42:
+ 101:src/keypad.c  **** }...
+ 291              		.loc 1 101 1 view .LVU66
+ 292 015c 10BD     		pop	{r4, pc}
+ 293              	.L7:
+ 294 015e 00BF     		.align	2
+ 295              	.L6:
+ 296 0160 00040048 		.word	1207960576
+ 297              		.cfi_endproc
+ 298              	.LFE4:
+ 300              		.text
+ 301              	.Letext0:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 8
+
+
+ 302              		.file 2 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/m
+ 303              		.file 3 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/s
+ 304              		.file 4 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/gpio_common_all.h"
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 keypad.c
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s:20     .text.delay:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s:25     .text.delay:0000000000000000 delay
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s:59     .text.read_keypad:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s:65     .text.read_keypad:0000000000000000 read_keypad
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccaC13NA.s:296    .text.read_keypad:0000000000000160 $d
+
+UNDEFINED SYMBOLS
+gpio_clear
+gpio_set
+gpio_get

@@ -1,0 +1,6 @@
+{
+    "C_Cpp.dimInactiveRegions": false,
+    "files.associations": {
+        "esos_stm32l4_edub_sui.h": "c"
+    }
+}

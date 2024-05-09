@@ -1,0 +1,826 @@
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_stm32l4_edub_4bit_lcd44780wo.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.__esos_lcd44780_hw_config,"ax",%progbits
+  20              		.align	1
+  21              		.global	__esos_lcd44780_hw_config
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	__esos_lcd44780_hw_config:
+  27              	.LFB0:
+  28              		.file 1 "/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c"
+   1:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /*
+   2:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * "Copyright (c) 2020 J. W. Bruce ("AUTHOR(S)")"
+   3:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * All rights reserved.
+   4:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+   6:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+  11:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+  16:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+  22:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * these files.
+  24:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+  25:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  *
+  26:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  */
+  27:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /**
+  28:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * \addtogroup ESOS_Task_LCD_Service_WO
+  29:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  * @{
+  30:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  */
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 2
+
+
+  31:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****  
+  32:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /*** I N C L U D E S *************************************************/
+  33:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** #include 	"esos_stm32l4_edub_4bit_lcd44780wo.h"
+  34:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  35:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /*** G L O B A L S ***************************************************/
+  36:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  37:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /*** T H E   C O D E *************************************************/
+  38:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** void __esos_lcd44780_hw_config ( void )
+  39:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** {	
+  29              		.loc 1 39 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  40:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****   	/*Configure the GPIO pins that drive the LCD 4bit interface */
+  41:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDE_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDE_PIN);
+  38              		.loc 1 41 2 view .LVU1
+  39 0002 4FF48063 		mov	r3, #1024
+  40 0006 0022     		movs	r2, #0
+  41 0008 0121     		movs	r1, #1
+  42 000a 4FF09040 		mov	r0, #1207959552
+  43 000e FFF7FEFF 		bl	gpio_mode_setup
+  44              	.LVL0:
+  42:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  43:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDRS_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDRS_PIN);
+  45              		.loc 1 43 2 view .LVU2
+  46 0012 4FF48053 		mov	r3, #4096
+  47 0016 0022     		movs	r2, #0
+  48 0018 0121     		movs	r1, #1
+  49 001a 4FF09040 		mov	r0, #1207959552
+  50 001e FFF7FEFF 		bl	gpio_mode_setup
+  51              	.LVL1:
+  44:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  45:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDD4_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDD4_PIN);
+  52              		.loc 1 45 2 view .LVU3
+  53 0022 274C     		ldr	r4, .L3
+  54 0024 0223     		movs	r3, #2
+  55 0026 0022     		movs	r2, #0
+  56 0028 0121     		movs	r1, #1
+  57 002a 2046     		mov	r0, r4
+  58 002c FFF7FEFF 		bl	gpio_mode_setup
+  59              	.LVL2:
+  46:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     gpio_set_output_options(EDUB_LCDD4_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_VERYHIGH, EDUB_LCDD4_PIN);
+  60              		.loc 1 46 5 view .LVU4
+  61 0030 0223     		movs	r3, #2
+  62 0032 0322     		movs	r2, #3
+  63 0034 0021     		movs	r1, #0
+  64 0036 2046     		mov	r0, r4
+  65 0038 FFF7FEFF 		bl	gpio_set_output_options
+  66              	.LVL3:
+  47:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  48:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDD5_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDD5_PIN);
+  67              		.loc 1 48 2 view .LVU5
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 3
+
+
+  68 003c 0423     		movs	r3, #4
+  69 003e 0022     		movs	r2, #0
+  70 0040 0121     		movs	r1, #1
+  71 0042 2046     		mov	r0, r4
+  72 0044 FFF7FEFF 		bl	gpio_mode_setup
+  73              	.LVL4:
+  49:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     gpio_set_output_options(EDUB_LCDD5_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_VERYHIGH, EDUB_LCDD5_PIN);
+  74              		.loc 1 49 5 view .LVU6
+  75 0048 0423     		movs	r3, #4
+  76 004a 0322     		movs	r2, #3
+  77 004c 0021     		movs	r1, #0
+  78 004e 2046     		mov	r0, r4
+  79 0050 FFF7FEFF 		bl	gpio_set_output_options
+  80              	.LVL5:
+  50:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     
+  51:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDD6_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDD6_PIN);
+  81              		.loc 1 51 2 view .LVU7
+  82 0054 0823     		movs	r3, #8
+  83 0056 0022     		movs	r2, #0
+  84 0058 0121     		movs	r1, #1
+  85 005a 2046     		mov	r0, r4
+  86 005c FFF7FEFF 		bl	gpio_mode_setup
+  87              	.LVL6:
+  52:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     gpio_set_output_options(EDUB_LCDD6_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_VERYHIGH, EDUB_LCDD6_PIN);
+  88              		.loc 1 52 5 view .LVU8
+  89 0060 0823     		movs	r3, #8
+  90 0062 0322     		movs	r2, #3
+  91 0064 0021     		movs	r1, #0
+  92 0066 2046     		mov	r0, r4
+  93 0068 FFF7FEFF 		bl	gpio_set_output_options
+  94              	.LVL7:
+  53:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  54:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_mode_setup(EDUB_LCDD7_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, EDUB_LCDD7_PIN);			
+  95              		.loc 1 54 2 view .LVU9
+  96 006c 1023     		movs	r3, #16
+  97 006e 0022     		movs	r2, #0
+  98 0070 0121     		movs	r1, #1
+  99 0072 2046     		mov	r0, r4
+ 100 0074 FFF7FEFF 		bl	gpio_mode_setup
+ 101              	.LVL8:
+  55:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     gpio_set_output_options(EDUB_LCDD7_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_VERYHIGH, EDUB_LCDD7_PIN);
+ 102              		.loc 1 55 5 view .LVU10
+ 103 0078 1023     		movs	r3, #16
+ 104 007a 0322     		movs	r2, #3
+ 105 007c 0021     		movs	r1, #0
+ 106 007e 2046     		mov	r0, r4
+ 107 0080 FFF7FEFF 		bl	gpio_set_output_options
+ 108              	.LVL9:
+  56:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  57:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_set(EDUB_LCDE_PORT, EDUB_LCDE_PIN);
+ 109              		.loc 1 57 2 view .LVU11
+ 110 0084 4FF48061 		mov	r1, #1024
+ 111 0088 4FF09040 		mov	r0, #1207959552
+ 112 008c FFF7FEFF 		bl	gpio_set
+ 113              	.LVL10:
+  58:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+  59:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_clear(EDUB_LCDRS_PORT, EDUB_LCDRS_PIN);
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 4
+
+
+ 114              		.loc 1 59 2 view .LVU12
+ 115 0090 4FF48051 		mov	r1, #4096
+ 116 0094 4FF09040 		mov	r0, #1207959552
+ 117 0098 FFF7FEFF 		bl	gpio_clear
+ 118              	.LVL11:
+  60:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_clear(EDUB_LCDD4_PORT, EDUB_LCDD4_PIN);
+ 119              		.loc 1 60 2 view .LVU13
+ 120 009c 0221     		movs	r1, #2
+ 121 009e 2046     		mov	r0, r4
+ 122 00a0 FFF7FEFF 		bl	gpio_clear
+ 123              	.LVL12:
+  61:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_clear(EDUB_LCDD5_PORT, EDUB_LCDD5_PIN);		
+ 124              		.loc 1 61 2 view .LVU14
+ 125 00a4 0421     		movs	r1, #4
+ 126 00a6 2046     		mov	r0, r4
+ 127 00a8 FFF7FEFF 		bl	gpio_clear
+ 128              	.LVL13:
+  62:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_clear(EDUB_LCDD6_PORT, EDUB_LCDD6_PIN);
+ 129              		.loc 1 62 2 view .LVU15
+ 130 00ac 0821     		movs	r1, #8
+ 131 00ae 2046     		mov	r0, r4
+ 132 00b0 FFF7FEFF 		bl	gpio_clear
+ 133              	.LVL14:
+  63:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	gpio_clear(EDUB_LCDD7_PORT, EDUB_LCDD7_PIN);		
+ 134              		.loc 1 63 2 view .LVU16
+ 135 00b4 1021     		movs	r1, #16
+ 136 00b6 2046     		mov	r0, r4
+ 137 00b8 FFF7FEFF 		bl	gpio_clear
+ 138              	.LVL15:
+  64:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     
+  65:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 139              		.loc 1 65 1 is_stmt 0 view .LVU17
+ 140 00bc 10BD     		pop	{r4, pc}
+ 141              	.L4:
+ 142 00be 00BF     		.align	2
+ 143              	.L3:
+ 144 00c0 00040048 		.word	1207960576
+ 145              		.cfi_endproc
+ 146              	.LFE0:
+ 148              		.section	.text.__esos_unsafe_lcd44780_hw_write_u4,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	__esos_unsafe_lcd44780_hw_write_u4
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	__esos_unsafe_lcd44780_hw_write_u4:
+ 156              	.LVL16:
+ 157              	.LFB2:
+  66:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  67:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /**
+  68:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * ESOS child task to write data and commands to 44780-class LCD
+  69:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * character modules
+  70:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** *
+  71:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \param u8_data data/command byte to write to display
+  72:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \param b_isData is TRUE if the u8_data is "data" (RS is set), 
+  73:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * FALSE if u8_data is "command" (RS is cleared)
+  74:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** *
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 5
+
+
+  75:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \note This child task assumes that the associated hardware data
+  76:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * pins are already configured, and the pins are in the "idle" state
+  77:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * 
+  78:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \hideinitializer
+  79:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** */
+  80:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** ESOS_CHILD_TASK( __esos_lcd44780_hw_write_u8, uint8_t u8_data, BOOL b_isData)
+  81:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** {	// hardware-specific code for writing to display goes here.
+  82:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	ESOS_TASK_BEGIN();
+  83:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_localData;
+  84:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		BOOL		b_localIsData;
+  85:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_temp;
+  86:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+  87:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// TODO: verify this.... since the parallel-connected
+  88:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   4-bit LCD I/F shares pins with COLx (used by the
+  89:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   scanned keypad, I think we need to re-initialize
+  90:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   the pin directions each time in the keypad
+  91:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   changed them
+  92:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// IT LOOKS LIKE COLx will always be OUTPUTs, so lets
+  93:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   no initialize the pins again here.....
+  94:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//
+  95:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// __esos_lcd44780_hw_config ();
+  96:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+  97:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	u8_localData = u8_data;			// make local copies 
+  98:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	b_localIsData = b_isData;
+  99:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+ 100:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// We send MSNibble first. (p.22 on H44780 datasheet)
+ 101:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// H44780 4-bit transfer: Data sheet implies
+ 102:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    1. set RS appropriately
+ 103:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    2. raise E  (Newhaven controller/Systronix data sheet
+ 104:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//       says the RS->E time can be zero.
+ 105:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    3. hold E high, while setting data bits
+ 106:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    4. hold data stable >= 40ns  (T data-setup)
+ 107:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    5. lower E
+ 108:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    6. hold data stable >= 10ns  (T hold)
+ 109:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//    7. release data lines
+ 110:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//
+ 111:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// SO, our approach is
+ 112:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   0.  ???? might need to drive data out first with E still low
+ 113:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//       VERIFY THIS WITH DISPLAY
+ 114:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   1.  drive out appropriate RS, E high, with data
+ 115:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   2.  drive out appropriate RS, E low,  with data
+ 116:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 117:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	u8_temp = u8_localData & 0xF0;	// send MSNibble first
+ 118:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 119:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, TRUE, b_localIsData);
+ 120:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // then send data with E low to make the falling-edge "strobing" the LCD
+ 121:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, FALSE, b_localIsData);
+ 122:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high   THIS SHOULD NOT BE NEEDED!!!!!!
+ 123:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, TRUE, b_localIsData);
+ 124:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 125:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 126:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // Now, repeat the process with the LSNibble (moved up into the MSNibble)
+ 127:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	u8_temp = u8_localData << 4;		// send LSNibble now
+ 128:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 129:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, TRUE, b_localIsData);
+ 130:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// then send data with E low to make the falling-edge "strobing" the LCD
+ 131:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, FALSE, b_localIsData);
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 6
+
+
+ 132:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high   THIS SHOULD NOT BE NEEDED!!!!!!
+ 133:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     __esos_unsafe_lcd44780_hw_write_u4(u8_temp, TRUE, b_localIsData);
+ 134:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     
+ 135:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // according to HD44780 data sheet, operations take at least
+ 136:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     //    37us (most) and up to 1.53ms (RETURN HOME cmd)
+ 137:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // With our parallel connected interface, the STM32L4 (running at
+ 138:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     //    80MHz) is sending commands every 5us or so......
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     ESOS_TASK_WAIT_TICKS(1);
+ 140:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	ESOS_TASK_END();
+ 142:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 143:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 144:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** /**
+ 145:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * unsafe hidden hardware function to write only four bits to display
+ 146:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** *
+ 147:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \param u8_u4data data/command byte to write to display
+ 148:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \param b_isData is TRUE if the u8_data is "data" (RS is set), 
+ 149:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * FALSE if u8_data is "command" (RS is cleared)
+ 150:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** *
+ 151:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \note the most significant nibble is written to the hardware 
+ 152:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \note This function must be provided by the hardware port only
+ 153:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * if the compile process defines the compiler variable
+ 154:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * ESOS_USE_LCD_4BIT
+ 155:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \note This function is potentially unsafe
+ 156:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * 
+ 157:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** * \hideinitializer
+ 158:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** */
+ 159:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** #ifdef ESOS_USE_LCD_4BIT
+ 160:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** void __esos_unsafe_lcd44780_hw_write_u4(uint8_t	u8_u4data, BOOL b_isEnable, BOOL b_isData) {
+ 158              		.loc 1 160 92 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		.loc 1 160 92 is_stmt 0 view .LVU19
+ 163 0000 38B5     		push	{r3, r4, r5, lr}
+ 164              	.LCFI1:
+ 165              		.cfi_def_cfa_offset 16
+ 166              		.cfi_offset 3, -16
+ 167              		.cfi_offset 4, -12
+ 168              		.cfi_offset 5, -8
+ 169              		.cfi_offset 14, -4
+ 170 0002 0446     		mov	r4, r0
+ 171 0004 0D46     		mov	r5, r1
+ 161:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 162:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// WRITE THE PINS DIRECTLY BECAUSE WE ARE 4-BIT PARALLEL CONNECTED!
+ 163:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// NOTE:  BE SURE THE JUMPER J23 IS IN THE CORRECT (LEFT) POSITION
+ 164:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 165:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// set or clear RS as requested		
+ 166:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if (b_isData) {
+ 172              		.loc 1 166 2 is_stmt 1 view .LVU20
+ 173              		.loc 1 166 5 is_stmt 0 view .LVU21
+ 174 0006 4AB3     		cbz	r2, .L6
+ 167:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDRS_PORT, EDUB_LCDRS_PIN);		
+ 175              		.loc 1 167 3 is_stmt 1 view .LVU22
+ 176 0008 4FF48051 		mov	r1, #4096
+ 177              	.LVL17:
+ 178              		.loc 1 167 3 is_stmt 0 view .LVU23
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 7
+
+
+ 179 000c 4FF09040 		mov	r0, #1207959552
+ 180              	.LVL18:
+ 181              		.loc 1 167 3 view .LVU24
+ 182 0010 FFF7FEFF 		bl	gpio_set
+ 183              	.LVL19:
+ 184              	.L7:
+ 168:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 169:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDRS_PORT, EDUB_LCDRS_PIN);
+ 170:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 171:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// The LCDD4-LCDD7 pin are adjacent (PB1-PB4) on
+ 172:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// the Nucleo 452 + EduBaseV2 hardware,
+ 173:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// but we will set/clear them individually anyway
+ 174:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// as if there were not adjacent
+ 175:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+ 176:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// if (u8_u4data & 0x10) {
+ 177:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if((u8_u4data & 0x10) != 0) {
+ 185              		.loc 1 177 2 is_stmt 1 view .LVU25
+ 186              		.loc 1 177 4 is_stmt 0 view .LVU26
+ 187 0014 14F0100F 		tst	r4, #16
+ 188 0018 27D0     		beq	.L8
+ 178:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDD4_PORT, EDUB_LCDD4_PIN);
+ 189              		.loc 1 178 3 is_stmt 1 view .LVU27
+ 190 001a 0221     		movs	r1, #2
+ 191 001c 2048     		ldr	r0, .L20
+ 192 001e FFF7FEFF 		bl	gpio_set
+ 193              	.LVL20:
+ 194              	.L9:
+ 179:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 180:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDD4_PORT, EDUB_LCDD4_PIN);
+ 181:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 182:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//if (u8_u4data & 0x20) {
+ 183:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if((u8_u4data & 0x20) != 0) {
+ 195              		.loc 1 183 2 view .LVU28
+ 196              		.loc 1 183 4 is_stmt 0 view .LVU29
+ 197 0022 14F0200F 		tst	r4, #32
+ 198 0026 25D0     		beq	.L10
+ 184:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDD5_PORT, EDUB_LCDD5_PIN);
+ 199              		.loc 1 184 3 is_stmt 1 view .LVU30
+ 200 0028 0421     		movs	r1, #4
+ 201 002a 1D48     		ldr	r0, .L20
+ 202 002c FFF7FEFF 		bl	gpio_set
+ 203              	.LVL21:
+ 204              	.L11:
+ 185:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 186:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDD5_PORT, EDUB_LCDD5_PIN);		
+ 187:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 188:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//if (u8_u4data & 0x40) {
+ 189:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if((u8_u4data & 0x40) != 0) {		
+ 205              		.loc 1 189 2 view .LVU31
+ 206              		.loc 1 189 4 is_stmt 0 view .LVU32
+ 207 0030 14F0400F 		tst	r4, #64
+ 208 0034 23D0     		beq	.L12
+ 190:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDD6_PORT, EDUB_LCDD6_PIN);
+ 209              		.loc 1 190 3 is_stmt 1 view .LVU33
+ 210 0036 0821     		movs	r1, #8
+ 211 0038 1948     		ldr	r0, .L20
+ 212 003a FFF7FEFF 		bl	gpio_set
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 8
+
+
+ 213              	.LVL22:
+ 214              	.L13:
+ 191:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 192:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDD6_PORT, EDUB_LCDD6_PIN);
+ 193:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 194:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//if (u8_u4data & 0x80) {
+ 195:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if((u8_u4data & 0x80) != 0) {		
+ 215              		.loc 1 195 2 view .LVU34
+ 216              		.loc 1 195 4 is_stmt 0 view .LVU35
+ 217 003e 14F0800F 		tst	r4, #128
+ 218 0042 21D1     		bne	.L19
+ 196:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDD7_PORT, EDUB_LCDD7_PIN);
+ 197:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 198:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDD7_PORT, EDUB_LCDD7_PIN);		
+ 219              		.loc 1 198 3 is_stmt 1 view .LVU36
+ 220 0044 1021     		movs	r1, #16
+ 221 0046 1648     		ldr	r0, .L20
+ 222 0048 FFF7FEFF 		bl	gpio_clear
+ 223              	.LVL23:
+ 224              	.L15:
+ 199:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 200:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// JWB: I THINK WE NEED TO DO THIS LAST AS THE
+ 201:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   FCN IS CALLED REPEATED WITH THE SAME DATA
+ 202:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//   BUT CHANGING LCDE_PIN TO EFFECT A "STROBE"
+ 203:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	//
+ 204:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// set or clear E as requested with the "new" data
+ 205:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// already out on the pins.
+ 206:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	if (b_isEnable) {
+ 225              		.loc 1 206 2 view .LVU37
+ 226              		.loc 1 206 5 is_stmt 0 view .LVU38
+ 227 004c 0DB3     		cbz	r5, .L16
+ 207:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_set(EDUB_LCDE_PORT, EDUB_LCDE_PIN);
+ 228              		.loc 1 207 3 is_stmt 1 view .LVU39
+ 229 004e 4FF48061 		mov	r1, #1024
+ 230 0052 4FF09040 		mov	r0, #1207959552
+ 231 0056 FFF7FEFF 		bl	gpio_set
+ 232              	.LVL24:
+ 233              	.L5:
+ 208:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 209:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 		gpio_clear(EDUB_LCDE_PORT, EDUB_LCDE_PIN);
+ 210:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 211:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 234              		.loc 1 211 1 is_stmt 0 view .LVU40
+ 235 005a 38BD     		pop	{r3, r4, r5, pc}
+ 236              	.LVL25:
+ 237              	.L6:
+ 169:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 238              		.loc 1 169 3 is_stmt 1 view .LVU41
+ 239 005c 4FF48051 		mov	r1, #4096
+ 240              	.LVL26:
+ 169:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 241              		.loc 1 169 3 is_stmt 0 view .LVU42
+ 242 0060 4FF09040 		mov	r0, #1207959552
+ 243              	.LVL27:
+ 169:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 244              		.loc 1 169 3 view .LVU43
+ 245 0064 FFF7FEFF 		bl	gpio_clear
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 9
+
+
+ 246              	.LVL28:
+ 169:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 247              		.loc 1 169 3 view .LVU44
+ 248 0068 D4E7     		b	.L7
+ 249              	.L8:
+ 180:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 250              		.loc 1 180 3 is_stmt 1 view .LVU45
+ 251 006a 0221     		movs	r1, #2
+ 252 006c 0C48     		ldr	r0, .L20
+ 253 006e FFF7FEFF 		bl	gpio_clear
+ 254              	.LVL29:
+ 255 0072 D6E7     		b	.L9
+ 256              	.L10:
+ 186:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 257              		.loc 1 186 3 view .LVU46
+ 258 0074 0421     		movs	r1, #4
+ 259 0076 0A48     		ldr	r0, .L20
+ 260 0078 FFF7FEFF 		bl	gpio_clear
+ 261              	.LVL30:
+ 262 007c D8E7     		b	.L11
+ 263              	.L12:
+ 192:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 264              		.loc 1 192 3 view .LVU47
+ 265 007e 0821     		movs	r1, #8
+ 266 0080 0748     		ldr	r0, .L20
+ 267 0082 FFF7FEFF 		bl	gpio_clear
+ 268              	.LVL31:
+ 269 0086 DAE7     		b	.L13
+ 270              	.L19:
+ 196:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	} else {
+ 271              		.loc 1 196 3 view .LVU48
+ 272 0088 1021     		movs	r1, #16
+ 273 008a 0548     		ldr	r0, .L20
+ 274 008c FFF7FEFF 		bl	gpio_set
+ 275              	.LVL32:
+ 276 0090 DCE7     		b	.L15
+ 277              	.L16:
+ 209:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	}
+ 278              		.loc 1 209 3 view .LVU49
+ 279 0092 4FF48061 		mov	r1, #1024
+ 280 0096 4FF09040 		mov	r0, #1207959552
+ 281 009a FFF7FEFF 		bl	gpio_clear
+ 282              	.LVL33:
+ 283              		.loc 1 211 1 is_stmt 0 view .LVU50
+ 284 009e DCE7     		b	.L5
+ 285              	.L21:
+ 286              		.align	2
+ 287              	.L20:
+ 288 00a0 00040048 		.word	1207960576
+ 289              		.cfi_endproc
+ 290              	.LFE2:
+ 292              		.section	.text.__esos_lcd44780_hw_write_u8,"ax",%progbits
+ 293              		.align	1
+ 294              		.global	__esos_lcd44780_hw_write_u8
+ 295              		.syntax unified
+ 296              		.thumb
+ 297              		.thumb_func
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 10
+
+
+ 299              	__esos_lcd44780_hw_write_u8:
+ 300              	.LVL34:
+ 301              	.LFB1:
+  81:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	ESOS_TASK_BEGIN();
+ 302              		.loc 1 81 1 is_stmt 1 view -0
+ 303              		.cfi_startproc
+ 304              		@ args = 0, pretend = 0, frame = 0
+ 305              		@ frame_needed = 0, uses_anonymous_args = 0
+  81:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	ESOS_TASK_BEGIN();
+ 306              		.loc 1 81 1 is_stmt 0 view .LVU52
+ 307 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 308              	.LCFI2:
+ 309              		.cfi_def_cfa_offset 24
+ 310              		.cfi_offset 3, -24
+ 311              		.cfi_offset 4, -20
+ 312              		.cfi_offset 5, -16
+ 313              		.cfi_offset 6, -12
+ 314              		.cfi_offset 7, -8
+ 315              		.cfi_offset 14, -4
+ 316 0002 0446     		mov	r4, r0
+  82:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_localData;
+ 317              		.loc 1 82 2 is_stmt 1 view .LVU53
+ 318 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 319 0006 63F07F03 		orn	r3, r3, #127
+ 320 000a 8370     		strb	r3, [r0, #2]
+  82:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_localData;
+ 321              		.loc 1 82 2 view .LVU54
+ 322 000c 0388     		ldrh	r3, [r0]
+ 323 000e 43B1     		cbz	r3, .L23
+ 324 0010 8B2B     		cmp	r3, #139
+ 325 0012 34D0     		beq	.L24
+ 326              	.LVL35:
+ 327              	.L25:
+ 328              	.LBB2:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 329              		.loc 1 139 5 discriminator 9 view .LVU55
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 330              		.loc 1 139 5 discriminator 9 view .LVU56
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 331              		.loc 1 139 28 discriminator 9 view .LVU57
+ 332              	.LBE2:
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 333              		.loc 1 141 2 discriminator 9 view .LVU58
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 334              		.loc 1 141 2 discriminator 9 view .LVU59
+ 335 0014 0823     		movs	r3, #8
+ 336 0016 A370     		strb	r3, [r4, #2]
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 337              		.loc 1 141 2 discriminator 9 view .LVU60
+ 338 0018 0023     		movs	r3, #0
+ 339 001a 2380     		strh	r3, [r4]	@ movhi
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 340              		.loc 1 141 2 discriminator 9 view .LVU61
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 341              		.loc 1 141 2 discriminator 9 view .LVU62
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 342              		.loc 1 141 2 discriminator 9 view .LVU63
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 11
+
+
+ 343 001c 0325     		movs	r5, #3
+ 344              	.L27:
+ 141:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** }
+ 345              		.loc 1 141 17 discriminator 1 view .LVU64
+ 142:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 346              		.loc 1 142 1 is_stmt 0 discriminator 1 view .LVU65
+ 347 001e 2846     		mov	r0, r5
+ 348 0020 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 349              	.LVL36:
+ 350              	.L23:
+ 351              	.LBB3:
+  82:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_localData;
+ 352              		.loc 1 82 19 is_stmt 1 discriminator 1 view .LVU66
+  83:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		BOOL		b_localIsData;
+ 353              		.loc 1 83 2 discriminator 1 view .LVU67
+  84:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	static		uint8_t		u8_temp;
+ 354              		.loc 1 84 2 discriminator 1 view .LVU68
+  85:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 355              		.loc 1 85 2 discriminator 1 view .LVU69
+  97:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	b_localIsData = b_isData;
+ 356              		.loc 1 97 2 discriminator 1 view .LVU70
+  97:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	b_localIsData = b_isData;
+ 357              		.loc 1 97 15 is_stmt 0 discriminator 1 view .LVU71
+ 358 0022 244F     		ldr	r7, .L32
+ 359 0024 3970     		strb	r1, [r7]
+  98:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+ 360              		.loc 1 98 2 is_stmt 1 discriminator 1 view .LVU72
+  98:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	
+ 361              		.loc 1 98 16 is_stmt 0 discriminator 1 view .LVU73
+ 362 0026 244E     		ldr	r6, .L32+4
+ 363 0028 3270     		strb	r2, [r6]
+ 117:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 364              		.loc 1 117 2 is_stmt 1 discriminator 1 view .LVU74
+ 117:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 365              		.loc 1 117 25 is_stmt 0 discriminator 1 view .LVU75
+ 366 002a 01F0F000 		and	r0, r1, #240
+ 367              	.LVL37:
+ 117:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 368              		.loc 1 117 10 discriminator 1 view .LVU76
+ 369 002e 234D     		ldr	r5, .L32+8
+ 370 0030 2870     		strb	r0, [r5]
+ 119:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // then send data with E low to make the falling-edge "strobing" the LCD
+ 371              		.loc 1 119 5 is_stmt 1 discriminator 1 view .LVU77
+ 372 0032 0121     		movs	r1, #1
+ 373              	.LVL38:
+ 119:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     // then send data with E low to make the falling-edge "strobing" the LCD
+ 374              		.loc 1 119 5 is_stmt 0 discriminator 1 view .LVU78
+ 375 0034 FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 376              	.LVL39:
+ 121:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high   THIS SHOULD NOT BE NEEDED!!!!!!
+ 377              		.loc 1 121 5 is_stmt 1 discriminator 1 view .LVU79
+ 378 0038 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 379 003a 0021     		movs	r1, #0
+ 380 003c 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 381 003e FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 382              	.LVL40:
+ 123:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 12
+
+
+ 383              		.loc 1 123 5 discriminator 1 view .LVU80
+ 384 0042 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 385 0044 0121     		movs	r1, #1
+ 386 0046 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 387 0048 FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 388              	.LVL41:
+ 127:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 389              		.loc 1 127 2 discriminator 1 view .LVU81
+ 127:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 390              		.loc 1 127 25 is_stmt 0 discriminator 1 view .LVU82
+ 391 004c 3878     		ldrb	r0, [r7]	@ zero_extendqisi2
+ 392 004e 0001     		lsls	r0, r0, #4
+ 393 0050 C0B2     		uxtb	r0, r0
+ 127:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high
+ 394              		.loc 1 127 10 discriminator 1 view .LVU83
+ 395 0052 2870     		strb	r0, [r5]
+ 129:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// then send data with E low to make the falling-edge "strobing" the LCD
+ 396              		.loc 1 129 5 is_stmt 1 discriminator 1 view .LVU84
+ 397 0054 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 398 0056 0121     		movs	r1, #1
+ 399 0058 FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 400              	.LVL42:
+ 131:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 	// send data with E high   THIS SHOULD NOT BE NEEDED!!!!!!
+ 401              		.loc 1 131 5 discriminator 1 view .LVU85
+ 402 005c 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 403 005e 0021     		movs	r1, #0
+ 404 0060 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 405 0062 FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 406              	.LVL43:
+ 133:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c ****     
+ 407              		.loc 1 133 5 discriminator 1 view .LVU86
+ 408 0066 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 409 0068 0121     		movs	r1, #1
+ 410 006a 2878     		ldrb	r0, [r5]	@ zero_extendqisi2
+ 411 006c FFF7FEFF 		bl	__esos_unsafe_lcd44780_hw_write_u4
+ 412              	.LVL44:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 413              		.loc 1 139 5 discriminator 1 view .LVU87
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 414              		.loc 1 139 5 discriminator 1 view .LVU88
+ 415 0070 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 416              	.LVL45:
+ 417 0074 A060     		str	r0, [r4, #8]
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 418              		.loc 1 139 5 discriminator 1 view .LVU89
+ 419 0076 0123     		movs	r3, #1
+ 420 0078 E360     		str	r3, [r4, #12]
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 421              		.loc 1 139 5 discriminator 1 view .LVU90
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 422              		.loc 1 139 5 discriminator 1 view .LVU91
+ 423 007a 8B23     		movs	r3, #139
+ 424 007c 2380     		strh	r3, [r4]	@ movhi
+ 425              	.L24:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 426              		.loc 1 139 5 discriminator 1 view .LVU92
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 13
+
+
+ 427              		.loc 1 139 5 discriminator 1 view .LVU93
+ 428 007e A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 429 0080 15F00405 		ands	r5, r5, #4
+ 430 0084 0DD1     		bne	.L31
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 431              		.loc 1 139 5 discriminator 3 view .LVU94
+ 432 0086 E168     		ldr	r1, [r4, #12]
+ 433 0088 A068     		ldr	r0, [r4, #8]
+ 434 008a FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 435              	.LVL46:
+ 436 008e 60B1     		cbz	r0, .L28
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 437              		.loc 1 139 5 discriminator 4 view .LVU95
+ 438 0090 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 439 0092 23F00103 		bic	r3, r3, #1
+ 440 0096 A370     		strb	r3, [r4, #2]
+ 441              	.L29:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 442              		.loc 1 139 5 discriminator 7 view .LVU96
+ 443 0098 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 444 009a 13F0010F 		tst	r3, #1
+ 445 009e B9D0     		beq	.L25
+ 446 00a0 BDE7     		b	.L27
+ 447              	.L31:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 448              		.loc 1 139 5 discriminator 2 view .LVU97
+ 449 00a2 0423     		movs	r3, #4
+ 450 00a4 A370     		strb	r3, [r4, #2]
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 451              		.loc 1 139 5 discriminator 2 view .LVU98
+ 452 00a6 0325     		movs	r5, #3
+ 453 00a8 B9E7     		b	.L27
+ 454              	.L28:
+ 139:/Users/user/Desktop/esos32/src/stm32l4_ocm3/esos_stm32l4_edub_4bit_lcd44780wo.c **** 
+ 455              		.loc 1 139 5 discriminator 5 view .LVU99
+ 456 00aa A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 457 00ac 43F00103 		orr	r3, r3, #1
+ 458 00b0 A370     		strb	r3, [r4, #2]
+ 459 00b2 F1E7     		b	.L29
+ 460              	.L33:
+ 461              		.align	2
+ 462              	.L32:
+ 463 00b4 00000000 		.word	.LANCHOR0
+ 464 00b8 00000000 		.word	.LANCHOR1
+ 465 00bc 00000000 		.word	.LANCHOR2
+ 466              	.LBE3:
+ 467              		.cfi_endproc
+ 468              	.LFE1:
+ 470              		.section	.bss.b_localIsData.1,"aw",%nobits
+ 471              		.set	.LANCHOR1,. + 0
+ 474              	b_localIsData.1:
+ 475 0000 00       		.space	1
+ 476              		.section	.bss.u8_localData.2,"aw",%nobits
+ 477              		.set	.LANCHOR0,. + 0
+ 480              	u8_localData.2:
+ 481 0000 00       		.space	1
+ 482              		.section	.bss.u8_temp.0,"aw",%nobits
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 14
+
+
+ 483              		.set	.LANCHOR2,. + 0
+ 486              	u8_temp.0:
+ 487 0000 00       		.space	1
+ 488              		.text
+ 489              	.Letext0:
+ 490              		.file 2 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/m
+ 491              		.file 3 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/s
+ 492              		.file 4 "/Users/user/Desktop/esos32/include/all_generic.h"
+ 493              		.file 5 "/Users/user/Desktop/esos32/include/lc-switch.h"
+ 494              		.file 6 "/Users/user/Desktop/esos32/include/esos_cb.h"
+ 495              		.file 7 "/Users/user/Desktop/esos32/include/esos_mail.h"
+ 496              		.file 8 "/Users/user/Desktop/esos32/include/esos_task.h"
+ 497              		.file 9 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/gpio_common_all.h"
+ 498              		.file 10 "/Users/user/Desktop/esos32/include/esos.h"
+ 499              		.file 11 "/Users/user/Desktop/libopencm3/include/libopencm3/stm32/common/gpio_common_f234.h"
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_stm32l4_edub_4bit_lcd44780wo.c
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:20     .text.__esos_lcd44780_hw_config:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:26     .text.__esos_lcd44780_hw_config:0000000000000000 __esos_lcd44780_hw_config
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:144    .text.__esos_lcd44780_hw_config:00000000000000c0 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:149    .text.__esos_unsafe_lcd44780_hw_write_u4:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:155    .text.__esos_unsafe_lcd44780_hw_write_u4:0000000000000000 __esos_unsafe_lcd44780_hw_write_u4
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:288    .text.__esos_unsafe_lcd44780_hw_write_u4:00000000000000a0 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:293    .text.__esos_lcd44780_hw_write_u8:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:299    .text.__esos_lcd44780_hw_write_u8:0000000000000000 __esos_lcd44780_hw_write_u8
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:463    .text.__esos_lcd44780_hw_write_u8:00000000000000b4 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:474    .bss.b_localIsData.1:0000000000000000 b_localIsData.1
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:475    .bss.b_localIsData.1:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:480    .bss.u8_localData.2:0000000000000000 u8_localData.2
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:481    .bss.u8_localData.2:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:486    .bss.u8_temp.0:0000000000000000 u8_temp.0
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccOKdMiv.s:487    .bss.u8_temp.0:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+gpio_mode_setup
+gpio_set_output_options
+gpio_set
+gpio_clear
+__esos_hw_GetSystemTickCount
+__esos_hasTickDurationPassed

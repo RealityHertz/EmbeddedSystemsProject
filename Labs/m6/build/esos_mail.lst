@@ -1,0 +1,692 @@
+ARM GAS  /tmp/ccagymY8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_mail.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.__esos_InitMailbox,"ax",%progbits
+  20              		.align	1
+  21              		.global	__esos_InitMailbox
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	__esos_InitMailbox:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "/home/ben/esos32/src/esos_mail.c"
+   1:/home/ben/esos32/src/esos_mail.c **** /*
+   2:/home/ben/esos32/src/esos_mail.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:/home/ben/esos32/src/esos_mail.c ****  * All rights reserved.
+   4:/home/ben/esos32/src/esos_mail.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/home/ben/esos32/src/esos_mail.c ****  *
+   6:/home/ben/esos32/src/esos_mail.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/home/ben/esos32/src/esos_mail.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/home/ben/esos32/src/esos_mail.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/home/ben/esos32/src/esos_mail.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/home/ben/esos32/src/esos_mail.c ****  *
+  11:/home/ben/esos32/src/esos_mail.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/home/ben/esos32/src/esos_mail.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/home/ben/esos32/src/esos_mail.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/home/ben/esos32/src/esos_mail.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/home/ben/esos32/src/esos_mail.c ****  *
+  16:/home/ben/esos32/src/esos_mail.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/home/ben/esos32/src/esos_mail.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/home/ben/esos32/src/esos_mail.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/home/ben/esos32/src/esos_mail.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/home/ben/esos32/src/esos_mail.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/home/ben/esos32/src/esos_mail.c ****  *
+  22:/home/ben/esos32/src/esos_mail.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/home/ben/esos32/src/esos_mail.c ****  * these files.
+  24:/home/ben/esos32/src/esos_mail.c ****  *
+  25:/home/ben/esos32/src/esos_mail.c ****  *
+  26:/home/ben/esos32/src/esos_mail.c ****  */
+  27:/home/ben/esos32/src/esos_mail.c **** 
+  28:/home/ben/esos32/src/esos_mail.c **** /** \file
+  29:/home/ben/esos32/src/esos_mail.c ****  * \brief Mailboxes and messaging code for ESOS32 tasks
+ARM GAS  /tmp/ccagymY8.s 			page 2
+
+
+  30:/home/ben/esos32/src/esos_mail.c ****  *
+  31:/home/ben/esos32/src/esos_mail.c ****  */
+  32:/home/ben/esos32/src/esos_mail.c **** 
+  33:/home/ben/esos32/src/esos_mail.c **** 
+  34:/home/ben/esos32/src/esos_mail.c **** #include    "esos.h"
+  35:/home/ben/esos32/src/esos_mail.c **** #include    "esos_mail.h"
+  36:/home/ben/esos32/src/esos_mail.c **** 
+  37:/home/ben/esos32/src/esos_mail.c **** // ******** G L O B A L S ***************
+  38:/home/ben/esos32/src/esos_mail.c **** //MAILBOX     __astMailbox[MAX_NUM_USER_TASKS];
+  39:/home/ben/esos32/src/esos_mail.c **** //uint8_t       __au8_MBData[MAX_NUM_USER_TASKS][MAX_SIZE_TASK_MAILBOX];
+  40:/home/ben/esos32/src/esos_mail.c **** uint8_t       __u8_esos_mail_routines_dummy_uint8;
+  41:/home/ben/esos32/src/esos_mail.c **** 
+  42:/home/ben/esos32/src/esos_mail.c **** /****************************************************************
+  43:/home/ben/esos32/src/esos_mail.c **** ** F U N C T I O N S
+  44:/home/ben/esos32/src/esos_mail.c **** ****************************************************************/
+  45:/home/ben/esos32/src/esos_mail.c **** void __esos_InitMailbox(MAILBOX* pst_Mailbox, uint8_t* pau8_ptr) {
+  30              		.loc 1 45 66 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 45 66 is_stmt 0 view .LVU1
+  35 0000 08B5     		push	{r3, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 3, -8
+  39              		.cfi_offset 14, -4
+  46:/home/ben/esos32/src/esos_mail.c ****   __esos_CB_Init( pst_Mailbox->pst_CBuffer, pau8_ptr, MAX_SIZE_TASK_MAILBOX);
+  40              		.loc 1 46 3 is_stmt 1 view .LVU2
+  41 0002 7822     		movs	r2, #120
+  42 0004 0068     		ldr	r0, [r0]
+  43              	.LVL1:
+  44              		.loc 1 46 3 is_stmt 0 view .LVU3
+  45 0006 FFF7FEFF 		bl	__esos_CB_Init
+  46              	.LVL2:
+  47:/home/ben/esos32/src/esos_mail.c **** } // endof esos_InitMailbox()
+  47              		.loc 1 47 1 view .LVU4
+  48 000a 08BD     		pop	{r3, pc}
+  49              		.cfi_endproc
+  50              	.LFE0:
+  52              		.section	.text.__esos_SendMailMessage,"ax",%progbits
+  53              		.align	1
+  54              		.global	__esos_SendMailMessage
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  59              	__esos_SendMailMessage:
+  60              	.LVL3:
+  61              	.LFB1:
+  48:/home/ben/esos32/src/esos_mail.c **** 
+  49:/home/ben/esos32/src/esos_mail.c **** /**
+  50:/home/ben/esos32/src/esos_mail.c **** * Writes message data to a task's mailbox.
+  51:/home/ben/esos32/src/esos_mail.c **** *
+  52:/home/ben/esos32/src/esos_mail.c **** * \param pst_RcvrTask  pointer to task structure (ESOS_TASK_HANDLE) whose mailbox will be written
+  53:/home/ben/esos32/src/esos_mail.c **** * \param pst_Msg        pointer to mailbox message structure that contains data to write to the tas
+  54:/home/ben/esos32/src/esos_mail.c **** * \note This function <em>ASSUMES</em> that there is ample free space available in specified
+  55:/home/ben/esos32/src/esos_mail.c **** * mailbox.
+  56:/home/ben/esos32/src/esos_mail.c **** *
+ARM GAS  /tmp/ccagymY8.s 			page 3
+
+
+  57:/home/ben/esos32/src/esos_mail.c **** * \sa ESOS_TASK_WAIT_ON_TASKS_MAILBOX_HAS_SPACE
+  58:/home/ben/esos32/src/esos_mail.c **** * \hideinitializer
+  59:/home/ben/esos32/src/esos_mail.c **** */
+  60:/home/ben/esos32/src/esos_mail.c **** void __esos_SendMailMessage(ESOS_TASK_HANDLE pst_RcvrTask, MAILMESSAGE* pst_Msg ) {
+  62              		.loc 1 60 83 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		.loc 1 60 83 is_stmt 0 view .LVU6
+  67 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  68              	.LCFI1:
+  69              		.cfi_def_cfa_offset 24
+  70              		.cfi_offset 3, -24
+  71              		.cfi_offset 4, -20
+  72              		.cfi_offset 5, -16
+  73              		.cfi_offset 6, -12
+  74              		.cfi_offset 7, -8
+  75              		.cfi_offset 14, -4
+  76 0002 0646     		mov	r6, r0
+  77 0004 0D46     		mov	r5, r1
+  61:/home/ben/esos32/src/esos_mail.c ****   uint8_t               u8_i;
+  78              		.loc 1 61 3 is_stmt 1 view .LVU7
+  62:/home/ben/esos32/src/esos_mail.c **** 
+  63:/home/ben/esos32/src/esos_mail.c ****   // first message btye:  flags in upper nibble, payload length in lower
+  64:/home/ben/esos32/src/esos_mail.c ****   u8_i = ((pst_Msg->u8_flags)<<4) + (pst_Msg->u8_DataLength & 0x0F);
+  79              		.loc 1 64 3 view .LVU8
+  80              		.loc 1 64 19 is_stmt 0 view .LVU9
+  81 0006 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+  82              	.LVL4:
+  83              		.loc 1 64 30 view .LVU10
+  84 0008 0901     		lsls	r1, r1, #4
+  85 000a C9B2     		uxtb	r1, r1
+  86              		.loc 1 64 45 view .LVU11
+  87 000c 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+  88              		.loc 1 64 61 view .LVU12
+  89 000e 03F00F03 		and	r3, r3, #15
+  90              		.loc 1 64 8 view .LVU13
+  91 0012 1944     		add	r1, r1, r3
+  92              	.LVL5:
+  65:/home/ben/esos32/src/esos_mail.c ****   __esos_CB_WriteUINT8( pst_RcvrTask->pst_Mailbox->pst_CBuffer, u8_i );
+  93              		.loc 1 65 3 is_stmt 1 view .LVU14
+  94              		.loc 1 65 37 is_stmt 0 view .LVU15
+  95 0014 4369     		ldr	r3, [r0, #20]
+  96              		.loc 1 65 3 view .LVU16
+  97 0016 C9B2     		uxtb	r1, r1
+  98              		.loc 1 65 3 view .LVU17
+  99 0018 1868     		ldr	r0, [r3]
+ 100              	.LVL6:
+ 101              		.loc 1 65 3 view .LVU18
+ 102 001a FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 103              	.LVL7:
+  66:/home/ben/esos32/src/esos_mail.c ****   // second message word: Task ID of sending task
+  67:/home/ben/esos32/src/esos_mail.c ****   __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, ESOS_GET_PMSG_FROMTASK(pst_Msg) );
+ 104              		.loc 1 67 3 is_stmt 1 view .LVU19
+ 105              		.loc 1 67 38 is_stmt 0 view .LVU20
+ 106 001e 7369     		ldr	r3, [r6, #20]
+ 107              		.loc 1 67 3 view .LVU21
+ARM GAS  /tmp/ccagymY8.s 			page 4
+
+
+ 108 0020 6988     		ldrh	r1, [r5, #2]
+ 109 0022 1868     		ldr	r0, [r3]
+ 110 0024 FFF7FEFF 		bl	__esos_CB_WriteUINT16
+ 111              	.LVL8:
+  68:/home/ben/esos32/src/esos_mail.c ****   // Now, timestamp the message with double word
+  69:/home/ben/esos32/src/esos_mail.c ****   __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, esos_GetSystemTick() );
+ 112              		.loc 1 69 3 is_stmt 1 view .LVU22
+ 113              		.loc 1 69 38 is_stmt 0 view .LVU23
+ 114 0028 7369     		ldr	r3, [r6, #20]
+ 115              		.loc 1 69 3 view .LVU24
+ 116 002a 1C68     		ldr	r4, [r3]
+ 117 002c FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 118              	.LVL9:
+ 119 0030 0146     		mov	r1, r0
+ 120 0032 2046     		mov	r0, r4
+ 121 0034 FFF7FEFF 		bl	__esos_CB_WriteUINT32
+ 122              	.LVL10:
+  70:/home/ben/esos32/src/esos_mail.c ****   // Now write the data depending on what type and how many
+  71:/home/ben/esos32/src/esos_mail.c ****   if ( ESOS_GET_PMSG_FLAGS(pst_Msg) & ESOS_MAILMESSAGE_UINT8) {
+ 123              		.loc 1 71 3 is_stmt 1 view .LVU25
+ 124              		.loc 1 71 8 is_stmt 0 view .LVU26
+ 125 0038 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 126              		.loc 1 71 6 view .LVU27
+ 127 003a 13F00104 		ands	r4, r3, #1
+ 128 003e 12D1     		bne	.L13
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+  73:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT8( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au8_Contents[u8_i] );
+  74:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+  75:/home/ben/esos32/src/esos_mail.c ****   } else if ( ESOS_GET_PMSG_FLAGS(pst_Msg) & ESOS_MAILMESSAGE_UINT16) {
+ 129              		.loc 1 75 10 is_stmt 1 view .LVU28
+ 130              		.loc 1 75 13 is_stmt 0 view .LVU29
+ 131 0040 13F00207 		ands	r7, r3, #2
+ 132 0044 11D1     		bne	.L8
+  76:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<pst_Msg->u8_DataLength; u8_i++) {
+  77:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+  78:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+  79:/home/ben/esos32/src/esos_mail.c ****   } else if ( ESOS_GET_PMSG_FLAGS(pst_Msg) & ESOS_MAILMESSAGE_UINT32) {
+ 133              		.loc 1 79 10 is_stmt 1 view .LVU30
+ 134              		.loc 1 79 13 is_stmt 0 view .LVU31
+ 135 0046 13F0040F 		tst	r3, #4
+ 136 004a 26D1     		bne	.L11
+ 137 004c 0AE0     		b	.L3
+ 138              	.LVL11:
+ 139              	.L6:
+  73:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 140              		.loc 1 73 7 is_stmt 1 discriminator 3 view .LVU32
+  73:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 141              		.loc 1 73 41 is_stmt 0 discriminator 3 view .LVU33
+ 142 004e 7369     		ldr	r3, [r6, #20]
+  73:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 143              		.loc 1 73 7 discriminator 3 view .LVU34
+ 144 0050 2A19     		adds	r2, r5, r4
+ 145 0052 117B     		ldrb	r1, [r2, #12]	@ zero_extendqisi2
+ 146 0054 1868     		ldr	r0, [r3]
+ 147 0056 FFF7FEFF 		bl	__esos_CB_WriteUINT8
+ 148              	.LVL12:
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ARM GAS  /tmp/ccagymY8.s 			page 5
+
+
+ 149              		.loc 1 72 59 is_stmt 1 discriminator 3 view .LVU35
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ 150              		.loc 1 72 63 is_stmt 0 discriminator 3 view .LVU36
+ 151 005a 0134     		adds	r4, r4, #1
+ 152              	.LVL13:
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ 153              		.loc 1 72 63 discriminator 3 view .LVU37
+ 154 005c E4B2     		uxtb	r4, r4
+ 155              	.LVL14:
+ 156              	.L4:
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ 157              		.loc 1 72 18 is_stmt 1 discriminator 1 view .LVU38
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ 158              		.loc 1 72 23 is_stmt 0 discriminator 1 view .LVU39
+ 159 005e 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+  72:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Msg); u8_i++) {
+ 160              		.loc 1 72 5 discriminator 1 view .LVU40
+ 161 0060 A342     		cmp	r3, r4
+ 162 0062 F4D8     		bhi	.L6
+ 163              	.LVL15:
+ 164              	.L3:
+  80:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<pst_Msg->u8_DataLength; u8_i++) {
+  81:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+  82:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+  83:/home/ben/esos32/src/esos_mail.c ****   } else {
+  84:/home/ben/esos32/src/esos_mail.c ****   } // end for STRINGs
+  85:/home/ben/esos32/src/esos_mail.c **** } // endof __esos_SendMailMessage()
+ 165              		.loc 1 85 1 view .LVU41
+ 166 0064 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 167              	.LVL16:
+ 168              	.L13:
+  72:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT8( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au8_Contents[u8_i] );
+ 169              		.loc 1 72 14 view .LVU42
+ 170 0066 0024     		movs	r4, #0
+ 171 0068 F9E7     		b	.L4
+ 172              	.L8:
+ 173              	.LVL17:
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 174              		.loc 1 76 18 is_stmt 1 discriminator 1 view .LVU43
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 175              		.loc 1 76 30 is_stmt 0 discriminator 1 view .LVU44
+ 176 006a 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 177              		.loc 1 76 5 discriminator 1 view .LVU45
+ 178 006c A342     		cmp	r3, r4
+ 179 006e F9D9     		bls	.L3
+  77:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 180              		.loc 1 77 7 is_stmt 1 discriminator 3 view .LVU46
+  77:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 181              		.loc 1 77 42 is_stmt 0 discriminator 3 view .LVU47
+ 182 0070 7269     		ldr	r2, [r6, #20]
+  77:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 183              		.loc 1 77 7 discriminator 3 view .LVU48
+ 184 0072 231D     		adds	r3, r4, #4
+ 185 0074 05EB4303 		add	r3, r5, r3, lsl #1
+ 186 0078 9988     		ldrh	r1, [r3, #4]
+ 187 007a 1068     		ldr	r0, [r2]
+ARM GAS  /tmp/ccagymY8.s 			page 6
+
+
+ 188 007c FFF7FEFF 		bl	__esos_CB_WriteUINT16
+ 189              	.LVL18:
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 190              		.loc 1 76 47 is_stmt 1 discriminator 3 view .LVU49
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 191              		.loc 1 76 51 is_stmt 0 discriminator 3 view .LVU50
+ 192 0080 0134     		adds	r4, r4, #1
+ 193              	.LVL19:
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 194              		.loc 1 76 51 discriminator 3 view .LVU51
+ 195 0082 E4B2     		uxtb	r4, r4
+ 196              	.LVL20:
+  76:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT16( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au16_Contents[u8_i] )
+ 197              		.loc 1 76 51 discriminator 3 view .LVU52
+ 198 0084 F1E7     		b	.L8
+ 199              	.LVL21:
+ 200              	.L12:
+  81:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 201              		.loc 1 81 7 is_stmt 1 discriminator 3 view .LVU53
+  81:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 202              		.loc 1 81 42 is_stmt 0 discriminator 3 view .LVU54
+ 203 0086 7269     		ldr	r2, [r6, #20]
+  81:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 204              		.loc 1 81 7 discriminator 3 view .LVU55
+ 205 0088 BB1C     		adds	r3, r7, #2
+ 206 008a 05EB8303 		add	r3, r5, r3, lsl #2
+ 207 008e 5968     		ldr	r1, [r3, #4]
+ 208 0090 1068     		ldr	r0, [r2]
+ 209 0092 FFF7FEFF 		bl	__esos_CB_WriteUINT32
+ 210              	.LVL22:
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 211              		.loc 1 80 47 is_stmt 1 discriminator 3 view .LVU56
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 212              		.loc 1 80 51 is_stmt 0 discriminator 3 view .LVU57
+ 213 0096 0137     		adds	r7, r7, #1
+ 214              	.LVL23:
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 215              		.loc 1 80 51 discriminator 3 view .LVU58
+ 216 0098 FFB2     		uxtb	r7, r7
+ 217              	.LVL24:
+ 218              	.L11:
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 219              		.loc 1 80 18 is_stmt 1 discriminator 1 view .LVU59
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 220              		.loc 1 80 30 is_stmt 0 discriminator 1 view .LVU60
+ 221 009a 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+  80:/home/ben/esos32/src/esos_mail.c ****       __esos_CB_WriteUINT32( pst_RcvrTask->pst_Mailbox->pst_CBuffer, pst_Msg->au32_Contents[u8_i] )
+ 222              		.loc 1 80 5 discriminator 1 view .LVU61
+ 223 009c BB42     		cmp	r3, r7
+ 224 009e F2D8     		bhi	.L12
+ 225 00a0 E0E7     		b	.L3
+ 226              		.cfi_endproc
+ 227              	.LFE1:
+ 229              		.section	.text.__esos_ReadMailMessage,"ax",%progbits
+ 230              		.align	1
+ 231              		.global	__esos_ReadMailMessage
+ 232              		.syntax unified
+ARM GAS  /tmp/ccagymY8.s 			page 7
+
+
+ 233              		.thumb
+ 234              		.thumb_func
+ 236              	__esos_ReadMailMessage:
+ 237              	.LVL25:
+ 238              	.LFB2:
+  86:/home/ben/esos32/src/esos_mail.c **** 
+  87:/home/ben/esos32/src/esos_mail.c **** /**
+  88:/home/ben/esos32/src/esos_mail.c **** * Reads the next (oldest) waiting message from a task's mailbox.
+  89:/home/ben/esos32/src/esos_mail.c **** *
+  90:/home/ben/esos32/src/esos_mail.c **** * \param pstTask  pointer to task structure (ESOS_TASK_HANDLE) whose mailbox will be written
+  91:/home/ben/esos32/src/esos_mail.c **** * \param pstMsg   pointer to mailbox message structure that contains data to write to the task's ma
+  92:/home/ben/esos32/src/esos_mail.c **** * \note This function <em>ASSUMES</em> that there is ample free space available in specified
+  93:/home/ben/esos32/src/esos_mail.c **** * mailbox.
+  94:/home/ben/esos32/src/esos_mail.c **** *
+  95:/home/ben/esos32/src/esos_mail.c **** * \sa ESOS_TASK_WAIT_ON_TASKS_MAILBOX_HAS_SPACE
+  96:/home/ben/esos32/src/esos_mail.c **** * \hideinitializer
+  97:/home/ben/esos32/src/esos_mail.c **** */
+  98:/home/ben/esos32/src/esos_mail.c **** void __esos_ReadMailMessage(ESOS_TASK_HANDLE pst_Task, MAILMESSAGE* pst_Message ) {
+ 239              		.loc 1 98 83 is_stmt 1 view -0
+ 240              		.cfi_startproc
+ 241              		@ args = 0, pretend = 0, frame = 0
+ 242              		@ frame_needed = 0, uses_anonymous_args = 0
+ 243              		.loc 1 98 83 is_stmt 0 view .LVU63
+ 244 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 245              	.LCFI2:
+ 246              		.cfi_def_cfa_offset 24
+ 247              		.cfi_offset 3, -24
+ 248              		.cfi_offset 4, -20
+ 249              		.cfi_offset 5, -16
+ 250              		.cfi_offset 6, -12
+ 251              		.cfi_offset 7, -8
+ 252              		.cfi_offset 14, -4
+ 253 0002 0646     		mov	r6, r0
+ 254 0004 0D46     		mov	r5, r1
+  99:/home/ben/esos32/src/esos_mail.c ****   uint8_t               u8_i;
+ 255              		.loc 1 99 3 is_stmt 1 view .LVU64
+ 100:/home/ben/esos32/src/esos_mail.c ****   ESOS_TASK_HANDLE      pst_From;
+ 256              		.loc 1 100 3 view .LVU65
+ 101:/home/ben/esos32/src/esos_mail.c **** 
+ 102:/home/ben/esos32/src/esos_mail.c ****   /* first message btye:  flags in upper nibble, payload length in lower */
+ 103:/home/ben/esos32/src/esos_mail.c ****   u8_i = __esos_CB_ReadUINT8( pst_Task->pst_Mailbox->pst_CBuffer );
+ 257              		.loc 1 103 3 view .LVU66
+ 258              		.loc 1 103 39 is_stmt 0 view .LVU67
+ 259 0006 4369     		ldr	r3, [r0, #20]
+ 260              		.loc 1 103 10 view .LVU68
+ 261 0008 1868     		ldr	r0, [r3]
+ 262              	.LVL26:
+ 263              		.loc 1 103 10 view .LVU69
+ 264 000a FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 265              	.LVL27:
+ 104:/home/ben/esos32/src/esos_mail.c ****   pst_Message->u8_flags = u8_i>>4;
+ 266              		.loc 1 104 3 is_stmt 1 view .LVU70
+ 267              		.loc 1 104 25 is_stmt 0 view .LVU71
+ 268 000e 0309     		lsrs	r3, r0, #4
+ 269 0010 2B70     		strb	r3, [r5]
+ 105:/home/ben/esos32/src/esos_mail.c ****   pst_Message->u8_DataLength = u8_i & 0x0F;
+ 270              		.loc 1 105 3 is_stmt 1 view .LVU72
+ARM GAS  /tmp/ccagymY8.s 			page 8
+
+
+ 271              		.loc 1 105 37 is_stmt 0 view .LVU73
+ 272 0012 00F00F00 		and	r0, r0, #15
+ 273              	.LVL28:
+ 274              		.loc 1 105 30 view .LVU74
+ 275 0016 2871     		strb	r0, [r5, #4]
+ 106:/home/ben/esos32/src/esos_mail.c ****   /* second message byte: Task ID of sending task */
+ 107:/home/ben/esos32/src/esos_mail.c ****   pst_Message->u16_FromTaskID = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer );
+ 276              		.loc 1 107 3 is_stmt 1 view .LVU75
+ 277              		.loc 1 107 63 is_stmt 0 view .LVU76
+ 278 0018 7369     		ldr	r3, [r6, #20]
+ 279              		.loc 1 107 33 view .LVU77
+ 280 001a 1868     		ldr	r0, [r3]
+ 281 001c FFF7FEFF 		bl	__esos_CB_ReadUINT16
+ 282              	.LVL29:
+ 283              		.loc 1 107 31 view .LVU78
+ 284 0020 6880     		strh	r0, [r5, #2]	@ movhi
+ 108:/home/ben/esos32/src/esos_mail.c ****   /* Now, timestamp the message */
+ 109:/home/ben/esos32/src/esos_mail.c ****   pst_Message->u32_Postmark = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer );
+ 285              		.loc 1 109 3 is_stmt 1 view .LVU79
+ 286              		.loc 1 109 61 is_stmt 0 view .LVU80
+ 287 0022 7369     		ldr	r3, [r6, #20]
+ 288              		.loc 1 109 31 view .LVU81
+ 289 0024 1868     		ldr	r0, [r3]
+ 290 0026 FFF7FEFF 		bl	__esos_CB_ReadUINT32
+ 291              	.LVL30:
+ 292              		.loc 1 109 29 view .LVU82
+ 293 002a A860     		str	r0, [r5, #8]
+ 110:/home/ben/esos32/src/esos_mail.c ****   /* Now write the data depending on what type and how many */
+ 111:/home/ben/esos32/src/esos_mail.c ****   if ( ESOS_GET_PMSG_FLAGS(pst_Message) & ESOS_MAILMESSAGE_UINT8) {
+ 294              		.loc 1 111 3 is_stmt 1 view .LVU83
+ 295              		.loc 1 111 8 is_stmt 0 view .LVU84
+ 296 002c 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 297              		.loc 1 111 6 view .LVU85
+ 298 002e 13F00104 		ands	r4, r3, #1
+ 299 0032 16D1     		bne	.L28
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 113:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au8_Contents[u8_i] = __esos_CB_ReadUINT8( pst_Task->pst_Mailbox->pst_CBuffer );
+ 114:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 115:/home/ben/esos32/src/esos_mail.c ****   } else if ( ESOS_GET_PMSG_FLAGS(pst_Message) & ESOS_MAILMESSAGE_UINT16) {
+ 300              		.loc 1 115 10 is_stmt 1 view .LVU86
+ 301              		.loc 1 115 13 is_stmt 0 view .LVU87
+ 302 0034 13F00207 		ands	r7, r3, #2
+ 303 0038 15D1     		bne	.L22
+ 116:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<pst_Message->u8_DataLength; u8_i++) {
+ 117:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 118:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 119:/home/ben/esos32/src/esos_mail.c ****   } else if ( ESOS_GET_PMSG_FLAGS(pst_Message) & ESOS_MAILMESSAGE_UINT32) {
+ 304              		.loc 1 119 10 is_stmt 1 view .LVU88
+ 305              		.loc 1 119 13 is_stmt 0 view .LVU89
+ 306 003a 13F0040F 		tst	r3, #4
+ 307 003e 2AD1     		bne	.L25
+ 308 0040 0AE0     		b	.L21
+ 309              	.LVL31:
+ 310              	.L20:
+ 113:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 311              		.loc 1 113 7 is_stmt 1 discriminator 3 view .LVU90
+ 113:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ARM GAS  /tmp/ccagymY8.s 			page 9
+
+
+ 312              		.loc 1 113 70 is_stmt 0 discriminator 3 view .LVU91
+ 313 0042 7369     		ldr	r3, [r6, #20]
+ 113:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 314              		.loc 1 113 41 discriminator 3 view .LVU92
+ 315 0044 1868     		ldr	r0, [r3]
+ 316 0046 FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 317              	.LVL32:
+ 113:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT8s
+ 318              		.loc 1 113 39 discriminator 3 view .LVU93
+ 319 004a 2B19     		adds	r3, r5, r4
+ 320 004c 1873     		strb	r0, [r3, #12]
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 321              		.loc 1 112 63 is_stmt 1 discriminator 3 view .LVU94
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 322              		.loc 1 112 67 is_stmt 0 discriminator 3 view .LVU95
+ 323 004e 0134     		adds	r4, r4, #1
+ 324              	.LVL33:
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 325              		.loc 1 112 67 discriminator 3 view .LVU96
+ 326 0050 E4B2     		uxtb	r4, r4
+ 327              	.LVL34:
+ 328              	.L18:
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 329              		.loc 1 112 18 is_stmt 1 discriminator 1 view .LVU97
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 330              		.loc 1 112 23 is_stmt 0 discriminator 1 view .LVU98
+ 331 0052 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+ 112:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<ESOS_GET_PMSG_DATA_LENGTH(pst_Message); u8_i++) {
+ 332              		.loc 1 112 5 discriminator 1 view .LVU99
+ 333 0054 A342     		cmp	r3, r4
+ 334 0056 F4D8     		bhi	.L20
+ 335              	.LVL35:
+ 336              	.L21:
+ 120:/home/ben/esos32/src/esos_mail.c ****     for (u8_i=0; u8_i<pst_Message->u8_DataLength; u8_i++) {
+ 121:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 122:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 123:/home/ben/esos32/src/esos_mail.c ****   } else {
+ 124:/home/ben/esos32/src/esos_mail.c ****   } // end strings
+ 337              		.loc 1 124 3 is_stmt 1 view .LVU100
+ 125:/home/ben/esos32/src/esos_mail.c ****   /* If sending task requests ACK a.k.a. "delivery confirmation, then do it */
+ 126:/home/ben/esos32/src/esos_mail.c ****   if ( ESOS_GET_PMSG_FLAGS(pst_Message) & ESOS_MAILMESSAGE_REQUEST_ACK) {
+ 338              		.loc 1 126 3 view .LVU101
+ 339              		.loc 1 126 8 is_stmt 0 view .LVU102
+ 340 0058 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 341              		.loc 1 126 6 view .LVU103
+ 342 005a 13F0080F 		tst	r3, #8
+ 343 005e 1ED1     		bne	.L32
+ 344              	.L17:
+ 127:/home/ben/esos32/src/esos_mail.c ****     pst_From = esos_GetTaskHandleFromID( ESOS_GET_PMSG_FROMTASK(pst_Message) );
+ 128:/home/ben/esos32/src/esos_mail.c ****     if (pst_From != NULLPTR) {
+ 129:/home/ben/esos32/src/esos_mail.c ****       __ESOS_CLEAR_TASK_MAILNACK_FLAG( pst_From );
+ 130:/home/ben/esos32/src/esos_mail.c ****     } // end if ! NULLPTR
+ 131:/home/ben/esos32/src/esos_mail.c ****   } //end if
+ 132:/home/ben/esos32/src/esos_mail.c **** } // __esos_ReadMailMessage()
+ 345              		.loc 1 132 1 view .LVU104
+ 346 0060 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 347              	.LVL36:
+ARM GAS  /tmp/ccagymY8.s 			page 10
+
+
+ 348              	.L28:
+ 112:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au8_Contents[u8_i] = __esos_CB_ReadUINT8( pst_Task->pst_Mailbox->pst_CBuffer );
+ 349              		.loc 1 112 14 view .LVU105
+ 350 0062 0024     		movs	r4, #0
+ 351 0064 F5E7     		b	.L18
+ 352              	.L22:
+ 353              	.LVL37:
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 354              		.loc 1 116 18 is_stmt 1 discriminator 1 view .LVU106
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 355              		.loc 1 116 34 is_stmt 0 discriminator 1 view .LVU107
+ 356 0066 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 357              		.loc 1 116 5 discriminator 1 view .LVU108
+ 358 0068 A342     		cmp	r3, r4
+ 359 006a F5D9     		bls	.L21
+ 117:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 360              		.loc 1 117 7 is_stmt 1 discriminator 3 view .LVU109
+ 117:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 361              		.loc 1 117 72 is_stmt 0 discriminator 3 view .LVU110
+ 362 006c 7369     		ldr	r3, [r6, #20]
+ 117:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 363              		.loc 1 117 42 discriminator 3 view .LVU111
+ 364 006e 1868     		ldr	r0, [r3]
+ 365 0070 FFF7FEFF 		bl	__esos_CB_ReadUINT16
+ 366              	.LVL38:
+ 117:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT16s
+ 367              		.loc 1 117 40 discriminator 3 view .LVU112
+ 368 0074 231D     		adds	r3, r4, #4
+ 369 0076 05EB4303 		add	r3, r5, r3, lsl #1
+ 370 007a 9880     		strh	r0, [r3, #4]	@ movhi
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 371              		.loc 1 116 51 is_stmt 1 discriminator 3 view .LVU113
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 372              		.loc 1 116 55 is_stmt 0 discriminator 3 view .LVU114
+ 373 007c 0134     		adds	r4, r4, #1
+ 374              	.LVL39:
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 375              		.loc 1 116 55 discriminator 3 view .LVU115
+ 376 007e E4B2     		uxtb	r4, r4
+ 377              	.LVL40:
+ 116:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au16_Contents[u8_i] = __esos_CB_ReadUINT16( pst_Task->pst_Mailbox->pst_CBuffer )
+ 378              		.loc 1 116 55 discriminator 3 view .LVU116
+ 379 0080 F1E7     		b	.L22
+ 380              	.LVL41:
+ 381              	.L26:
+ 121:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 382              		.loc 1 121 7 is_stmt 1 discriminator 3 view .LVU117
+ 121:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 383              		.loc 1 121 72 is_stmt 0 discriminator 3 view .LVU118
+ 384 0082 7369     		ldr	r3, [r6, #20]
+ 121:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ 385              		.loc 1 121 42 discriminator 3 view .LVU119
+ 386 0084 1868     		ldr	r0, [r3]
+ 387 0086 FFF7FEFF 		bl	__esos_CB_ReadUINT32
+ 388              	.LVL42:
+ 121:/home/ben/esos32/src/esos_mail.c ****     } // end for UINT32s
+ARM GAS  /tmp/ccagymY8.s 			page 11
+
+
+ 389              		.loc 1 121 40 discriminator 3 view .LVU120
+ 390 008a BB1C     		adds	r3, r7, #2
+ 391 008c 05EB8303 		add	r3, r5, r3, lsl #2
+ 392 0090 5860     		str	r0, [r3, #4]
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 393              		.loc 1 120 51 is_stmt 1 discriminator 3 view .LVU121
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 394              		.loc 1 120 55 is_stmt 0 discriminator 3 view .LVU122
+ 395 0092 0137     		adds	r7, r7, #1
+ 396              	.LVL43:
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 397              		.loc 1 120 55 discriminator 3 view .LVU123
+ 398 0094 FFB2     		uxtb	r7, r7
+ 399              	.LVL44:
+ 400              	.L25:
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 401              		.loc 1 120 18 is_stmt 1 discriminator 1 view .LVU124
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 402              		.loc 1 120 34 is_stmt 0 discriminator 1 view .LVU125
+ 403 0096 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+ 120:/home/ben/esos32/src/esos_mail.c ****       pst_Message->au32_Contents[u8_i] = __esos_CB_ReadUINT32( pst_Task->pst_Mailbox->pst_CBuffer )
+ 404              		.loc 1 120 5 discriminator 1 view .LVU126
+ 405 0098 BB42     		cmp	r3, r7
+ 406 009a F2D8     		bhi	.L26
+ 407 009c DCE7     		b	.L21
+ 408              	.LVL45:
+ 409              	.L32:
+ 127:/home/ben/esos32/src/esos_mail.c ****     if (pst_From != NULLPTR) {
+ 410              		.loc 1 127 5 is_stmt 1 view .LVU127
+ 127:/home/ben/esos32/src/esos_mail.c ****     if (pst_From != NULLPTR) {
+ 411              		.loc 1 127 16 is_stmt 0 view .LVU128
+ 412 009e 6888     		ldrh	r0, [r5, #2]
+ 413 00a0 FFF7FEFF 		bl	esos_GetTaskHandleFromID
+ 414              	.LVL46:
+ 128:/home/ben/esos32/src/esos_mail.c ****       __ESOS_CLEAR_TASK_MAILNACK_FLAG( pst_From );
+ 415              		.loc 1 128 5 is_stmt 1 view .LVU129
+ 128:/home/ben/esos32/src/esos_mail.c ****       __ESOS_CLEAR_TASK_MAILNACK_FLAG( pst_From );
+ 416              		.loc 1 128 8 is_stmt 0 view .LVU130
+ 417 00a4 0028     		cmp	r0, #0
+ 418 00a6 DBD0     		beq	.L17
+ 129:/home/ben/esos32/src/esos_mail.c ****     } // end if ! NULLPTR
+ 419              		.loc 1 129 7 is_stmt 1 view .LVU131
+ 420 00a8 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 421 00aa 23F02003 		bic	r3, r3, #32
+ 422 00ae 8370     		strb	r3, [r0, #2]
+ 423              		.loc 1 132 1 is_stmt 0 view .LVU132
+ 424 00b0 D6E7     		b	.L17
+ 425              		.cfi_endproc
+ 426              	.LFE2:
+ 428              		.global	__u8_esos_mail_routines_dummy_uint8
+ 429              		.section	.bss.__u8_esos_mail_routines_dummy_uint8,"aw",%nobits
+ 432              	__u8_esos_mail_routines_dummy_uint8:
+ 433 0000 00       		.space	1
+ 434              		.text
+ 435              	.Letext0:
+ 436              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 437              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ARM GAS  /tmp/ccagymY8.s 			page 12
+
+
+ 438              		.file 4 "/home/ben/esos32/include/lc-switch.h"
+ 439              		.file 5 "/home/ben/esos32/include/esos_cb.h"
+ 440              		.file 6 "/home/ben/esos32/include/esos_mail.h"
+ 441              		.file 7 "/home/ben/esos32/include/esos_task.h"
+ 442              		.file 8 "/home/ben/esos32/include/esos.h"
+ARM GAS  /tmp/ccagymY8.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_mail.c
+     /tmp/ccagymY8.s:20     .text.__esos_InitMailbox:0000000000000000 $t
+     /tmp/ccagymY8.s:26     .text.__esos_InitMailbox:0000000000000000 __esos_InitMailbox
+     /tmp/ccagymY8.s:53     .text.__esos_SendMailMessage:0000000000000000 $t
+     /tmp/ccagymY8.s:59     .text.__esos_SendMailMessage:0000000000000000 __esos_SendMailMessage
+     /tmp/ccagymY8.s:230    .text.__esos_ReadMailMessage:0000000000000000 $t
+     /tmp/ccagymY8.s:236    .text.__esos_ReadMailMessage:0000000000000000 __esos_ReadMailMessage
+     /tmp/ccagymY8.s:432    .bss.__u8_esos_mail_routines_dummy_uint8:0000000000000000 __u8_esos_mail_routines_dummy_uint8
+     /tmp/ccagymY8.s:433    .bss.__u8_esos_mail_routines_dummy_uint8:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__esos_CB_Init
+__esos_CB_WriteUINT8
+__esos_CB_WriteUINT16
+__esos_hw_GetSystemTickCount
+__esos_CB_WriteUINT32
+__esos_CB_ReadUINT8
+__esos_CB_ReadUINT16
+__esos_CB_ReadUINT32
+esos_GetTaskHandleFromID

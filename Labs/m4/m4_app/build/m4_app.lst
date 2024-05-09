@@ -1,0 +1,1878 @@
+ARM GAS  /tmp/ccSLjvog.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"m4_app.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.flash_LED,"ax",%progbits
+  20              		.align	1
+  21              		.global	flash_LED
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	flash_LED:
+  27              	.LVL0:
+  28              	.LFB9:
+  29              		.file 1 "src/m4_app.c"
+   1:src/m4_app.c  **** /*
+   2:src/m4_app.c  ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:src/m4_app.c  ****  * All rights reserved.
+   4:src/m4_app.c  ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:src/m4_app.c  ****  *
+   6:src/m4_app.c  ****  * Permission to use, copy, modify, and distribute this software and its
+   7:src/m4_app.c  ****  * documentation for any purpose, without fee, and without written agreement is
+   8:src/m4_app.c  ****  * hereby granted, provided that the above copyright notice, the following
+   9:src/m4_app.c  ****  * two paragraphs and the authors appear in all copies of this software.
+  10:src/m4_app.c  ****  *
+  11:src/m4_app.c  ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:src/m4_app.c  ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:src/m4_app.c  ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:src/m4_app.c  ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:src/m4_app.c  ****  *
+  16:src/m4_app.c  ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:src/m4_app.c  ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:src/m4_app.c  ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:src/m4_app.c  ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:src/m4_app.c  ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:src/m4_app.c  ****  *
+  22:src/m4_app.c  ****  * Please maintain this header in its entirety when copying/modifying
+  23:src/m4_app.c  ****  * these files.
+  24:src/m4_app.c  ****  *
+  25:src/m4_app.c  ****  *
+  26:src/m4_app.c  ****  */
+  27:src/m4_app.c  **** 
+  28:src/m4_app.c  **** // #define ESOS_USE_IRQS
+  29:src/m4_app.c  **** 
+ARM GAS  /tmp/ccSLjvog.s 			page 2
+
+
+  30:src/m4_app.c  **** // INCLUDEs go here  (First include the main esos.h file)
+  31:src/m4_app.c  **** //      After that, the user can include what they need
+  32:src/m4_app.c  **** #include "esos.h"
+  33:src/m4_app.c  **** #include "m4.h"
+  34:src/m4_app.c  **** #include "circularBuffer.h"
+  35:src/m4_app.c  **** #include "user_app.h"
+  36:src/m4_app.c  **** 
+  37:src/m4_app.c  **** #ifdef __linux
+  38:src/m4_app.c  **** #include    "esos_pc.h"
+  39:src/m4_app.c  **** #include    "esos_pc_stdio.h"
+  40:src/m4_app.c  **** // INCLUDE these so our printf and other PC hacks work
+  41:src/m4_app.c  **** #include <stdio.h>
+  42:src/m4_app.c  **** #include <sys/select.h>
+  43:src/m4_app.c  **** #include <termios.h>
+  44:src/m4_app.c  **** #include <unistd.h>
+  45:src/m4_app.c  **** #include <string.h>
+  46:src/m4_app.c  **** #else
+  47:src/m4_app.c  **** #include    "esos_stm32l4.h"
+  48:src/m4_app.c  **** #include    "esos_stm32l4_rs232.h"
+  49:src/m4_app.c  **** #endif
+  50:src/m4_app.c  **** 
+  51:src/m4_app.c  **** 
+  52:src/m4_app.c  **** // DEFINEs go here
+  53:src/m4_app.c  **** 
+  54:src/m4_app.c  **** /*
+  55:src/m4_app.c  ****  * PROTOTYPEs go here
+  56:src/m4_app.c  ****  *
+  57:src/m4_app.c  ****  */
+  58:src/m4_app.c  **** void __user_init_hw( void );
+  59:src/m4_app.c  **** 
+  60:src/m4_app.c  **** 
+  61:src/m4_app.c  **** // GLOBALs go here
+  62:src/m4_app.c  **** //  Generally, the user-created semaphores will be defined/allocated here
+  63:src/m4_app.c  **** //static uint8_t psz_CRNL[3]= {0x0D, 0x0A, 0};
+  64:src/m4_app.c  **** CircularBuffer bufferReceiver;
+  65:src/m4_app.c  **** CircularBuffer bufferSender;
+  66:src/m4_app.c  **** uint8_t key[] = "BOLDFEARLESSCONFIDENT";
+  67:src/m4_app.c  **** uint8_t key2[] = "BOLDFEARLESSCONFIDENT";
+  68:src/m4_app.c  **** bool state = false;
+  69:src/m4_app.c  **** 
+  70:src/m4_app.c  **** // timer globals
+  71:src/m4_app.c  **** uint32_t timer2Period = 1000;
+  72:src/m4_app.c  **** 
+  73:src/m4_app.c  **** 
+  74:src/m4_app.c  **** #ifdef _linux
+  75:src/m4_app.c  **** /*
+  76:src/m4_app.c  ****  * Simulate the timer ISR found on a MCU
+  77:src/m4_app.c  ****  *   The PC doesn't have a timer ISR, so this task will periodically
+  78:src/m4_app.c  ****  *   call the timer services callback instead.
+  79:src/m4_app.c  ****  *   USED ONLY FOR DEVELOPMENT AND TESTING ON PC.
+  80:src/m4_app.c  ****  *   Real MCU hardware doesn't need this task
+  81:src/m4_app.c  **** */
+  82:src/m4_app.c  **** ESOS_USER_TASK( __simulated_isr ) {
+  83:src/m4_app.c  ****   ESOS_TASK_BEGIN();
+  84:src/m4_app.c  ****   while (TRUE) {
+  85:src/m4_app.c  ****     // call the ESOS timer services callback just like a real H/W ISR would
+  86:src/m4_app.c  ****     __esos_tmrSvcsExecute();
+ARM GAS  /tmp/ccSLjvog.s 			page 3
+
+
+  87:src/m4_app.c  ****     ESOS_TASK_WAIT_TICKS( 1 );
+  88:src/m4_app.c  **** 
+  89:src/m4_app.c  ****   } // endof while(TRUE)
+  90:src/m4_app.c  ****   ESOS_TASK_END();
+  91:src/m4_app.c  **** } // end child_task
+  92:src/m4_app.c  **** #endif
+  93:src/m4_app.c  **** 
+  94:src/m4_app.c  **** // Flashes the onboard LED to act as a "heartbeat"
+  95:src/m4_app.c  **** ESOS_USER_TASK(flash_LED) {
+  30              		.loc 1 95 27 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 95 27 is_stmt 0 view .LVU1
+  35 0000 38B5     		push	{r3, r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 3, -16
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 5, -8
+  41              		.cfi_offset 14, -4
+  42 0002 0446     		mov	r4, r0
+  96:src/m4_app.c  ****   ESOS_TASK_BEGIN();
+  43              		.loc 1 96 3 is_stmt 1 view .LVU2
+  44 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+  45 0006 63F07F03 		orn	r3, r3, #127
+  46 000a 8370     		strb	r3, [r0, #2]
+  47              		.loc 1 96 3 view .LVU3
+  48 000c 0388     		ldrh	r3, [r0]
+  49 000e A3B1     		cbz	r3, .L2
+  50 0010 642B     		cmp	r3, #100
+  51 0012 20D0     		beq	.L3
+  97:src/m4_app.c  ****   while (TRUE) 
+  98:src/m4_app.c  ****   {
+  99:src/m4_app.c  ****     gpio_toggle(LD2_PORT,LD2_PIN);
+ 100:src/m4_app.c  ****     ESOS_TASK_WAIT_TICKS(timer2Period/2)
+ 101:src/m4_app.c  ****   } // endof while(TRUE)
+ 102:src/m4_app.c  ****   ESOS_TASK_END();
+  52              		.loc 1 102 3 view .LVU4
+  53              		.loc 1 102 3 view .LVU5
+  54 0014 0823     		movs	r3, #8
+  55 0016 8370     		strb	r3, [r0, #2]
+  56              		.loc 1 102 3 view .LVU6
+  57 0018 0023     		movs	r3, #0
+  58 001a 0380     		strh	r3, [r0]	@ movhi
+  59              		.loc 1 102 3 view .LVU7
+  60              		.loc 1 102 3 view .LVU8
+  61              		.loc 1 102 3 view .LVU9
+  62 001c 0325     		movs	r5, #3
+  63              	.LVL1:
+  64              	.L6:
+  65              		.loc 1 102 18 discriminator 1 view .LVU10
+ 103:src/m4_app.c  **** } // end flash_LED()
+  66              		.loc 1 103 1 is_stmt 0 discriminator 1 view .LVU11
+  67 001e 2846     		mov	r0, r5
+  68 0020 38BD     		pop	{r3, r4, r5, pc}
+  69              	.LVL2:
+ARM GAS  /tmp/ccSLjvog.s 			page 4
+
+
+  70              	.L11:
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  71              		.loc 1 100 5 is_stmt 1 discriminator 2 view .LVU12
+  72 0022 0423     		movs	r3, #4
+  73 0024 A370     		strb	r3, [r4, #2]
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  74              		.loc 1 100 5 discriminator 2 view .LVU13
+  75 0026 0325     		movs	r5, #3
+  76 0028 F9E7     		b	.L6
+  77              	.L7:
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  78              		.loc 1 100 5 discriminator 5 view .LVU14
+  79 002a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+  80 002c 43F00103 		orr	r3, r3, #1
+  81 0030 A370     		strb	r3, [r4, #2]
+  82              	.L8:
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  83              		.loc 1 100 5 discriminator 7 view .LVU15
+  84 0032 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+  85 0034 13F0010F 		tst	r3, #1
+  86 0038 F1D1     		bne	.L6
+  87              	.L2:
+  96:src/m4_app.c  ****   while (TRUE) 
+  88              		.loc 1 96 20 discriminator 1 view .LVU16
+  97:src/m4_app.c  ****   {
+  89              		.loc 1 97 3 discriminator 1 view .LVU17
+  99:src/m4_app.c  ****     ESOS_TASK_WAIT_TICKS(timer2Period/2)
+  90              		.loc 1 99 5 discriminator 1 view .LVU18
+  91 003a 2021     		movs	r1, #32
+  92 003c 4FF09040 		mov	r0, #1207959552
+  93 0040 FFF7FEFF 		bl	gpio_toggle
+  94              	.LVL3:
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  95              		.loc 1 100 5 discriminator 1 view .LVU19
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+  96              		.loc 1 100 5 discriminator 1 view .LVU20
+  97 0044 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+  98              	.LVL4:
+  99 0048 A060     		str	r0, [r4, #8]
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 100              		.loc 1 100 5 discriminator 1 view .LVU21
+ 101 004a 0A4B     		ldr	r3, .L12
+ 102 004c 1B68     		ldr	r3, [r3]
+ 103 004e 5B08     		lsrs	r3, r3, #1
+ 104 0050 E360     		str	r3, [r4, #12]
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 105              		.loc 1 100 5 discriminator 1 view .LVU22
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 106              		.loc 1 100 5 discriminator 1 view .LVU23
+ 107 0052 6423     		movs	r3, #100
+ 108 0054 2380     		strh	r3, [r4]	@ movhi
+ 109              	.L3:
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 110              		.loc 1 100 5 discriminator 1 view .LVU24
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 111              		.loc 1 100 5 discriminator 1 view .LVU25
+ 112 0056 A078     		ldrb	r0, [r4, #2]	@ zero_extendqisi2
+ARM GAS  /tmp/ccSLjvog.s 			page 5
+
+
+ 113 0058 10F00405 		ands	r5, r0, #4
+ 114 005c E1D1     		bne	.L11
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 115              		.loc 1 100 5 discriminator 3 view .LVU26
+ 116 005e E168     		ldr	r1, [r4, #12]
+ 117 0060 A068     		ldr	r0, [r4, #8]
+ 118 0062 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 119              	.LVL5:
+ 120 0066 0028     		cmp	r0, #0
+ 121 0068 DFD0     		beq	.L7
+ 100:src/m4_app.c  ****   } // endof while(TRUE)
+ 122              		.loc 1 100 5 discriminator 4 view .LVU27
+ 123 006a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 124 006c 23F00103 		bic	r3, r3, #1
+ 125 0070 A370     		strb	r3, [r4, #2]
+ 126 0072 DEE7     		b	.L8
+ 127              	.L13:
+ 128              		.align	2
+ 129              	.L12:
+ 130 0074 00000000 		.word	.LANCHOR0
+ 131              		.cfi_endproc
+ 132              	.LFE9:
+ 134              		.section	.text.circular_buffer_init,"ax",%progbits
+ 135              		.align	1
+ 136              		.global	circular_buffer_init
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 141              	circular_buffer_init:
+ 142              	.LVL6:
+ 143              	.LFB3:
+ 144              		.file 2 "include/circularBuffer.h"
+   1:include/circularBuffer.h **** 
+   2:include/circularBuffer.h **** #ifndef circularBuffer_H
+   3:include/circularBuffer.h **** #define ciruclarBuffer_H
+   4:include/circularBuffer.h **** 
+   5:include/circularBuffer.h **** #include <inttypes.h>
+   6:include/circularBuffer.h **** #include <stdio.h>
+   7:include/circularBuffer.h **** 
+   8:include/circularBuffer.h **** #define BUFFER_SIZE 256  // size of the circular buffer
+   9:include/circularBuffer.h **** 
+  10:include/circularBuffer.h **** // Define the buffer structure
+  11:include/circularBuffer.h **** typedef struct {
+  12:include/circularBuffer.h ****     int buffer[BUFFER_SIZE];
+  13:include/circularBuffer.h ****     int head;
+  14:include/circularBuffer.h ****     int tail;
+  15:include/circularBuffer.h ****     int full;
+  16:include/circularBuffer.h **** } CircularBuffer;
+  17:include/circularBuffer.h **** 
+  18:include/circularBuffer.h **** // Initializes a buffer when called
+  19:include/circularBuffer.h **** void circular_buffer_init(CircularBuffer *cb) {
+ 145              		.loc 2 19 47 view -0
+ 146              		.cfi_startproc
+ 147              		@ args = 0, pretend = 0, frame = 0
+ 148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149              		@ link register save eliminated.
+  20:include/circularBuffer.h ****     cb->head = 0;
+ARM GAS  /tmp/ccSLjvog.s 			page 6
+
+
+ 150              		.loc 2 20 5 view .LVU29
+ 151              		.loc 2 20 14 is_stmt 0 view .LVU30
+ 152 0000 0023     		movs	r3, #0
+ 153 0002 C0F80034 		str	r3, [r0, #1024]
+  21:include/circularBuffer.h ****     cb->tail = 0;
+ 154              		.loc 2 21 5 is_stmt 1 view .LVU31
+ 155              		.loc 2 21 14 is_stmt 0 view .LVU32
+ 156 0006 C0F80434 		str	r3, [r0, #1028]
+  22:include/circularBuffer.h ****     cb->full = 0;
+ 157              		.loc 2 22 5 is_stmt 1 view .LVU33
+ 158              		.loc 2 22 14 is_stmt 0 view .LVU34
+ 159 000a C0F80834 		str	r3, [r0, #1032]
+  23:include/circularBuffer.h **** }
+ 160              		.loc 2 23 1 view .LVU35
+ 161 000e 7047     		bx	lr
+ 162              		.cfi_endproc
+ 163              	.LFE3:
+ 165              		.section	.text.circular_buffer_is_empty,"ax",%progbits
+ 166              		.align	1
+ 167              		.global	circular_buffer_is_empty
+ 168              		.syntax unified
+ 169              		.thumb
+ 170              		.thumb_func
+ 172              	circular_buffer_is_empty:
+ 173              	.LVL7:
+ 174              	.LFB4:
+  24:include/circularBuffer.h **** 
+  25:include/circularBuffer.h **** // Returns true if the buffer is empty
+  26:include/circularBuffer.h **** int circular_buffer_is_empty(CircularBuffer *cb) {
+ 175              		.loc 2 26 50 is_stmt 1 view -0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179              		@ link register save eliminated.
+  27:include/circularBuffer.h ****     return !cb->full && cb->head == cb->tail;
+ 180              		.loc 2 27 5 view .LVU37
+ 181              		.loc 2 27 15 is_stmt 0 view .LVU38
+ 182 0000 D0F80834 		ldr	r3, [r0, #1032]
+ 183              		.loc 2 27 22 view .LVU39
+ 184 0004 3BB9     		cbnz	r3, .L17
+ 185              		.loc 2 27 27 discriminator 1 view .LVU40
+ 186 0006 D0F80024 		ldr	r2, [r0, #1024]
+ 187              		.loc 2 27 39 discriminator 1 view .LVU41
+ 188 000a D0F80434 		ldr	r3, [r0, #1028]
+ 189              		.loc 2 27 22 discriminator 1 view .LVU42
+ 190 000e 9A42     		cmp	r2, r3
+ 191 0010 03D0     		beq	.L18
+ 192              		.loc 2 27 22 view .LVU43
+ 193 0012 0020     		movs	r0, #0
+ 194              	.LVL8:
+ 195              		.loc 2 27 22 view .LVU44
+ 196 0014 7047     		bx	lr
+ 197              	.LVL9:
+ 198              	.L17:
+ 199              		.loc 2 27 22 view .LVU45
+ 200 0016 0020     		movs	r0, #0
+ 201              	.LVL10:
+ARM GAS  /tmp/ccSLjvog.s 			page 7
+
+
+ 202              		.loc 2 27 22 view .LVU46
+ 203 0018 7047     		bx	lr
+ 204              	.LVL11:
+ 205              	.L18:
+ 206              		.loc 2 27 22 view .LVU47
+ 207 001a 0120     		movs	r0, #1
+ 208              	.LVL12:
+  28:include/circularBuffer.h **** }
+ 209              		.loc 2 28 1 view .LVU48
+ 210 001c 7047     		bx	lr
+ 211              		.cfi_endproc
+ 212              	.LFE4:
+ 214              		.section	.text.circular_buffer_is_full,"ax",%progbits
+ 215              		.align	1
+ 216              		.global	circular_buffer_is_full
+ 217              		.syntax unified
+ 218              		.thumb
+ 219              		.thumb_func
+ 221              	circular_buffer_is_full:
+ 222              	.LVL13:
+ 223              	.LFB5:
+  29:include/circularBuffer.h **** 
+  30:include/circularBuffer.h **** // Returns true if the buffer is full
+  31:include/circularBuffer.h **** int circular_buffer_is_full(CircularBuffer *cb) {
+ 224              		.loc 2 31 49 is_stmt 1 view -0
+ 225              		.cfi_startproc
+ 226              		@ args = 0, pretend = 0, frame = 0
+ 227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 228              		@ link register save eliminated.
+  32:include/circularBuffer.h ****     return cb->full;
+ 229              		.loc 2 32 5 view .LVU50
+  33:include/circularBuffer.h **** }
+ 230              		.loc 2 33 1 is_stmt 0 view .LVU51
+ 231 0000 D0F80804 		ldr	r0, [r0, #1032]
+ 232              	.LVL14:
+ 233              		.loc 2 33 1 view .LVU52
+ 234 0004 7047     		bx	lr
+ 235              		.cfi_endproc
+ 236              	.LFE5:
+ 238              		.section	.text.circular_buffer_size,"ax",%progbits
+ 239              		.align	1
+ 240              		.global	circular_buffer_size
+ 241              		.syntax unified
+ 242              		.thumb
+ 243              		.thumb_func
+ 245              	circular_buffer_size:
+ 246              	.LVL15:
+ 247              	.LFB6:
+  34:include/circularBuffer.h **** 
+  35:include/circularBuffer.h **** // Returns the buffer size
+  36:include/circularBuffer.h **** int circular_buffer_size(CircularBuffer *cb) {
+ 248              		.loc 2 36 46 is_stmt 1 view -0
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252              		@ link register save eliminated.
+  37:include/circularBuffer.h ****     if (cb->full) {
+ARM GAS  /tmp/ccSLjvog.s 			page 8
+
+
+ 253              		.loc 2 37 5 view .LVU54
+ 254              		.loc 2 37 11 is_stmt 0 view .LVU55
+ 255 0000 D0F80834 		ldr	r3, [r0, #1032]
+ 256              		.loc 2 37 8 view .LVU56
+ 257 0004 63B9     		cbnz	r3, .L22
+  38:include/circularBuffer.h ****         return BUFFER_SIZE;
+  39:include/circularBuffer.h ****     } else {
+  40:include/circularBuffer.h ****         return (cb->tail - cb->head + BUFFER_SIZE) % BUFFER_SIZE;
+ 258              		.loc 2 40 9 is_stmt 1 view .LVU57
+ 259              		.loc 2 40 19 is_stmt 0 view .LVU58
+ 260 0006 D0F80434 		ldr	r3, [r0, #1028]
+ 261              		.loc 2 40 30 view .LVU59
+ 262 000a D0F80004 		ldr	r0, [r0, #1024]
+ 263              	.LVL16:
+ 264              		.loc 2 40 26 view .LVU60
+ 265 000e 181A     		subs	r0, r3, r0
+ 266              		.loc 2 40 37 view .LVU61
+ 267 0010 00F58070 		add	r0, r0, #256
+ 268              		.loc 2 40 52 view .LVU62
+ 269 0014 4342     		rsbs	r3, r0, #0
+ 270 0016 C0B2     		uxtb	r0, r0
+ 271 0018 DBB2     		uxtb	r3, r3
+ 272 001a 58BF     		it	pl
+ 273 001c 5842     		rsbpl	r0, r3, #0
+ 274 001e 7047     		bx	lr
+ 275              	.LVL17:
+ 276              	.L22:
+  38:include/circularBuffer.h ****         return BUFFER_SIZE;
+ 277              		.loc 2 38 16 view .LVU63
+ 278 0020 4FF48070 		mov	r0, #256
+ 279              	.LVL18:
+  41:include/circularBuffer.h ****     }
+  42:include/circularBuffer.h **** }
+ 280              		.loc 2 42 1 view .LVU64
+ 281 0024 7047     		bx	lr
+ 282              		.cfi_endproc
+ 283              	.LFE6:
+ 285              		.section	.text.circular_buffer_write,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	circular_buffer_write
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	circular_buffer_write:
+ 293              	.LVL19:
+ 294              	.LFB7:
+  43:include/circularBuffer.h **** 
+  44:include/circularBuffer.h **** // Writes a value into the buffer and updates locations
+  45:include/circularBuffer.h **** void circular_buffer_write(CircularBuffer *cb, int value) {
+ 295              		.loc 2 45 59 is_stmt 1 view -0
+ 296              		.cfi_startproc
+ 297              		@ args = 0, pretend = 0, frame = 0
+ 298              		@ frame_needed = 0, uses_anonymous_args = 0
+ 299              		.loc 2 45 59 is_stmt 0 view .LVU66
+ 300 0000 38B5     		push	{r3, r4, r5, lr}
+ 301              	.LCFI1:
+ 302              		.cfi_def_cfa_offset 16
+ARM GAS  /tmp/ccSLjvog.s 			page 9
+
+
+ 303              		.cfi_offset 3, -16
+ 304              		.cfi_offset 4, -12
+ 305              		.cfi_offset 5, -8
+ 306              		.cfi_offset 14, -4
+ 307 0002 0546     		mov	r5, r0
+  46:include/circularBuffer.h ****     cb->buffer[cb->tail] = value;
+ 308              		.loc 2 46 5 is_stmt 1 view .LVU67
+ 309              		.loc 2 46 18 is_stmt 0 view .LVU68
+ 310 0004 D0F80444 		ldr	r4, [r0, #1028]
+ 311              		.loc 2 46 26 view .LVU69
+ 312 0008 40F82410 		str	r1, [r0, r4, lsl #2]
+  47:include/circularBuffer.h ****     if (circular_buffer_is_full(cb)) {
+ 313              		.loc 2 47 5 is_stmt 1 view .LVU70
+ 314              		.loc 2 47 9 is_stmt 0 view .LVU71
+ 315 000c FFF7FEFF 		bl	circular_buffer_is_full
+ 316              	.LVL20:
+ 317              		.loc 2 47 8 view .LVU72
+ 318 0010 48B1     		cbz	r0, .L24
+  48:include/circularBuffer.h ****         cb->head = (cb->head + 1) % BUFFER_SIZE;
+ 319              		.loc 2 48 9 is_stmt 1 view .LVU73
+ 320              		.loc 2 48 23 is_stmt 0 view .LVU74
+ 321 0012 D5F80034 		ldr	r3, [r5, #1024]
+ 322              		.loc 2 48 30 view .LVU75
+ 323 0016 0133     		adds	r3, r3, #1
+ 324              		.loc 2 48 35 view .LVU76
+ 325 0018 5A42     		rsbs	r2, r3, #0
+ 326 001a DBB2     		uxtb	r3, r3
+ 327 001c D2B2     		uxtb	r2, r2
+ 328 001e 58BF     		it	pl
+ 329 0020 5342     		rsbpl	r3, r2, #0
+ 330              		.loc 2 48 18 view .LVU77
+ 331 0022 C5F80034 		str	r3, [r5, #1024]
+ 332              	.L24:
+  49:include/circularBuffer.h ****     }
+  50:include/circularBuffer.h ****     cb->tail = (cb->tail + 1) % BUFFER_SIZE;
+ 333              		.loc 2 50 5 is_stmt 1 view .LVU78
+ 334              		.loc 2 50 26 is_stmt 0 view .LVU79
+ 335 0026 631C     		adds	r3, r4, #1
+ 336              		.loc 2 50 31 view .LVU80
+ 337 0028 5A42     		rsbs	r2, r3, #0
+ 338 002a DBB2     		uxtb	r3, r3
+ 339 002c D2B2     		uxtb	r2, r2
+ 340 002e 58BF     		it	pl
+ 341 0030 5342     		rsbpl	r3, r2, #0
+ 342              		.loc 2 50 14 view .LVU81
+ 343 0032 C5F80434 		str	r3, [r5, #1028]
+  51:include/circularBuffer.h ****     cb->full = cb->tail == cb->head;
+ 344              		.loc 2 51 5 is_stmt 1 view .LVU82
+ 345              		.loc 2 51 30 is_stmt 0 view .LVU83
+ 346 0036 D5F80024 		ldr	r2, [r5, #1024]
+ 347              		.loc 2 51 25 view .LVU84
+ 348 003a 9342     		cmp	r3, r2
+ 349 003c 14BF     		ite	ne
+ 350 003e 0023     		movne	r3, #0
+ 351 0040 0123     		moveq	r3, #1
+ 352              		.loc 2 51 14 view .LVU85
+ 353 0042 C5F80834 		str	r3, [r5, #1032]
+ARM GAS  /tmp/ccSLjvog.s 			page 10
+
+
+  52:include/circularBuffer.h **** }
+ 354              		.loc 2 52 1 view .LVU86
+ 355 0046 38BD     		pop	{r3, r4, r5, pc}
+ 356              		.loc 2 52 1 view .LVU87
+ 357              		.cfi_endproc
+ 358              	.LFE7:
+ 360              		.section	.text.usart_receive,"ax",%progbits
+ 361              		.align	1
+ 362              		.global	usart_receive
+ 363              		.syntax unified
+ 364              		.thumb
+ 365              		.thumb_func
+ 367              	usart_receive:
+ 368              	.LVL21:
+ 369              	.LFB10:
+ 104:src/m4_app.c  **** 
+ 105:src/m4_app.c  **** // Uses the USART to receive from a serial connection
+ 106:src/m4_app.c  **** ESOS_USER_TASK(usart_receive){
+ 370              		.loc 1 106 30 is_stmt 1 view -0
+ 371              		.cfi_startproc
+ 372              		@ args = 0, pretend = 0, frame = 0
+ 373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 374              		.loc 1 106 30 is_stmt 0 view .LVU89
+ 375 0000 38B5     		push	{r3, r4, r5, lr}
+ 376              	.LCFI2:
+ 377              		.cfi_def_cfa_offset 16
+ 378              		.cfi_offset 3, -16
+ 379              		.cfi_offset 4, -12
+ 380              		.cfi_offset 5, -8
+ 381              		.cfi_offset 14, -4
+ 382 0002 0446     		mov	r4, r0
+ 107:src/m4_app.c  ****   static uint8_t recvUSART;
+ 383              		.loc 1 107 3 is_stmt 1 view .LVU90
+ 108:src/m4_app.c  **** 
+ 109:src/m4_app.c  ****   ESOS_TASK_BEGIN();
+ 384              		.loc 1 109 3 view .LVU91
+ 385 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 386 0006 63F07F03 		orn	r3, r3, #127
+ 387 000a 8370     		strb	r3, [r0, #2]
+ 388              		.loc 1 109 3 view .LVU92
+ 389 000c 0388     		ldrh	r3, [r0]
+ 390 000e 712B     		cmp	r3, #113
+ 391 0010 1ED0     		beq	.L27
+ 392 0012 41D8     		bhi	.L28
+ 393 0014 002B     		cmp	r3, #0
+ 394 0016 4FD0     		beq	.L29
+ 395 0018 702B     		cmp	r3, #112
+ 396 001a 69D1     		bne	.L31
+ 397              	.LVL22:
+ 398              	.L30:
+ 110:src/m4_app.c  ****   while(TRUE)
+ 111:src/m4_app.c  ****   {
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_AVAILABLE_IN_COMM();            //Waits for incomm to be available
+ 399              		.loc 1 112 5 discriminator 1 view .LVU93
+ 400              		.loc 1 112 5 discriminator 1 view .LVU94
+ 401 001c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 402 001e 13F00405 		ands	r5, r3, #4
+ARM GAS  /tmp/ccSLjvog.s 			page 11
+
+
+ 403 0022 4CD1     		bne	.L44
+ 404              		.loc 1 112 5 discriminator 3 view .LVU95
+ 405 0024 364A     		ldr	r2, .L48
+ 406 0026 1268     		ldr	r2, [r2]
+ 407 0028 12F0080F 		tst	r2, #8
+ 408 002c 4BD1     		bne	.L35
+ 409              		.loc 1 112 5 discriminator 4 view .LVU96
+ 410 002e 23F00103 		bic	r3, r3, #1
+ 411 0032 A370     		strb	r3, [r4, #2]
+ 412              	.L36:
+ 413              		.loc 1 112 5 discriminator 7 view .LVU97
+ 414 0034 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 415 0036 13F0010F 		tst	r3, #1
+ 416 003a 5ED1     		bne	.L34
+ 417              		.loc 1 112 5 discriminator 9 view .LVU98
+ 418              		.loc 1 112 5 discriminator 9 view .LVU99
+ 419 003c 304A     		ldr	r2, .L48
+ 420 003e 1368     		ldr	r3, [r2]
+ 421 0040 43F00803 		orr	r3, r3, #8
+ 422 0044 1360     		str	r3, [r2]
+ 113:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 423              		.loc 1 113 5 discriminator 9 view .LVU100
+ 424              		.loc 1 113 5 discriminator 9 view .LVU101
+ 425 0046 2F4B     		ldr	r3, .L48+4
+ 426 0048 0022     		movs	r2, #0
+ 427 004a 1A80     		strh	r2, [r3]	@ movhi
+ 428              		.loc 1 113 5 discriminator 9 view .LVU102
+ 429              		.loc 1 113 5 discriminator 9 view .LVU103
+ 430              		.loc 1 113 5 discriminator 9 view .LVU104
+ 431              		.loc 1 113 5 discriminator 9 view .LVU105
+ 432 004c 7123     		movs	r3, #113
+ 433 004e 2380     		strh	r3, [r4]	@ movhi
+ 434              	.L27:
+ 435              		.loc 1 113 5 discriminator 1 view .LVU106
+ 436              		.loc 1 113 5 discriminator 1 view .LVU107
+ 437 0050 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 438 0052 15F00405 		ands	r5, r5, #4
+ 439 0056 3AD1     		bne	.L45
+ 440              		.loc 1 113 5 discriminator 3 view .LVU108
+ 441 0058 0122     		movs	r2, #1
+ 442 005a 2B49     		ldr	r1, .L48+8
+ 443 005c 2948     		ldr	r0, .L48+4
+ 444 005e FFF7FEFF 		bl	__esos_getBuffer
+ 445              	.LVL23:
+ 446 0062 0228     		cmp	r0, #2
+ 447 0064 37D9     		bls	.L38
+ 448              		.loc 1 113 5 discriminator 4 view .LVU109
+ 449 0066 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 450 0068 23F00103 		bic	r3, r3, #1
+ 451 006c A370     		strb	r3, [r4, #2]
+ 452              	.L39:
+ 453              		.loc 1 113 5 discriminator 7 view .LVU110
+ 454 006e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 455 0070 13F0010F 		tst	r3, #1
+ 456 0074 41D1     		bne	.L34
+ 457              		.loc 1 113 5 discriminator 9 view .LVU111
+ 458              		.loc 1 113 5 discriminator 9 view .LVU112
+ARM GAS  /tmp/ccSLjvog.s 			page 12
+
+
+ 114:src/m4_app.c  ****     circular_buffer_write(&bufferReceiver, recvUSART);//Puts recvUSART data into the receive buffer
+ 459              		.loc 1 114 5 discriminator 9 view .LVU113
+ 460 0076 244B     		ldr	r3, .L48+8
+ 461 0078 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 462 007a 2448     		ldr	r0, .L48+12
+ 463 007c FFF7FEFF 		bl	circular_buffer_write
+ 464              	.LVL24:
+ 115:src/m4_app.c  ****     ESOS_TASK_SIGNAL_AVAILABLE_IN_COMM();             //Signals that incomm is available
+ 465              		.loc 1 115 5 discriminator 9 view .LVU114
+ 466 0080 1F4A     		ldr	r2, .L48
+ 467 0082 1368     		ldr	r3, [r2]
+ 468 0084 23F00803 		bic	r3, r3, #8
+ 469 0088 1360     		str	r3, [r2]
+ 116:src/m4_app.c  ****     ESOS_TASK_YIELD();
+ 470              		.loc 1 116 5 discriminator 9 view .LVU115
+ 471              		.loc 1 116 5 discriminator 9 view .LVU116
+ 472 008a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 473 008c 03F07F03 		and	r3, r3, #127
+ 474 0090 A370     		strb	r3, [r4, #2]
+ 475              		.loc 1 116 5 discriminator 9 view .LVU117
+ 476              		.loc 1 116 5 discriminator 9 view .LVU118
+ 477 0092 7423     		movs	r3, #116
+ 478 0094 2380     		strh	r3, [r4]	@ movhi
+ 479 0096 01E0     		b	.L32
+ 480              	.LVL25:
+ 481              	.L28:
+ 109:src/m4_app.c  ****   while(TRUE)
+ 482              		.loc 1 109 3 is_stmt 0 view .LVU119
+ 483 0098 742B     		cmp	r3, #116
+ 484 009a 29D1     		bne	.L31
+ 485              	.LVL26:
+ 486              	.L32:
+ 487              		.loc 1 116 5 is_stmt 1 discriminator 1 view .LVU120
+ 488              		.loc 1 116 5 discriminator 1 view .LVU121
+ 489 009c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 490 009e 13F00405 		ands	r5, r3, #4
+ 491 00a2 1DD1     		bne	.L46
+ 492              		.loc 1 116 5 discriminator 3 view .LVU122
+ 493 00a4 13F0800F 		tst	r3, #128
+ 494 00a8 1ED1     		bne	.L47
+ 495              		.loc 1 116 5 discriminator 5 view .LVU123
+ 496 00aa 43F00103 		orr	r3, r3, #1
+ 497 00ae A370     		strb	r3, [r4, #2]
+ 498              	.L42:
+ 499              		.loc 1 116 5 discriminator 7 view .LVU124
+ 500 00b0 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 501 00b2 13F0010F 		tst	r3, #1
+ 502 00b6 20D1     		bne	.L34
+ 503              	.L29:
+ 109:src/m4_app.c  ****   while(TRUE)
+ 504              		.loc 1 109 20 discriminator 1 view .LVU125
+ 110:src/m4_app.c  ****   {
+ 505              		.loc 1 110 3 discriminator 1 view .LVU126
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 506              		.loc 1 112 5 discriminator 1 view .LVU127
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 507              		.loc 1 112 5 discriminator 1 view .LVU128
+ARM GAS  /tmp/ccSLjvog.s 			page 13
+
+
+ 508 00b8 7023     		movs	r3, #112
+ 509 00ba 2380     		strh	r3, [r4]	@ movhi
+ 510 00bc AEE7     		b	.L30
+ 511              	.L44:
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 512              		.loc 1 112 5 discriminator 2 view .LVU129
+ 513 00be 0423     		movs	r3, #4
+ 514 00c0 A370     		strb	r3, [r4, #2]
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 515              		.loc 1 112 5 discriminator 2 view .LVU130
+ 516 00c2 0325     		movs	r5, #3
+ 517 00c4 19E0     		b	.L34
+ 518              	.L35:
+ 112:src/m4_app.c  ****     ESOS_TASK_WAIT_ON_GET_UINT8(recvUSART);           //Receives data and assigns it to recvUSART v
+ 519              		.loc 1 112 5 discriminator 5 view .LVU131
+ 520 00c6 43F00103 		orr	r3, r3, #1
+ 521 00ca A370     		strb	r3, [r4, #2]
+ 522 00cc B2E7     		b	.L36
+ 523              	.L45:
+ 113:src/m4_app.c  ****     circular_buffer_write(&bufferReceiver, recvUSART);//Puts recvUSART data into the receive buffer
+ 524              		.loc 1 113 5 discriminator 2 view .LVU132
+ 525 00ce 0423     		movs	r3, #4
+ 526 00d0 A370     		strb	r3, [r4, #2]
+ 113:src/m4_app.c  ****     circular_buffer_write(&bufferReceiver, recvUSART);//Puts recvUSART data into the receive buffer
+ 527              		.loc 1 113 5 discriminator 2 view .LVU133
+ 528 00d2 0325     		movs	r5, #3
+ 529 00d4 11E0     		b	.L34
+ 530              	.L38:
+ 113:src/m4_app.c  ****     circular_buffer_write(&bufferReceiver, recvUSART);//Puts recvUSART data into the receive buffer
+ 531              		.loc 1 113 5 discriminator 5 view .LVU134
+ 532 00d6 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 533 00d8 43F00103 		orr	r3, r3, #1
+ 534 00dc A370     		strb	r3, [r4, #2]
+ 535 00de C6E7     		b	.L39
+ 536              	.L46:
+ 537              		.loc 1 116 5 discriminator 2 view .LVU135
+ 538 00e0 0423     		movs	r3, #4
+ 539 00e2 A370     		strb	r3, [r4, #2]
+ 540              		.loc 1 116 5 discriminator 2 view .LVU136
+ 541 00e4 0325     		movs	r5, #3
+ 542 00e6 08E0     		b	.L34
+ 543              	.L47:
+ 544              		.loc 1 116 5 discriminator 4 view .LVU137
+ 545 00e8 23F00103 		bic	r3, r3, #1
+ 546 00ec A370     		strb	r3, [r4, #2]
+ 547 00ee DFE7     		b	.L42
+ 548              	.LVL27:
+ 549              	.L31:
+ 117:src/m4_app.c  ****   }
+ 118:src/m4_app.c  ****   ESOS_TASK_END();
+ 550              		.loc 1 118 3 view .LVU138
+ 551              		.loc 1 118 3 view .LVU139
+ 552 00f0 0823     		movs	r3, #8
+ 553 00f2 A370     		strb	r3, [r4, #2]
+ 554              		.loc 1 118 3 view .LVU140
+ 555 00f4 0023     		movs	r3, #0
+ 556 00f6 2380     		strh	r3, [r4]	@ movhi
+ARM GAS  /tmp/ccSLjvog.s 			page 14
+
+
+ 557              		.loc 1 118 3 view .LVU141
+ 558              		.loc 1 118 3 view .LVU142
+ 559              		.loc 1 118 3 view .LVU143
+ 560 00f8 0325     		movs	r5, #3
+ 561              	.LVL28:
+ 562              	.L34:
+ 563              		.loc 1 118 18 discriminator 1 view .LVU144
+ 119:src/m4_app.c  **** }
+ 564              		.loc 1 119 1 is_stmt 0 discriminator 1 view .LVU145
+ 565 00fa 2846     		mov	r0, r5
+ 566 00fc 38BD     		pop	{r3, r4, r5, pc}
+ 567              	.LVL29:
+ 568              	.L49:
+ 569              		.loc 1 119 1 discriminator 1 view .LVU146
+ 570 00fe 00BF     		.align	2
+ 571              	.L48:
+ 572 0100 00000000 		.word	__esos_u32SystemFlags
+ 573 0104 00000000 		.word	__stChildTaskRx
+ 574 0108 00000000 		.word	.LANCHOR1
+ 575 010c 00000000 		.word	.LANCHOR2
+ 576              		.cfi_endproc
+ 577              	.LFE10:
+ 579              		.section	.text.circular_buffer_read,"ax",%progbits
+ 580              		.align	1
+ 581              		.global	circular_buffer_read
+ 582              		.syntax unified
+ 583              		.thumb
+ 584              		.thumb_func
+ 586              	circular_buffer_read:
+ 587              	.LVL30:
+ 588              	.LFB8:
+  53:include/circularBuffer.h **** 
+  54:include/circularBuffer.h **** // Reads from the buffer
+  55:include/circularBuffer.h **** int circular_buffer_read(CircularBuffer *cb) {
+ 589              		.loc 2 55 46 is_stmt 1 view -0
+ 590              		.cfi_startproc
+ 591              		@ args = 0, pretend = 0, frame = 0
+ 592              		@ frame_needed = 0, uses_anonymous_args = 0
+ 593              		@ link register save eliminated.
+ 594              		.loc 2 55 46 is_stmt 0 view .LVU148
+ 595 0000 0246     		mov	r2, r0
+  56:include/circularBuffer.h ****     int value = cb->buffer[cb->head];
+ 596              		.loc 2 56 5 is_stmt 1 view .LVU149
+ 597              		.loc 2 56 30 is_stmt 0 view .LVU150
+ 598 0002 D0F80034 		ldr	r3, [r0, #1024]
+ 599              		.loc 2 56 9 view .LVU151
+ 600 0006 50F82300 		ldr	r0, [r0, r3, lsl #2]
+ 601              	.LVL31:
+  57:include/circularBuffer.h ****     cb->full = 0;
+ 602              		.loc 2 57 5 is_stmt 1 view .LVU152
+ 603              		.loc 2 57 14 is_stmt 0 view .LVU153
+ 604 000a 0021     		movs	r1, #0
+ 605 000c C2F80814 		str	r1, [r2, #1032]
+  58:include/circularBuffer.h ****     cb->head = (cb->head + 1) % BUFFER_SIZE;
+ 606              		.loc 2 58 5 is_stmt 1 view .LVU154
+ 607              		.loc 2 58 26 is_stmt 0 view .LVU155
+ 608 0010 0133     		adds	r3, r3, #1
+ARM GAS  /tmp/ccSLjvog.s 			page 15
+
+
+ 609              		.loc 2 58 31 view .LVU156
+ 610 0012 C91A     		subs	r1, r1, r3
+ 611 0014 DBB2     		uxtb	r3, r3
+ 612 0016 C9B2     		uxtb	r1, r1
+ 613 0018 58BF     		it	pl
+ 614 001a 4B42     		rsbpl	r3, r1, #0
+ 615              		.loc 2 58 14 view .LVU157
+ 616 001c C2F80034 		str	r3, [r2, #1024]
+  59:include/circularBuffer.h ****     return value;
+ 617              		.loc 2 59 5 is_stmt 1 view .LVU158
+  60:include/circularBuffer.h **** }
+ 618              		.loc 2 60 1 is_stmt 0 view .LVU159
+ 619 0020 7047     		bx	lr
+ 620              		.cfi_endproc
+ 621              	.LFE8:
+ 623              		.section	.text.usart_sender,"ax",%progbits
+ 624              		.align	1
+ 625              		.global	usart_sender
+ 626              		.syntax unified
+ 627              		.thumb
+ 628              		.thumb_func
+ 630              	usart_sender:
+ 631              	.LVL32:
+ 632              	.LFB11:
+ 120:src/m4_app.c  **** 
+ 121:src/m4_app.c  **** // Uses the USART to send to a serial connection
+ 122:src/m4_app.c  **** ESOS_USER_TASK(usart_sender){
+ 633              		.loc 1 122 29 is_stmt 1 view -0
+ 634              		.cfi_startproc
+ 635              		@ args = 0, pretend = 0, frame = 0
+ 636              		@ frame_needed = 0, uses_anonymous_args = 0
+ 637              		.loc 1 122 29 is_stmt 0 view .LVU161
+ 638 0000 38B5     		push	{r3, r4, r5, lr}
+ 639              	.LCFI3:
+ 640              		.cfi_def_cfa_offset 16
+ 641              		.cfi_offset 3, -16
+ 642              		.cfi_offset 4, -12
+ 643              		.cfi_offset 5, -8
+ 644              		.cfi_offset 14, -4
+ 645 0002 0446     		mov	r4, r0
+ 123:src/m4_app.c  ****   static uint8_t sendUSART;
+ 646              		.loc 1 123 3 is_stmt 1 view .LVU162
+ 124:src/m4_app.c  **** 
+ 125:src/m4_app.c  ****   ESOS_TASK_BEGIN();
+ 647              		.loc 1 125 3 view .LVU163
+ 648 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 649 0006 63F07F03 		orn	r3, r3, #127
+ 650 000a 8370     		strb	r3, [r0, #2]
+ 651              		.loc 1 125 3 view .LVU164
+ 652 000c 0388     		ldrh	r3, [r0]
+ 653 000e 002B     		cmp	r3, #0
+ 654 0010 5AD0     		beq	.L52
+ 655 0012 882B     		cmp	r3, #136
+ 656 0014 00F29580 		bhi	.L53
+ 657 0018 812B     		cmp	r3, #129
+ 658 001a C0F09280 		bcc	.L53
+ 659 001e 813B     		subs	r3, r3, #129
+ARM GAS  /tmp/ccSLjvog.s 			page 16
+
+
+ 660 0020 072B     		cmp	r3, #7
+ 661 0022 00F28E80 		bhi	.L53
+ 662 0026 DFE803F0 		tbb	[pc, r3]
+ 663              	.L55:
+ 664 002a 04       		.byte	(.L58-.L55)/2
+ 665 002b 8C       		.byte	(.L53-.L55)/2
+ 666 002c 23       		.byte	(.L57-.L55)/2
+ 667 002d 8C       		.byte	(.L53-.L55)/2
+ 668 002e 41       		.byte	(.L56-.L55)/2
+ 669 002f 8C       		.byte	(.L53-.L55)/2
+ 670 0030 8C       		.byte	(.L53-.L55)/2
+ 671 0031 75       		.byte	(.L54-.L55)/2
+ 672              	.LVL33:
+ 673              		.p2align 1
+ 674              	.L58:
+ 126:src/m4_app.c  ****   while(TRUE)
+ 127:src/m4_app.c  ****   {
+ 128:src/m4_app.c  ****     if(!circular_buffer_is_empty(&bufferSender)){
+ 129:src/m4_app.c  ****       ESOS_TASK_WAIT_ON_AVAILABLE_OUT_COMM();          //Waits until outcomm is available
+ 675              		.loc 1 129 7 discriminator 1 view .LVU165
+ 676              		.loc 1 129 7 discriminator 1 view .LVU166
+ 677 0032 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 678 0034 13F00405 		ands	r5, r3, #4
+ 679 0038 4DD1     		bne	.L74
+ 680              		.loc 1 129 7 discriminator 3 view .LVU167
+ 681 003a 454A     		ldr	r2, .L80
+ 682 003c 1268     		ldr	r2, [r2]
+ 683 003e 12F0040F 		tst	r2, #4
+ 684 0042 4CD1     		bne	.L62
+ 685              		.loc 1 129 7 discriminator 4 view .LVU168
+ 686 0044 23F00103 		bic	r3, r3, #1
+ 687 0048 A370     		strb	r3, [r4, #2]
+ 688              	.L63:
+ 689              		.loc 1 129 7 discriminator 7 view .LVU169
+ 690 004a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 691 004c 13F0010F 		tst	r3, #1
+ 692 0050 7CD1     		bne	.L61
+ 693              		.loc 1 129 7 discriminator 9 view .LVU170
+ 694              		.loc 1 129 7 discriminator 9 view .LVU171
+ 695 0052 3F4A     		ldr	r2, .L80
+ 696 0054 1368     		ldr	r3, [r2]
+ 697 0056 43F00403 		orr	r3, r3, #4
+ 698 005a 1360     		str	r3, [r2]
+ 130:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 699              		.loc 1 130 7 discriminator 9 view .LVU172
+ 700              		.loc 1 130 19 is_stmt 0 discriminator 9 view .LVU173
+ 701 005c 3D48     		ldr	r0, .L80+4
+ 702 005e FFF7FEFF 		bl	circular_buffer_read
+ 703              	.LVL34:
+ 704              		.loc 1 130 17 discriminator 9 view .LVU174
+ 705 0062 3D4B     		ldr	r3, .L80+8
+ 706 0064 1870     		strb	r0, [r3]
+ 131:src/m4_app.c  ****       ESOS_TASK_WAIT_ON_SEND_UINT8(sendUSART);         //Waits until outcomm is clear to send
+ 707              		.loc 1 131 7 is_stmt 1 discriminator 9 view .LVU175
+ 708              		.loc 1 131 7 discriminator 9 view .LVU176
+ 709 0066 3D4B     		ldr	r3, .L80+12
+ 710 0068 0022     		movs	r2, #0
+ARM GAS  /tmp/ccSLjvog.s 			page 17
+
+
+ 711 006a 1A80     		strh	r2, [r3]	@ movhi
+ 712              		.loc 1 131 7 discriminator 9 view .LVU177
+ 713              		.loc 1 131 7 discriminator 9 view .LVU178
+ 714              		.loc 1 131 7 discriminator 9 view .LVU179
+ 715              		.loc 1 131 7 discriminator 9 view .LVU180
+ 716 006c 8323     		movs	r3, #131
+ 717 006e 2380     		strh	r3, [r4]	@ movhi
+ 718              	.L57:
+ 719              		.loc 1 131 7 discriminator 1 view .LVU181
+ 720              		.loc 1 131 7 discriminator 1 view .LVU182
+ 721 0070 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 722 0072 15F00405 		ands	r5, r5, #4
+ 723 0076 36D1     		bne	.L75
+ 724              		.loc 1 131 7 discriminator 3 view .LVU183
+ 725 0078 374B     		ldr	r3, .L80+8
+ 726 007a 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 727 007c 3748     		ldr	r0, .L80+12
+ 728 007e FFF7FEFF 		bl	__esos_OutChar
+ 729              	.LVL35:
+ 730 0082 0228     		cmp	r0, #2
+ 731 0084 33D9     		bls	.L65
+ 732              		.loc 1 131 7 discriminator 4 view .LVU184
+ 733 0086 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 734 0088 23F00103 		bic	r3, r3, #1
+ 735 008c A370     		strb	r3, [r4, #2]
+ 736              	.L66:
+ 737              		.loc 1 131 7 discriminator 7 view .LVU185
+ 738 008e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 739 0090 13F0010F 		tst	r3, #1
+ 740 0094 5AD1     		bne	.L61
+ 741              		.loc 1 131 7 discriminator 9 view .LVU186
+ 742              		.loc 1 131 7 discriminator 9 view .LVU187
+ 132:src/m4_app.c  ****       ESOS_TASK_SIGNAL_AVAILABLE_OUT_COMM();           //Signals that outcomm is avaliable
+ 743              		.loc 1 132 7 discriminator 9 view .LVU188
+ 744 0096 2E4A     		ldr	r2, .L80
+ 745 0098 1368     		ldr	r3, [r2]
+ 746 009a 23F00403 		bic	r3, r3, #4
+ 747 009e 1360     		str	r3, [r2]
+ 133:src/m4_app.c  ****       ESOS_TASK_YIELD();
+ 748              		.loc 1 133 7 discriminator 9 view .LVU189
+ 749              		.loc 1 133 7 discriminator 9 view .LVU190
+ 750 00a0 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 751 00a2 03F07F03 		and	r3, r3, #127
+ 752 00a6 A370     		strb	r3, [r4, #2]
+ 753              		.loc 1 133 7 discriminator 9 view .LVU191
+ 754              		.loc 1 133 7 discriminator 9 view .LVU192
+ 755 00a8 8523     		movs	r3, #133
+ 756 00aa 2380     		strh	r3, [r4]	@ movhi
+ 757              	.L56:
+ 758              		.loc 1 133 7 discriminator 1 view .LVU193
+ 759              		.loc 1 133 7 discriminator 1 view .LVU194
+ 760 00ac A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 761 00ae 13F00405 		ands	r5, r3, #4
+ 762 00b2 21D1     		bne	.L76
+ 763              		.loc 1 133 7 discriminator 3 view .LVU195
+ 764 00b4 13F0800F 		tst	r3, #128
+ 765 00b8 22D1     		bne	.L77
+ARM GAS  /tmp/ccSLjvog.s 			page 18
+
+
+ 766              		.loc 1 133 7 discriminator 5 view .LVU196
+ 767 00ba 43F00103 		orr	r3, r3, #1
+ 768 00be A370     		strb	r3, [r4, #2]
+ 769              	.L69:
+ 770              		.loc 1 133 7 discriminator 7 view .LVU197
+ 771 00c0 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 772 00c2 13F0010F 		tst	r3, #1
+ 773 00c6 41D1     		bne	.L61
+ 774              	.L52:
+ 125:src/m4_app.c  ****   while(TRUE)
+ 775              		.loc 1 125 20 discriminator 1 view .LVU198
+ 126:src/m4_app.c  ****   {
+ 776              		.loc 1 126 3 discriminator 1 view .LVU199
+ 128:src/m4_app.c  ****       ESOS_TASK_WAIT_ON_AVAILABLE_OUT_COMM();          //Waits until outcomm is available
+ 777              		.loc 1 128 5 discriminator 1 view .LVU200
+ 128:src/m4_app.c  ****       ESOS_TASK_WAIT_ON_AVAILABLE_OUT_COMM();          //Waits until outcomm is available
+ 778              		.loc 1 128 9 is_stmt 0 discriminator 1 view .LVU201
+ 779 00c8 2248     		ldr	r0, .L80+4
+ 780 00ca FFF7FEFF 		bl	circular_buffer_is_empty
+ 781              	.LVL36:
+ 128:src/m4_app.c  ****       ESOS_TASK_WAIT_ON_AVAILABLE_OUT_COMM();          //Waits until outcomm is available
+ 782              		.loc 1 128 7 discriminator 1 view .LVU202
+ 783 00ce D8B9     		cbnz	r0, .L59
+ 129:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 784              		.loc 1 129 7 is_stmt 1 view .LVU203
+ 129:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 785              		.loc 1 129 7 view .LVU204
+ 786 00d0 8123     		movs	r3, #129
+ 787 00d2 2380     		strh	r3, [r4]	@ movhi
+ 788 00d4 ADE7     		b	.L58
+ 789              	.L74:
+ 129:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 790              		.loc 1 129 7 discriminator 2 view .LVU205
+ 791 00d6 0423     		movs	r3, #4
+ 792 00d8 A370     		strb	r3, [r4, #2]
+ 129:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 793              		.loc 1 129 7 discriminator 2 view .LVU206
+ 794 00da 0325     		movs	r5, #3
+ 795 00dc 36E0     		b	.L61
+ 796              	.L62:
+ 129:src/m4_app.c  ****       sendUSART = circular_buffer_read(&bufferSender); //Takes data out of send buffer
+ 797              		.loc 1 129 7 discriminator 5 view .LVU207
+ 798 00de 43F00103 		orr	r3, r3, #1
+ 799 00e2 A370     		strb	r3, [r4, #2]
+ 800 00e4 B1E7     		b	.L63
+ 801              	.L75:
+ 131:src/m4_app.c  ****       ESOS_TASK_SIGNAL_AVAILABLE_OUT_COMM();           //Signals that outcomm is avaliable
+ 802              		.loc 1 131 7 discriminator 2 view .LVU208
+ 803 00e6 0423     		movs	r3, #4
+ 804 00e8 A370     		strb	r3, [r4, #2]
+ 131:src/m4_app.c  ****       ESOS_TASK_SIGNAL_AVAILABLE_OUT_COMM();           //Signals that outcomm is avaliable
+ 805              		.loc 1 131 7 discriminator 2 view .LVU209
+ 806 00ea 0325     		movs	r5, #3
+ 807 00ec 2EE0     		b	.L61
+ 808              	.L65:
+ 131:src/m4_app.c  ****       ESOS_TASK_SIGNAL_AVAILABLE_OUT_COMM();           //Signals that outcomm is avaliable
+ 809              		.loc 1 131 7 discriminator 5 view .LVU210
+ARM GAS  /tmp/ccSLjvog.s 			page 19
+
+
+ 810 00ee A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 811 00f0 43F00103 		orr	r3, r3, #1
+ 812 00f4 A370     		strb	r3, [r4, #2]
+ 813 00f6 CAE7     		b	.L66
+ 814              	.L76:
+ 815              		.loc 1 133 7 discriminator 2 view .LVU211
+ 816 00f8 0423     		movs	r3, #4
+ 817 00fa A370     		strb	r3, [r4, #2]
+ 818              		.loc 1 133 7 discriminator 2 view .LVU212
+ 819 00fc 0325     		movs	r5, #3
+ 820 00fe 25E0     		b	.L61
+ 821              	.L77:
+ 822              		.loc 1 133 7 discriminator 4 view .LVU213
+ 823 0100 23F00103 		bic	r3, r3, #1
+ 824 0104 A370     		strb	r3, [r4, #2]
+ 825 0106 DBE7     		b	.L69
+ 826              	.L59:
+ 134:src/m4_app.c  ****     }
+ 135:src/m4_app.c  ****     else
+ 136:src/m4_app.c  ****       ESOS_TASK_YIELD();
+ 827              		.loc 1 136 7 view .LVU214
+ 828              		.loc 1 136 7 view .LVU215
+ 829 0108 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 830 010a 03F07F03 		and	r3, r3, #127
+ 831 010e A370     		strb	r3, [r4, #2]
+ 832              		.loc 1 136 7 view .LVU216
+ 833              		.loc 1 136 7 view .LVU217
+ 834 0110 8823     		movs	r3, #136
+ 835 0112 2380     		strh	r3, [r4]	@ movhi
+ 836              	.L54:
+ 837              		.loc 1 136 7 discriminator 1 view .LVU218
+ 838              		.loc 1 136 7 discriminator 1 view .LVU219
+ 839 0114 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 840 0116 13F00405 		ands	r5, r3, #4
+ 841 011a 0AD1     		bne	.L78
+ 842              		.loc 1 136 7 discriminator 3 view .LVU220
+ 843 011c 13F0800F 		tst	r3, #128
+ 844 0120 0BD1     		bne	.L79
+ 845              		.loc 1 136 7 discriminator 5 view .LVU221
+ 846 0122 43F00103 		orr	r3, r3, #1
+ 847 0126 A370     		strb	r3, [r4, #2]
+ 848              	.L72:
+ 849              		.loc 1 136 7 discriminator 7 view .LVU222
+ 850 0128 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 851 012a 13F0010F 		tst	r3, #1
+ 852 012e CBD0     		beq	.L52
+ 853 0130 0CE0     		b	.L61
+ 854              	.L78:
+ 855              		.loc 1 136 7 discriminator 2 view .LVU223
+ 856 0132 0423     		movs	r3, #4
+ 857 0134 A370     		strb	r3, [r4, #2]
+ 858              		.loc 1 136 7 discriminator 2 view .LVU224
+ 859 0136 0325     		movs	r5, #3
+ 860 0138 08E0     		b	.L61
+ 861              	.L79:
+ 862              		.loc 1 136 7 discriminator 4 view .LVU225
+ 863 013a 23F00103 		bic	r3, r3, #1
+ARM GAS  /tmp/ccSLjvog.s 			page 20
+
+
+ 864 013e A370     		strb	r3, [r4, #2]
+ 865 0140 F2E7     		b	.L72
+ 866              	.LVL37:
+ 867              	.L53:
+ 137:src/m4_app.c  ****   }
+ 138:src/m4_app.c  ****   ESOS_TASK_END();
+ 868              		.loc 1 138 3 view .LVU226
+ 869              		.loc 1 138 3 view .LVU227
+ 870 0142 0823     		movs	r3, #8
+ 871 0144 A370     		strb	r3, [r4, #2]
+ 872              		.loc 1 138 3 view .LVU228
+ 873 0146 0023     		movs	r3, #0
+ 874 0148 2380     		strh	r3, [r4]	@ movhi
+ 875              		.loc 1 138 3 view .LVU229
+ 876              		.loc 1 138 3 view .LVU230
+ 877              		.loc 1 138 3 view .LVU231
+ 878 014a 0325     		movs	r5, #3
+ 879              	.LVL38:
+ 880              	.L61:
+ 881              		.loc 1 138 18 discriminator 1 view .LVU232
+ 139:src/m4_app.c  **** }
+ 882              		.loc 1 139 1 is_stmt 0 discriminator 1 view .LVU233
+ 883 014c 2846     		mov	r0, r5
+ 884 014e 38BD     		pop	{r3, r4, r5, pc}
+ 885              	.LVL39:
+ 886              	.L81:
+ 887              		.loc 1 139 1 discriminator 1 view .LVU234
+ 888              		.align	2
+ 889              	.L80:
+ 890 0150 00000000 		.word	__esos_u32SystemFlags
+ 891 0154 00000000 		.word	.LANCHOR3
+ 892 0158 00000000 		.word	.LANCHOR4
+ 893 015c 00000000 		.word	__stChildTaskTx
+ 894              		.cfi_endproc
+ 895              	.LFE11:
+ 897              		.section	.text.receivToSender,"ax",%progbits
+ 898              		.align	1
+ 899              		.global	receivToSender
+ 900              		.syntax unified
+ 901              		.thumb
+ 902              		.thumb_func
+ 904              	receivToSender:
+ 905              	.LVL40:
+ 906              	.LFB12:
+ 140:src/m4_app.c  **** 
+ 141:src/m4_app.c  **** // Moves incoming data between buffers and uses the circular buffer to encrypt or decrypt 
+ 142:src/m4_app.c  **** // depending on the state of the onboard button - Button1
+ 143:src/m4_app.c  **** ESOS_USER_TASK(receivToSender)
+ 144:src/m4_app.c  **** {
+ 907              		.loc 1 144 1 is_stmt 1 view -0
+ 908              		.cfi_startproc
+ 909              		@ args = 0, pretend = 0, frame = 0
+ 910              		@ frame_needed = 0, uses_anonymous_args = 0
+ 911              		.loc 1 144 1 is_stmt 0 view .LVU236
+ 912 0000 10B5     		push	{r4, lr}
+ 913              	.LCFI4:
+ 914              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/ccSLjvog.s 			page 21
+
+
+ 915              		.cfi_offset 4, -8
+ 916              		.cfi_offset 14, -4
+ 917 0002 0446     		mov	r4, r0
+ 145:src/m4_app.c  ****   static uint8_t r2s;
+ 918              		.loc 1 145 3 is_stmt 1 view .LVU237
+ 146:src/m4_app.c  ****   static uint8_t s2r;
+ 919              		.loc 1 146 3 view .LVU238
+ 147:src/m4_app.c  ****   static uint8_t encrypt;
+ 920              		.loc 1 147 3 view .LVU239
+ 148:src/m4_app.c  ****   static uint8_t decrypt;
+ 921              		.loc 1 148 3 view .LVU240
+ 149:src/m4_app.c  ****   ESOS_TASK_BEGIN();
+ 922              		.loc 1 149 3 view .LVU241
+ 923 0004 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 924 0006 63F07F03 		orn	r3, r3, #127
+ 925 000a 8370     		strb	r3, [r0, #2]
+ 926              		.loc 1 149 3 view .LVU242
+ 927 000c 0388     		ldrh	r3, [r0]
+ 928 000e A82B     		cmp	r3, #168
+ 929 0010 23D0     		beq	.L83
+ 930 0012 AB2B     		cmp	r3, #171
+ 931 0014 4ED0     		beq	.L84
+ 932 0016 002B     		cmp	r3, #0
+ 933 0018 5AD0     		beq	.L93
+ 150:src/m4_app.c  ****     while (TRUE)
+ 151:src/m4_app.c  ****     {
+ 152:src/m4_app.c  ****       if(!circular_buffer_is_empty(&bufferReceiver))
+ 153:src/m4_app.c  ****       { 
+ 154:src/m4_app.c  ****         //Button1 is pushed which will decrypt what is in the receive buffer and move
+ 155:src/m4_app.c  ****         //to the send buffer to display
+ 156:src/m4_app.c  ****         if(B1_PUSHED()){
+ 157:src/m4_app.c  ****           s2r = circular_buffer_read(&bufferReceiver);
+ 158:src/m4_app.c  ****           decrypt = decypher(s2r);
+ 159:src/m4_app.c  ****           circular_buffer_write(&bufferSender, decrypt);
+ 160:src/m4_app.c  ****         }
+ 161:src/m4_app.c  ****         //Button1 is not pushed which will encrypt what is in the receive buffer and move
+ 162:src/m4_app.c  ****         //tto the send buffer to display
+ 163:src/m4_app.c  ****         else if(!B1_PUSHED()){
+ 164:src/m4_app.c  ****           r2s = circular_buffer_read(&bufferReceiver);
+ 165:src/m4_app.c  ****           encrypt = encypher(r2s);
+ 166:src/m4_app.c  ****           circular_buffer_write(&bufferSender, encrypt);
+ 167:src/m4_app.c  ****         }
+ 168:src/m4_app.c  ****         ESOS_TASK_YIELD();
+ 169:src/m4_app.c  ****       }
+ 170:src/m4_app.c  ****       else{
+ 171:src/m4_app.c  ****         ESOS_TASK_YIELD();
+ 172:src/m4_app.c  ****       }
+ 173:src/m4_app.c  ****     }
+ 174:src/m4_app.c  ****   ESOS_TASK_END();
+ 934              		.loc 1 174 3 view .LVU243
+ 935              		.loc 1 174 3 view .LVU244
+ 936 001a 0823     		movs	r3, #8
+ 937 001c 8370     		strb	r3, [r0, #2]
+ 938              		.loc 1 174 3 view .LVU245
+ 939 001e 0023     		movs	r3, #0
+ 940 0020 0380     		strh	r3, [r0]	@ movhi
+ 941              		.loc 1 174 3 view .LVU246
+ARM GAS  /tmp/ccSLjvog.s 			page 22
+
+
+ 942              		.loc 1 174 3 view .LVU247
+ 943              		.loc 1 174 3 view .LVU248
+ 944 0022 0320     		movs	r0, #3
+ 945              	.LVL41:
+ 946              	.L90:
+ 947              		.loc 1 174 18 discriminator 1 view .LVU249
+ 175:src/m4_app.c  **** }
+ 948              		.loc 1 175 1 is_stmt 0 discriminator 1 view .LVU250
+ 949 0024 10BD     		pop	{r4, pc}
+ 950              	.LVL42:
+ 951              	.L102:
+ 156:src/m4_app.c  ****           s2r = circular_buffer_read(&bufferReceiver);
+ 952              		.loc 1 156 9 is_stmt 1 view .LVU251
+ 156:src/m4_app.c  ****           s2r = circular_buffer_read(&bufferReceiver);
+ 953              		.loc 1 156 12 is_stmt 0 view .LVU252
+ 954 0026 4FF40051 		mov	r1, #8192
+ 955 002a 3348     		ldr	r0, .L103
+ 956 002c FFF7FEFF 		bl	gpio_get
+ 957              	.LVL43:
+ 156:src/m4_app.c  ****           s2r = circular_buffer_read(&bufferReceiver);
+ 958              		.loc 1 156 11 view .LVU253
+ 959 0030 10B3     		cbz	r0, .L87
+ 960              	.LBB2:
+ 157:src/m4_app.c  ****           decrypt = decypher(s2r);
+ 961              		.loc 1 157 11 is_stmt 1 view .LVU254
+ 157:src/m4_app.c  ****           decrypt = decypher(s2r);
+ 962              		.loc 1 157 17 is_stmt 0 view .LVU255
+ 963 0032 3248     		ldr	r0, .L103+4
+ 964 0034 FFF7FEFF 		bl	circular_buffer_read
+ 965              	.LVL44:
+ 157:src/m4_app.c  ****           decrypt = decypher(s2r);
+ 966              		.loc 1 157 15 view .LVU256
+ 967 0038 C0B2     		uxtb	r0, r0
+ 968 003a 314B     		ldr	r3, .L103+8
+ 969 003c 1870     		strb	r0, [r3]
+ 158:src/m4_app.c  ****           circular_buffer_write(&bufferSender, decrypt);
+ 970              		.loc 1 158 11 is_stmt 1 view .LVU257
+ 158:src/m4_app.c  ****           circular_buffer_write(&bufferSender, decrypt);
+ 971              		.loc 1 158 21 is_stmt 0 view .LVU258
+ 972 003e FFF7FEFF 		bl	decypher
+ 973              	.LVL45:
+ 158:src/m4_app.c  ****           circular_buffer_write(&bufferSender, decrypt);
+ 974              		.loc 1 158 19 view .LVU259
+ 975 0042 C1B2     		uxtb	r1, r0
+ 976 0044 2F4B     		ldr	r3, .L103+12
+ 977 0046 1970     		strb	r1, [r3]
+ 159:src/m4_app.c  ****         }
+ 978              		.loc 1 159 11 is_stmt 1 view .LVU260
+ 979 0048 2F48     		ldr	r0, .L103+16
+ 980 004a FFF7FEFF 		bl	circular_buffer_write
+ 981              	.LVL46:
+ 982              	.L88:
+ 983              	.LBE2:
+ 168:src/m4_app.c  ****       }
+ 984              		.loc 1 168 9 view .LVU261
+ 168:src/m4_app.c  ****       }
+ 985              		.loc 1 168 9 view .LVU262
+ARM GAS  /tmp/ccSLjvog.s 			page 23
+
+
+ 986 004e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 987 0050 03F07F03 		and	r3, r3, #127
+ 988 0054 A370     		strb	r3, [r4, #2]
+ 168:src/m4_app.c  ****       }
+ 989              		.loc 1 168 9 view .LVU263
+ 168:src/m4_app.c  ****       }
+ 990              		.loc 1 168 9 view .LVU264
+ 991 0056 A823     		movs	r3, #168
+ 992 0058 2380     		strh	r3, [r4]	@ movhi
+ 993              	.L83:
+ 168:src/m4_app.c  ****       }
+ 994              		.loc 1 168 9 discriminator 1 view .LVU265
+ 168:src/m4_app.c  ****       }
+ 995              		.loc 1 168 9 discriminator 1 view .LVU266
+ 996 005a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 997 005c 13F00400 		ands	r0, r3, #4
+ 998 0060 20D1     		bne	.L98
+ 168:src/m4_app.c  ****       }
+ 999              		.loc 1 168 9 discriminator 3 view .LVU267
+ 1000 0062 13F0800F 		tst	r3, #128
+ 1001 0066 21D1     		bne	.L99
+ 168:src/m4_app.c  ****       }
+ 1002              		.loc 1 168 9 discriminator 5 view .LVU268
+ 1003 0068 43F00103 		orr	r3, r3, #1
+ 1004 006c A370     		strb	r3, [r4, #2]
+ 1005              	.L92:
+ 168:src/m4_app.c  ****       }
+ 1006              		.loc 1 168 9 discriminator 7 view .LVU269
+ 1007 006e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1008 0070 13F0010F 		tst	r3, #1
+ 1009 0074 2CD0     		beq	.L93
+ 1010 0076 D5E7     		b	.L90
+ 1011              	.L87:
+ 163:src/m4_app.c  ****           r2s = circular_buffer_read(&bufferReceiver);
+ 1012              		.loc 1 163 14 view .LVU270
+ 163:src/m4_app.c  ****           r2s = circular_buffer_read(&bufferReceiver);
+ 1013              		.loc 1 163 18 is_stmt 0 view .LVU271
+ 1014 0078 4FF40051 		mov	r1, #8192
+ 1015 007c 1E48     		ldr	r0, .L103
+ 1016 007e FFF7FEFF 		bl	gpio_get
+ 1017              	.LVL47:
+ 163:src/m4_app.c  ****           r2s = circular_buffer_read(&bufferReceiver);
+ 1018              		.loc 1 163 16 view .LVU272
+ 1019 0082 0028     		cmp	r0, #0
+ 1020 0084 E3D1     		bne	.L88
+ 164:src/m4_app.c  ****           encrypt = encypher(r2s);
+ 1021              		.loc 1 164 11 is_stmt 1 view .LVU273
+ 164:src/m4_app.c  ****           encrypt = encypher(r2s);
+ 1022              		.loc 1 164 17 is_stmt 0 view .LVU274
+ 1023 0086 1D48     		ldr	r0, .L103+4
+ 1024 0088 FFF7FEFF 		bl	circular_buffer_read
+ 1025              	.LVL48:
+ 164:src/m4_app.c  ****           encrypt = encypher(r2s);
+ 1026              		.loc 1 164 15 view .LVU275
+ 1027 008c C0B2     		uxtb	r0, r0
+ 1028 008e 1F4B     		ldr	r3, .L103+20
+ 1029 0090 1870     		strb	r0, [r3]
+ARM GAS  /tmp/ccSLjvog.s 			page 24
+
+
+ 165:src/m4_app.c  ****           circular_buffer_write(&bufferSender, encrypt);
+ 1030              		.loc 1 165 11 is_stmt 1 view .LVU276
+ 165:src/m4_app.c  ****           circular_buffer_write(&bufferSender, encrypt);
+ 1031              		.loc 1 165 21 is_stmt 0 view .LVU277
+ 1032 0092 FFF7FEFF 		bl	encypher
+ 1033              	.LVL49:
+ 1034 0096 0146     		mov	r1, r0
+ 165:src/m4_app.c  ****           circular_buffer_write(&bufferSender, encrypt);
+ 1035              		.loc 1 165 19 view .LVU278
+ 1036 0098 1D4B     		ldr	r3, .L103+24
+ 1037 009a 1870     		strb	r0, [r3]
+ 166:src/m4_app.c  ****         }
+ 1038              		.loc 1 166 11 is_stmt 1 view .LVU279
+ 1039 009c 1A48     		ldr	r0, .L103+16
+ 1040 009e FFF7FEFF 		bl	circular_buffer_write
+ 1041              	.LVL50:
+ 1042 00a2 D4E7     		b	.L88
+ 1043              	.L98:
+ 168:src/m4_app.c  ****       }
+ 1044              		.loc 1 168 9 discriminator 2 view .LVU280
+ 1045 00a4 0423     		movs	r3, #4
+ 1046 00a6 A370     		strb	r3, [r4, #2]
+ 168:src/m4_app.c  ****       }
+ 1047              		.loc 1 168 9 discriminator 2 view .LVU281
+ 1048 00a8 0320     		movs	r0, #3
+ 1049 00aa BBE7     		b	.L90
+ 1050              	.L99:
+ 168:src/m4_app.c  ****       }
+ 1051              		.loc 1 168 9 discriminator 4 view .LVU282
+ 1052 00ac 23F00103 		bic	r3, r3, #1
+ 1053 00b0 A370     		strb	r3, [r4, #2]
+ 1054 00b2 DCE7     		b	.L92
+ 1055              	.L84:
+ 171:src/m4_app.c  ****       }
+ 1056              		.loc 1 171 9 discriminator 1 view .LVU283
+ 171:src/m4_app.c  ****       }
+ 1057              		.loc 1 171 9 discriminator 1 view .LVU284
+ 1058 00b4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1059 00b6 13F00400 		ands	r0, r3, #4
+ 1060 00ba 15D1     		bne	.L100
+ 171:src/m4_app.c  ****       }
+ 1061              		.loc 1 171 9 discriminator 3 view .LVU285
+ 1062 00bc 13F0800F 		tst	r3, #128
+ 1063 00c0 16D1     		bne	.L101
+ 171:src/m4_app.c  ****       }
+ 1064              		.loc 1 171 9 discriminator 5 view .LVU286
+ 1065 00c2 43F00103 		orr	r3, r3, #1
+ 1066 00c6 A370     		strb	r3, [r4, #2]
+ 1067              	.L96:
+ 171:src/m4_app.c  ****       }
+ 1068              		.loc 1 171 9 discriminator 7 view .LVU287
+ 1069 00c8 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1070 00ca 13F0010F 		tst	r3, #1
+ 1071 00ce A9D1     		bne	.L90
+ 1072              	.L93:
+ 149:src/m4_app.c  ****     while (TRUE)
+ 1073              		.loc 1 149 20 discriminator 1 view .LVU288
+ARM GAS  /tmp/ccSLjvog.s 			page 25
+
+
+ 150:src/m4_app.c  ****     {
+ 1074              		.loc 1 150 5 discriminator 1 view .LVU289
+ 152:src/m4_app.c  ****       { 
+ 1075              		.loc 1 152 7 discriminator 1 view .LVU290
+ 152:src/m4_app.c  ****       { 
+ 1076              		.loc 1 152 11 is_stmt 0 discriminator 1 view .LVU291
+ 1077 00d0 0A48     		ldr	r0, .L103+4
+ 1078 00d2 FFF7FEFF 		bl	circular_buffer_is_empty
+ 1079              	.LVL51:
+ 152:src/m4_app.c  ****       { 
+ 1080              		.loc 1 152 9 discriminator 1 view .LVU292
+ 1081 00d6 0028     		cmp	r0, #0
+ 1082 00d8 A5D0     		beq	.L102
+ 171:src/m4_app.c  ****       }
+ 1083              		.loc 1 171 9 is_stmt 1 view .LVU293
+ 171:src/m4_app.c  ****       }
+ 1084              		.loc 1 171 9 view .LVU294
+ 1085 00da A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 1086 00dc 03F07F03 		and	r3, r3, #127
+ 1087 00e0 A370     		strb	r3, [r4, #2]
+ 171:src/m4_app.c  ****       }
+ 1088              		.loc 1 171 9 view .LVU295
+ 171:src/m4_app.c  ****       }
+ 1089              		.loc 1 171 9 view .LVU296
+ 1090 00e2 AB23     		movs	r3, #171
+ 1091 00e4 2380     		strh	r3, [r4]	@ movhi
+ 1092 00e6 E5E7     		b	.L84
+ 1093              	.L100:
+ 171:src/m4_app.c  ****       }
+ 1094              		.loc 1 171 9 discriminator 2 view .LVU297
+ 1095 00e8 0423     		movs	r3, #4
+ 1096 00ea A370     		strb	r3, [r4, #2]
+ 171:src/m4_app.c  ****       }
+ 1097              		.loc 1 171 9 discriminator 2 view .LVU298
+ 1098 00ec 0320     		movs	r0, #3
+ 1099 00ee 99E7     		b	.L90
+ 1100              	.L101:
+ 171:src/m4_app.c  ****       }
+ 1101              		.loc 1 171 9 discriminator 4 view .LVU299
+ 1102 00f0 23F00103 		bic	r3, r3, #1
+ 1103 00f4 A370     		strb	r3, [r4, #2]
+ 1104 00f6 E7E7     		b	.L96
+ 1105              	.L104:
+ 1106              		.align	2
+ 1107              	.L103:
+ 1108 00f8 00080048 		.word	1207961600
+ 1109 00fc 00000000 		.word	.LANCHOR2
+ 1110 0100 00000000 		.word	.LANCHOR5
+ 1111 0104 00000000 		.word	.LANCHOR6
+ 1112 0108 00000000 		.word	.LANCHOR3
+ 1113 010c 00000000 		.word	.LANCHOR7
+ 1114 0110 00000000 		.word	.LANCHOR8
+ 1115              		.cfi_endproc
+ 1116              	.LFE12:
+ 1118              		.section	.text.__user_init_hw,"ax",%progbits
+ 1119              		.align	1
+ 1120              		.global	__user_init_hw
+ARM GAS  /tmp/ccSLjvog.s 			page 26
+
+
+ 1121              		.syntax unified
+ 1122              		.thumb
+ 1123              		.thumb_func
+ 1125              	__user_init_hw:
+ 1126              	.LFB13:
+ 176:src/m4_app.c  **** 
+ 177:src/m4_app.c  **** 
+ 178:src/m4_app.c  **** 
+ 179:src/m4_app.c  **** /************************************************************************
+ 180:src/m4_app.c  ****  * User supplied functions
+ 181:src/m4_app.c  ****  ************************************************************************
+ 182:src/m4_app.c  ****  */
+ 183:src/m4_app.c  **** void __user_init_hw(void) {
+ 1127              		.loc 1 183 27 view -0
+ 1128              		.cfi_startproc
+ 1129              		@ args = 0, pretend = 0, frame = 0
+ 1130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1131 0000 08B5     		push	{r3, lr}
+ 1132              	.LCFI5:
+ 1133              		.cfi_def_cfa_offset 8
+ 1134              		.cfi_offset 3, -8
+ 1135              		.cfi_offset 14, -4
+ 184:src/m4_app.c  ****   /* GPIO Ports Clock Enable */
+ 185:src/m4_app.c  ****   rcc_periph_clock_enable(GPIOA);
+ 1136              		.loc 1 185 3 view .LVU301
+ 1137 0002 0020     		movs	r0, #0
+ 1138 0004 FFF7FEFF 		bl	rcc_periph_clock_enable
+ 1139              	.LVL52:
+ 186:src/m4_app.c  ****   rcc_periph_clock_enable(GPIOC);
+ 1140              		.loc 1 186 3 view .LVU302
+ 1141 0008 4FF40060 		mov	r0, #2048
+ 1142 000c FFF7FEFF 		bl	rcc_periph_clock_enable
+ 1143              	.LVL53:
+ 187:src/m4_app.c  **** 
+ 188:src/m4_app.c  ****   /*Configure GPIO pin : PC13 */
+ 189:src/m4_app.c  ****   gpio_mode_setup(B1_PORT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, B1_PIN);
+ 1144              		.loc 1 189 3 view .LVU303
+ 1145 0010 4FF40053 		mov	r3, #8192
+ 1146 0014 0022     		movs	r2, #0
+ 1147 0016 1146     		mov	r1, r2
+ 1148 0018 0548     		ldr	r0, .L107
+ 1149 001a FFF7FEFF 		bl	gpio_mode_setup
+ 1150              	.LVL54:
+ 190:src/m4_app.c  **** 
+ 191:src/m4_app.c  ****   /*Configure GPIO pin : LED2_Pin */
+ 192:src/m4_app.c  ****   gpio_mode_setup(LD2_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LD2_PIN);
+ 1151              		.loc 1 192 3 view .LVU304
+ 1152 001e 2023     		movs	r3, #32
+ 1153 0020 0022     		movs	r2, #0
+ 1154 0022 0121     		movs	r1, #1
+ 1155 0024 4FF09040 		mov	r0, #1207959552
+ 1156 0028 FFF7FEFF 		bl	gpio_mode_setup
+ 1157              	.LVL55:
+ 193:src/m4_app.c  **** 
+ 194:src/m4_app.c  **** }
+ 1158              		.loc 1 194 1 is_stmt 0 view .LVU305
+ 1159 002c 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/ccSLjvog.s 			page 27
+
+
+ 1160              	.L108:
+ 1161 002e 00BF     		.align	2
+ 1162              	.L107:
+ 1163 0030 00080048 		.word	1207961600
+ 1164              		.cfi_endproc
+ 1165              	.LFE13:
+ 1167              		.section	.rodata.user_init.str1.4,"aMS",%progbits,1
+ 1168              		.align	2
+ 1169              	.LC0:
+ 1170 0000 0A737263 		.ascii	"\012src/m4_app.c, built on Apr 25 2023 at 18:49:27\012"
+ 1170      2F6D345F 
+ 1170      6170702E 
+ 1170      632C2062 
+ 1170      75696C74 
+ 1171 0030 00       		.ascii	"\000"
+ 1172              		.section	.text.user_init,"ax",%progbits
+ 1173              		.align	1
+ 1174              		.global	user_init
+ 1175              		.syntax unified
+ 1176              		.thumb
+ 1177              		.thumb_func
+ 1179              	user_init:
+ 1180              	.LFB14:
+ 195:src/m4_app.c  **** 
+ 196:src/m4_app.c  **** 
+ 197:src/m4_app.c  **** 
+ 198:src/m4_app.c  **** /******************************************************************************
+ 199:src/m4_app.c  ****  * Function:        void user_init(void)
+ 200:src/m4_app.c  ****  *
+ 201:src/m4_app.c  ****  * PreCondition:    None
+ 202:src/m4_app.c  ****  *
+ 203:src/m4_app.c  ****  * Input:           None
+ 204:src/m4_app.c  ****  *
+ 205:src/m4_app.c  ****  * Output:          None
+ 206:src/m4_app.c  ****  *
+ 207:src/m4_app.c  ****  * Side Effects:    None
+ 208:src/m4_app.c  ****  *
+ 209:src/m4_app.c  ****  * Overview:        user_init is a centralized initialization routine where
+ 210:src/m4_app.c  ****  *                  the user can setup their application.   It is called
+ 211:src/m4_app.c  ****  *                  automagically by ES_OS during the operating system
+ 212:src/m4_app.c  ****  *                  initialization.
+ 213:src/m4_app.c  ****  *
+ 214:src/m4_app.c  ****  * Note:            The user should set up any state machines and init
+ 215:src/m4_app.c  ****  *                  all application variables.  They can also turn on
+ 216:src/m4_app.c  ****  *                  any needed peripherals here.
+ 217:src/m4_app.c  ****  *
+ 218:src/m4_app.c  ****  *                  The user SHALL NOT mess with the interrupt hardware
+ 219:src/m4_app.c  ****  *                  directly!!!  The ES_OS must be aware of the interrupts
+ 220:src/m4_app.c  ****  *                  and provides osXXXXXXX functions for the user to use.
+ 221:src/m4_app.c  ****  *                  Using these ES_OS-provided functions, the user may
+ 222:src/m4_app.c  ****  *                  (and probably should) initialize, register, and enable
+ 223:src/m4_app.c  ****  *                  interrupts in this routine.
+ 224:src/m4_app.c  ****  *
+ 225:src/m4_app.c  ****  *                  Furthermore, the user should register AT LEAST one
+ 226:src/m4_app.c  ****  *                  user application task here (via esos_RegisterTask) or
+ 227:src/m4_app.c  ****  *                  the ES_OS scheduler will have nothing to schedule
+ 228:src/m4_app.c  ****  *                  to run when this function returns.
+ARM GAS  /tmp/ccSLjvog.s 			page 28
+
+
+ 229:src/m4_app.c  ****  *
+ 230:src/m4_app.c  ****  *****************************************************************************/
+ 231:src/m4_app.c  **** void user_init(void) {
+ 1181              		.loc 1 231 22 is_stmt 1 view -0
+ 1182              		.cfi_startproc
+ 1183              		@ args = 0, pretend = 0, frame = 0
+ 1184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1185 0000 08B5     		push	{r3, lr}
+ 1186              	.LCFI6:
+ 1187              		.cfi_def_cfa_offset 8
+ 1188              		.cfi_offset 3, -8
+ 1189              		.cfi_offset 14, -4
+ 232:src/m4_app.c  **** 
+ 233:src/m4_app.c  ****   // setup our software structures here
+ 234:src/m4_app.c  ****   circular_buffer_init(&bufferReceiver);
+ 1190              		.loc 1 234 3 view .LVU307
+ 1191 0002 0C48     		ldr	r0, .L111
+ 1192 0004 FFF7FEFF 		bl	circular_buffer_init
+ 1193              	.LVL56:
+ 235:src/m4_app.c  ****   circular_buffer_init(&bufferSender);
+ 1194              		.loc 1 235 3 view .LVU308
+ 1195 0008 0B48     		ldr	r0, .L111+4
+ 1196 000a FFF7FEFF 		bl	circular_buffer_init
+ 1197              	.LVL57:
+ 236:src/m4_app.c  ****   // call our function to setup the hardware we like it.
+ 237:src/m4_app.c  ****   __user_init_hw();
+ 1198              		.loc 1 237 3 view .LVU309
+ 1199 000e FFF7FEFF 		bl	__user_init_hw
+ 1200              	.LVL58:
+ 238:src/m4_app.c  **** 
+ 239:src/m4_app.c  ****   // Drive the UART directly.....  to print the HELLO_MSG
+ 240:src/m4_app.c  ****   __esos_unsafe_PutString( HELLO_MSG );
+ 1201              		.loc 1 240 3 view .LVU310
+ 1202 0012 0A48     		ldr	r0, .L111+8
+ 1203 0014 FFF7FEFF 		bl	__esos_unsafe_PutString
+ 1204              	.LVL59:
+ 241:src/m4_app.c  **** 
+ 242:src/m4_app.c  ****   /*
+ 243:src/m4_app.c  ****    * Now, let's get down and dirty with ESOS and our user tasks
+ 244:src/m4_app.c  ****    *
+ 245:src/m4_app.c  ****    *   Once tasks are registered, they will start executing in
+ 246:src/m4_app.c  ****    *   the ESOS scheduler.
+ 247:src/m4_app.c  ****    */
+ 248:src/m4_app.c  ****   esos_RegisterTask(flash_LED);
+ 1205              		.loc 1 248 3 view .LVU311
+ 1206 0018 0948     		ldr	r0, .L111+12
+ 1207 001a FFF7FEFF 		bl	esos_RegisterTask
+ 1208              	.LVL60:
+ 249:src/m4_app.c  ****   esos_RegisterTask(usart_receive);
+ 1209              		.loc 1 249 3 view .LVU312
+ 1210 001e 0948     		ldr	r0, .L111+16
+ 1211 0020 FFF7FEFF 		bl	esos_RegisterTask
+ 1212              	.LVL61:
+ 250:src/m4_app.c  ****   esos_RegisterTask(usart_sender);
+ 1213              		.loc 1 250 3 view .LVU313
+ 1214 0024 0848     		ldr	r0, .L111+20
+ 1215 0026 FFF7FEFF 		bl	esos_RegisterTask
+ARM GAS  /tmp/ccSLjvog.s 			page 29
+
+
+ 1216              	.LVL62:
+ 251:src/m4_app.c  ****   esos_RegisterTask(receivToSender);
+ 1217              		.loc 1 251 3 view .LVU314
+ 1218 002a 0848     		ldr	r0, .L111+24
+ 1219 002c FFF7FEFF 		bl	esos_RegisterTask
+ 1220              	.LVL63:
+ 252:src/m4_app.c  **** 
+ 253:src/m4_app.c  **** } // end user_init()
+ 1221              		.loc 1 253 1 is_stmt 0 view .LVU315
+ 1222 0030 08BD     		pop	{r3, pc}
+ 1223              	.L112:
+ 1224 0032 00BF     		.align	2
+ 1225              	.L111:
+ 1226 0034 00000000 		.word	.LANCHOR2
+ 1227 0038 00000000 		.word	.LANCHOR3
+ 1228 003c 00000000 		.word	.LC0
+ 1229 0040 00000000 		.word	flash_LED
+ 1230 0044 00000000 		.word	usart_receive
+ 1231 0048 00000000 		.word	usart_sender
+ 1232 004c 00000000 		.word	receivToSender
+ 1233              		.cfi_endproc
+ 1234              	.LFE14:
+ 1236              		.global	timer2Period
+ 1237              		.global	state
+ 1238              		.global	key2
+ 1239              		.global	key
+ 1240              		.global	bufferSender
+ 1241              		.global	bufferReceiver
+ 1242              		.section	.bss.bufferReceiver,"aw",%nobits
+ 1243              		.align	2
+ 1244              		.set	.LANCHOR2,. + 0
+ 1247              	bufferReceiver:
+ 1248 0000 00000000 		.space	1036
+ 1248      00000000 
+ 1248      00000000 
+ 1248      00000000 
+ 1248      00000000 
+ 1249              		.section	.bss.bufferSender,"aw",%nobits
+ 1250              		.align	2
+ 1251              		.set	.LANCHOR3,. + 0
+ 1254              	bufferSender:
+ 1255 0000 00000000 		.space	1036
+ 1255      00000000 
+ 1255      00000000 
+ 1255      00000000 
+ 1255      00000000 
+ 1256              		.section	.bss.decrypt.2,"aw",%nobits
+ 1257              		.set	.LANCHOR6,. + 0
+ 1260              	decrypt.2:
+ 1261 0000 00       		.space	1
+ 1262              		.section	.bss.encrypt.0,"aw",%nobits
+ 1263              		.set	.LANCHOR8,. + 0
+ 1266              	encrypt.0:
+ 1267 0000 00       		.space	1
+ 1268              		.section	.bss.r2s.1,"aw",%nobits
+ 1269              		.set	.LANCHOR7,. + 0
+ 1272              	r2s.1:
+ARM GAS  /tmp/ccSLjvog.s 			page 30
+
+
+ 1273 0000 00       		.space	1
+ 1274              		.section	.bss.recvUSART.5,"aw",%nobits
+ 1275              		.set	.LANCHOR1,. + 0
+ 1278              	recvUSART.5:
+ 1279 0000 00       		.space	1
+ 1280              		.section	.bss.s2r.3,"aw",%nobits
+ 1281              		.set	.LANCHOR5,. + 0
+ 1284              	s2r.3:
+ 1285 0000 00       		.space	1
+ 1286              		.section	.bss.sendUSART.4,"aw",%nobits
+ 1287              		.set	.LANCHOR4,. + 0
+ 1290              	sendUSART.4:
+ 1291 0000 00       		.space	1
+ 1292              		.section	.bss.state,"aw",%nobits
+ 1295              	state:
+ 1296 0000 00       		.space	1
+ 1297              		.section	.data.key,"aw"
+ 1298              		.align	2
+ 1301              	key:
+ 1302 0000 424F4C44 		.ascii	"BOLDFEARLESSCONFIDENT\000"
+ 1302      46454152 
+ 1302      4C455353 
+ 1302      434F4E46 
+ 1302      4944454E 
+ 1303              		.section	.data.key2,"aw"
+ 1304              		.align	2
+ 1307              	key2:
+ 1308 0000 424F4C44 		.ascii	"BOLDFEARLESSCONFIDENT\000"
+ 1308      46454152 
+ 1308      4C455353 
+ 1308      434F4E46 
+ 1308      4944454E 
+ 1309              		.section	.data.timer2Period,"aw"
+ 1310              		.align	2
+ 1311              		.set	.LANCHOR0,. + 0
+ 1314              	timer2Period:
+ 1315 0000 E8030000 		.word	1000
+ 1316              		.text
+ 1317              	.Letext0:
+ 1318              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 1319              		.file 4 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ 1320              		.file 5 "/home/ben/esos32/include/lc-switch.h"
+ 1321              		.file 6 "/home/ben/esos32/include/esos_cb.h"
+ 1322              		.file 7 "/home/ben/esos32/include/esos_mail.h"
+ 1323              		.file 8 "/home/ben/esos32/include/esos_task.h"
+ 1324              		.file 9 "/home/ben/esos32/include/esos_comm.h"
+ 1325              		.file 10 "/home/ben/esos32/include/esos.h"
+ 1326              		.file 11 "include/m4.h"
+ 1327              		.file 12 "/home/ben/esos32/include/all_generic.h"
+ 1328              		.file 13 "/home/ben/libopencm3/include/libopencm3/stm32/l4/rcc.h"
+ 1329              		.file 14 "/home/ben/libopencm3/include/libopencm3/stm32/common/rcc_common_all.h"
+ 1330              		.file 15 "/home/ben/libopencm3/include/libopencm3/stm32/common/gpio_common_f234.h"
+ 1331              		.file 16 "/home/ben/libopencm3/include/libopencm3/stm32/common/gpio_common_all.h"
+ARM GAS  /tmp/ccSLjvog.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 m4_app.c
+     /tmp/ccSLjvog.s:20     .text.flash_LED:0000000000000000 $t
+     /tmp/ccSLjvog.s:26     .text.flash_LED:0000000000000000 flash_LED
+     /tmp/ccSLjvog.s:130    .text.flash_LED:0000000000000074 $d
+     /tmp/ccSLjvog.s:135    .text.circular_buffer_init:0000000000000000 $t
+     /tmp/ccSLjvog.s:141    .text.circular_buffer_init:0000000000000000 circular_buffer_init
+     /tmp/ccSLjvog.s:166    .text.circular_buffer_is_empty:0000000000000000 $t
+     /tmp/ccSLjvog.s:172    .text.circular_buffer_is_empty:0000000000000000 circular_buffer_is_empty
+     /tmp/ccSLjvog.s:215    .text.circular_buffer_is_full:0000000000000000 $t
+     /tmp/ccSLjvog.s:221    .text.circular_buffer_is_full:0000000000000000 circular_buffer_is_full
+     /tmp/ccSLjvog.s:239    .text.circular_buffer_size:0000000000000000 $t
+     /tmp/ccSLjvog.s:245    .text.circular_buffer_size:0000000000000000 circular_buffer_size
+     /tmp/ccSLjvog.s:286    .text.circular_buffer_write:0000000000000000 $t
+     /tmp/ccSLjvog.s:292    .text.circular_buffer_write:0000000000000000 circular_buffer_write
+     /tmp/ccSLjvog.s:361    .text.usart_receive:0000000000000000 $t
+     /tmp/ccSLjvog.s:367    .text.usart_receive:0000000000000000 usart_receive
+     /tmp/ccSLjvog.s:572    .text.usart_receive:0000000000000100 $d
+     /tmp/ccSLjvog.s:580    .text.circular_buffer_read:0000000000000000 $t
+     /tmp/ccSLjvog.s:586    .text.circular_buffer_read:0000000000000000 circular_buffer_read
+     /tmp/ccSLjvog.s:624    .text.usart_sender:0000000000000000 $t
+     /tmp/ccSLjvog.s:630    .text.usart_sender:0000000000000000 usart_sender
+     /tmp/ccSLjvog.s:664    .text.usart_sender:000000000000002a $d
+     /tmp/ccSLjvog.s:673    .text.usart_sender:0000000000000032 $t
+     /tmp/ccSLjvog.s:890    .text.usart_sender:0000000000000150 $d
+     /tmp/ccSLjvog.s:898    .text.receivToSender:0000000000000000 $t
+     /tmp/ccSLjvog.s:904    .text.receivToSender:0000000000000000 receivToSender
+     /tmp/ccSLjvog.s:1108   .text.receivToSender:00000000000000f8 $d
+     /tmp/ccSLjvog.s:1119   .text.__user_init_hw:0000000000000000 $t
+     /tmp/ccSLjvog.s:1125   .text.__user_init_hw:0000000000000000 __user_init_hw
+     /tmp/ccSLjvog.s:1163   .text.__user_init_hw:0000000000000030 $d
+     /tmp/ccSLjvog.s:1168   .rodata.user_init.str1.4:0000000000000000 $d
+     /tmp/ccSLjvog.s:1173   .text.user_init:0000000000000000 $t
+     /tmp/ccSLjvog.s:1179   .text.user_init:0000000000000000 user_init
+     /tmp/ccSLjvog.s:1226   .text.user_init:0000000000000034 $d
+     /tmp/ccSLjvog.s:1314   .data.timer2Period:0000000000000000 timer2Period
+     /tmp/ccSLjvog.s:1295   .bss.state:0000000000000000 state
+     /tmp/ccSLjvog.s:1307   .data.key2:0000000000000000 key2
+     /tmp/ccSLjvog.s:1301   .data.key:0000000000000000 key
+     /tmp/ccSLjvog.s:1254   .bss.bufferSender:0000000000000000 bufferSender
+     /tmp/ccSLjvog.s:1247   .bss.bufferReceiver:0000000000000000 bufferReceiver
+     /tmp/ccSLjvog.s:1243   .bss.bufferReceiver:0000000000000000 $d
+     /tmp/ccSLjvog.s:1250   .bss.bufferSender:0000000000000000 $d
+     /tmp/ccSLjvog.s:1260   .bss.decrypt.2:0000000000000000 decrypt.2
+     /tmp/ccSLjvog.s:1261   .bss.decrypt.2:0000000000000000 $d
+     /tmp/ccSLjvog.s:1266   .bss.encrypt.0:0000000000000000 encrypt.0
+     /tmp/ccSLjvog.s:1267   .bss.encrypt.0:0000000000000000 $d
+     /tmp/ccSLjvog.s:1272   .bss.r2s.1:0000000000000000 r2s.1
+     /tmp/ccSLjvog.s:1273   .bss.r2s.1:0000000000000000 $d
+     /tmp/ccSLjvog.s:1278   .bss.recvUSART.5:0000000000000000 recvUSART.5
+     /tmp/ccSLjvog.s:1279   .bss.recvUSART.5:0000000000000000 $d
+     /tmp/ccSLjvog.s:1284   .bss.s2r.3:0000000000000000 s2r.3
+     /tmp/ccSLjvog.s:1285   .bss.s2r.3:0000000000000000 $d
+     /tmp/ccSLjvog.s:1290   .bss.sendUSART.4:0000000000000000 sendUSART.4
+     /tmp/ccSLjvog.s:1291   .bss.sendUSART.4:0000000000000000 $d
+     /tmp/ccSLjvog.s:1296   .bss.state:0000000000000000 $d
+     /tmp/ccSLjvog.s:1298   .data.key:0000000000000000 $d
+ARM GAS  /tmp/ccSLjvog.s 			page 32
+
+
+     /tmp/ccSLjvog.s:1304   .data.key2:0000000000000000 $d
+     /tmp/ccSLjvog.s:1310   .data.timer2Period:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+gpio_toggle
+__esos_hw_GetSystemTickCount
+__esos_hasTickDurationPassed
+__esos_getBuffer
+__esos_u32SystemFlags
+__stChildTaskRx
+__esos_OutChar
+__stChildTaskTx
+gpio_get
+decypher
+encypher
+rcc_periph_clock_enable
+gpio_mode_setup
+__esos_unsafe_PutString
+esos_RegisterTask

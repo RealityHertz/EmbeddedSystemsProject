@@ -1,0 +1,2631 @@
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.esos_RegisterTask,"ax",%progbits
+  20              		.align	1
+  21              		.global	esos_RegisterTask
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	esos_RegisterTask:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "/Users/user/Desktop/esos32/src/esos.c"
+   1:/Users/user/Desktop/esos32/src/esos.c **** /*
+   2:/Users/user/Desktop/esos32/src/esos.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:/Users/user/Desktop/esos32/src/esos.c ****  * All rights reserved.
+   4:/Users/user/Desktop/esos32/src/esos.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/Users/user/Desktop/esos32/src/esos.c ****  *
+   6:/Users/user/Desktop/esos32/src/esos.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/Users/user/Desktop/esos32/src/esos.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/Users/user/Desktop/esos32/src/esos.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/Users/user/Desktop/esos32/src/esos.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/Users/user/Desktop/esos32/src/esos.c ****  *
+  11:/Users/user/Desktop/esos32/src/esos.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/Users/user/Desktop/esos32/src/esos.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/Users/user/Desktop/esos32/src/esos.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/Users/user/Desktop/esos32/src/esos.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/Users/user/Desktop/esos32/src/esos.c ****  *
+  16:/Users/user/Desktop/esos32/src/esos.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/Users/user/Desktop/esos32/src/esos.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/Users/user/Desktop/esos32/src/esos.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/Users/user/Desktop/esos32/src/esos.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/Users/user/Desktop/esos32/src/esos.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/Users/user/Desktop/esos32/src/esos.c ****  *
+  22:/Users/user/Desktop/esos32/src/esos.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/Users/user/Desktop/esos32/src/esos.c ****  * these files.
+  24:/Users/user/Desktop/esos32/src/esos.c ****  *
+  25:/Users/user/Desktop/esos32/src/esos.c ****  *
+  26:/Users/user/Desktop/esos32/src/esos.c ****  */
+  27:/Users/user/Desktop/esos32/src/esos.c **** 
+  28:/Users/user/Desktop/esos32/src/esos.c **** 
+  29:/Users/user/Desktop/esos32/src/esos.c **** // Documentation for this file. If the \file tag isn't present,
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 2
+
+
+  30:/Users/user/Desktop/esos32/src/esos.c **** // this file won't be documented.
+  31:/Users/user/Desktop/esos32/src/esos.c **** /** \file
+  32:/Users/user/Desktop/esos32/src/esos.c ****  * \brief Central code for Embedded Systems Operating System 32-bit (ESOS32)
+  33:/Users/user/Desktop/esos32/src/esos.c ****  *
+  34:/Users/user/Desktop/esos32/src/esos.c ****  */
+  35:/Users/user/Desktop/esos32/src/esos.c **** 
+  36:/Users/user/Desktop/esos32/src/esos.c **** /*! \mainpage Embedded Systems Operating System 32-bit (ESOS32)
+  37:/Users/user/Desktop/esos32/src/esos.c ****  *
+  38:/Users/user/Desktop/esos32/src/esos.c ****  * \section intro_sec Introduction
+  39:/Users/user/Desktop/esos32/src/esos.c ****  *
+  40:/Users/user/Desktop/esos32/src/esos.c ****  * Embedded Systems Operating Systems 32-bit (ESOS32) is a continuation
+  41:/Users/user/Desktop/esos32/src/esos.c ****  * of the line of ESOS operating systems which have include ports for
+  42:/Users/user/Desktop/esos32/src/esos.c ****  * 8-bit and 16-bit microcontrollers, predominantly the Microchip 
+  43:/Users/user/Desktop/esos32/src/esos.c ****  * architectures.
+  44:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  45:/Users/user/Desktop/esos32/src/esos.c ****  * The initial port of ESOS32 is aimed at the ARM-Cortex M4 chips from
+  46:/Users/user/Desktop/esos32/src/esos.c ****  * STMicroelectronics. The first specific target processor is the
+  47:/Users/user/Desktop/esos32/src/esos.c ****  * STM32L452RE processor hosted on the Nucleo64 development board.
+  48:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  49:/Users/user/Desktop/esos32/src/esos.c ****  * This tree contains the foundations for two separate hardware
+  50:/Users/user/Desktop/esos32/src/esos.c ****  * implmentations for the STM32L452RE processor. The first is found
+  51:/Users/user/Desktop/esos32/src/esos.c ****  * in under the *stm32l4_HAL* folders and is built upon the very
+  52:/Users/user/Desktop/esos32/src/esos.c ****  * feature-rich [hardware abstraction library available from
+  53:/Users/user/Desktop/esos32/src/esos.c ****  * STMicroelectronics (https://github.com/STMicroelectronics/STM32CubeL4)].  
+  54:/Users/user/Desktop/esos32/src/esos.c ****  * The second is found
+  55:/Users/user/Desktop/esos32/src/esos.c ****  * in under the *stm32l4_ocm3* folders and is built upon the very
+  56:/Users/user/Desktop/esos32/src/esos.c ****  * lower-level and community developed [libOpenCM3 hardware abstraction
+  57:/Users/user/Desktop/esos32/src/esos.c ****  * library (http://libopencm3.org)].  
+  58:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  59:/Users/user/Desktop/esos32/src/esos.c ****  * \section install_sec Installation
+  60:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  61:/Users/user/Desktop/esos32/src/esos.c ****  * The public repository for ESOS32 is hosted by
+  62:/Users/user/Desktop/esos32/src/esos.c ****  * [github](http://github.com/).
+  63:/Users/user/Desktop/esos32/src/esos.c ****  * Source code can be found at 
+  64:/Users/user/Desktop/esos32/src/esos.c ****  * [ESOS32 public repo](https://github.com/jwbruce/esos32).
+  65:/Users/user/Desktop/esos32/src/esos.c ****  *
+  66:/Users/user/Desktop/esos32/src/esos.c ****  * \section using_dox Using this documentation
+  67:/Users/user/Desktop/esos32/src/esos.c ****  *
+  68:/Users/user/Desktop/esos32/src/esos.c ****  * A good jumping off point in this documentation is to visit
+  69:/Users/user/Desktop/esos32/src/esos.c ****  * the "Modules" page via the link above.  This page will give the
+  70:/Users/user/Desktop/esos32/src/esos.c ****  * reader a high-level overview of the major systems and services
+  71:/Users/user/Desktop/esos32/src/esos.c ****  * provided by ESOS32.
+  72:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  73:/Users/user/Desktop/esos32/src/esos.c ****  * As the reader becomes more familiar with ESOS32, then venturing
+  74:/Users/user/Desktop/esos32/src/esos.c ****  * into the structures, macros, and source code is the next step.
+  75:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  76:/Users/user/Desktop/esos32/src/esos.c ****  * Of course, the provided example ESOS32 applications should give
+  77:/Users/user/Desktop/esos32/src/esos.c ****  * great insight into the structure and use of ESOS32.
+  78:/Users/user/Desktop/esos32/src/esos.c ****  * 
+  79:/Users/user/Desktop/esos32/src/esos.c ****  * **Enjoy!**
+  80:/Users/user/Desktop/esos32/src/esos.c ****  */
+  81:/Users/user/Desktop/esos32/src/esos.c **** 
+  82:/Users/user/Desktop/esos32/src/esos.c **** #include    "esos.h"
+  83:/Users/user/Desktop/esos32/src/esos.c **** 
+  84:/Users/user/Desktop/esos32/src/esos.c **** //**********************************************************
+  85:/Users/user/Desktop/esos32/src/esos.c **** // GLOBAL variables for ESOS to use/maintain
+  86:/Users/user/Desktop/esos32/src/esos.c **** //**********************************************************
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 3
+
+
+  87:/Users/user/Desktop/esos32/src/esos.c **** 
+  88:/Users/user/Desktop/esos32/src/esos.c **** // Tasks management variables
+  89:/Users/user/Desktop/esos32/src/esos.c **** struct stTask       __astUserTaskPool[MAX_NUM_USER_TASKS];
+  90:/Users/user/Desktop/esos32/src/esos.c **** uint8_t               __au8UserTaskStructIndex[MAX_NUM_USER_TASKS];
+  91:/Users/user/Desktop/esos32/src/esos.c **** struct stTask       __astChildTaskPool[MAX_NUM_CHILD_TASKS];
+  92:/Users/user/Desktop/esos32/src/esos.c **** uint8_t               __u8UserTasksRegistered;
+  93:/Users/user/Desktop/esos32/src/esos.c **** uint8_t               __u8ChildTasksRegistered;
+  94:/Users/user/Desktop/esos32/src/esos.c **** uint16_t              __u16NumTasksEverCreated;
+  95:/Users/user/Desktop/esos32/src/esos.c **** 
+  96:/Users/user/Desktop/esos32/src/esos.c **** // ESOS timer managmentment variables
+  97:/Users/user/Desktop/esos32/src/esos.c **** struct stTimer        __astTmrSvcs[MAX_NUM_TMRS];
+  98:/Users/user/Desktop/esos32/src/esos.c **** uint8_t                 __esos_u8TmrSvcsRegistered;
+  99:/Users/user/Desktop/esos32/src/esos.c **** uint32_t                __esos_u32TmrActiveFlags;
+ 100:/Users/user/Desktop/esos32/src/esos.c **** 
+ 101:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_BULK_CDC_USB
+ 102:/Users/user/Desktop/esos32/src/esos.c **** static struct stTask        __stUsbCommSystem;
+ 103:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 104:/Users/user/Desktop/esos32/src/esos.c **** 
+ 105:/Users/user/Desktop/esos32/src/esos.c **** // ESOS task mail services
+ 106:/Users/user/Desktop/esos32/src/esos.c **** MAILBOX     __astMailbox[MAX_NUM_USER_TASKS];
+ 107:/Users/user/Desktop/esos32/src/esos.c **** uint8_t       __au8_MBData[MAX_NUM_USER_TASKS][MAX_SIZE_TASK_MAILBOX];
+ 108:/Users/user/Desktop/esos32/src/esos.c **** CBUFFER     __astCircularBuffers[MAX_NUM_USER_TASKS];
+ 109:/Users/user/Desktop/esos32/src/esos.c **** 
+ 110:/Users/user/Desktop/esos32/src/esos.c **** 
+ 111:/Users/user/Desktop/esos32/src/esos.c **** // misc ESOS variables
+ 112:/Users/user/Desktop/esos32/src/esos.c **** uint32_t      __esos_u32UserFlags, __esos_u32SystemFlags;
+ 113:/Users/user/Desktop/esos32/src/esos.c **** 
+ 114:/Users/user/Desktop/esos32/src/esos.c **** /****************************************************************
+ 115:/Users/user/Desktop/esos32/src/esos.c **** ** Embedded Systems Operating System (ESOS) code
+ 116:/Users/user/Desktop/esos32/src/esos.c **** ****************************************************************/
+ 117:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 118:/Users/user/Desktop/esos32/src/esos.c ****  * Adds a task to the scheduler.  Task will start executing at the
+ 119:/Users/user/Desktop/esos32/src/esos.c ****  * next opportunity. (almost immediately)
+ 120:/Users/user/Desktop/esos32/src/esos.c ****  * \param taskname name of task (argument to \ref ESOS_USER_TASK declaration
+ 121:/Users/user/Desktop/esos32/src/esos.c ****  * \retval NULLPTR   if no more tasks can execute at this time (scheduler is full)
+ 122:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TaskHandle the handle of the just registered and scheduled task
+ 123:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa ESOS_USER_TASK
+ 124:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa esos_UnregisterTask
+ 125:/Users/user/Desktop/esos32/src/esos.c **** */
+ 126:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TASK_HANDLE    esos_RegisterTask( uint8_t (*taskname)(ESOS_TASK_HANDLE pstTask) ) {
+  30              		.loc 1 126 88 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 126 88 is_stmt 0 view .LVU1
+  35 0000 30B5     		push	{r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 12
+  38              		.cfi_offset 4, -12
+  39              		.cfi_offset 5, -8
+  40              		.cfi_offset 14, -4
+ 127:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_i;
+  41              		.loc 1 127 3 is_stmt 1 view .LVU2
+ 128:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_FoundFcn = FALSE;
+  42              		.loc 1 128 3 view .LVU3
+  43              	.LVL1:
+ 129:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_IndexFcn;
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 4
+
+
+  44              		.loc 1 129 3 view .LVU4
+ 130:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_IndexFree=0;
+  45              		.loc 1 130 3 view .LVU5
+ 131:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_FoundFree = FALSE;
+  46              		.loc 1 131 3 view .LVU6
+ 132:/Users/user/Desktop/esos32/src/esos.c **** 
+ 133:/Users/user/Desktop/esos32/src/esos.c ****   if (__u8UserTasksRegistered < MAX_NUM_USER_TASKS) {
+  47              		.loc 1 133 3 view .LVU7
+  48              		.loc 1 133 31 is_stmt 0 view .LVU8
+  49 0002 334B     		ldr	r3, .L16
+  50 0004 1D78     		ldrb	r5, [r3]	@ zero_extendqisi2
+  51              		.loc 1 133 6 view .LVU9
+  52 0006 1F2D     		cmp	r5, #31
+  53 0008 03D8     		bhi	.L14
+ 131:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_FoundFree = FALSE;
+  54              		.loc 1 131 15 view .LVU10
+  55 000a 0024     		movs	r4, #0
+ 130:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_FoundFree = FALSE;
+  56              		.loc 1 130 15 view .LVU11
+  57 000c A646     		mov	lr, r4
+ 134:/Users/user/Desktop/esos32/src/esos.c ****     /* First, we will look to see if the request task
+ 135:/Users/user/Desktop/esos32/src/esos.c ****        has already been allocated to a task from the pool.
+ 136:/Users/user/Desktop/esos32/src/esos.c ****        If so, then let's just reactivate/reset/etc the task.
+ 137:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 138:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_USER_TASKS; u8_i++) {
+  58              		.loc 1 138 14 view .LVU12
+  59 000e 2346     		mov	r3, r4
+  60 0010 03E0     		b	.L2
+  61              	.L14:
+ 139:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+ 140:/Users/user/Desktop/esos32/src/esos.c ****         u8_FoundFcn = TRUE;
+ 141:/Users/user/Desktop/esos32/src/esos.c ****         u8_IndexFcn = u8_i;
+ 142:/Users/user/Desktop/esos32/src/esos.c ****         break;
+ 143:/Users/user/Desktop/esos32/src/esos.c ****       } // endof if()
+ 144:/Users/user/Desktop/esos32/src/esos.c ****       /* While we are looping through, take note of the first unused task
+ 145:/Users/user/Desktop/esos32/src/esos.c ****          we find in the pool.  We will assign this slot to the new task if
+ 146:/Users/user/Desktop/esos32/src/esos.c ****          we can't find it already allocated a (dead) slot
+ 147:/Users/user/Desktop/esos32/src/esos.c ****       */
+ 148:/Users/user/Desktop/esos32/src/esos.c ****       if ((!u8_FoundFree) && (__astUserTaskPool[u8_i].pfn == NULLPTR)) {
+ 149:/Users/user/Desktop/esos32/src/esos.c ****         u8_FoundFree = TRUE;
+ 150:/Users/user/Desktop/esos32/src/esos.c ****         u8_IndexFree = u8_i;
+ 151:/Users/user/Desktop/esos32/src/esos.c ****       } // endof if()
+ 152:/Users/user/Desktop/esos32/src/esos.c ****     } // endof for()
+ 153:/Users/user/Desktop/esos32/src/esos.c **** 
+ 154:/Users/user/Desktop/esos32/src/esos.c ****     /* OK. We looked at all the tasks in the pool.  We either
+ 155:/Users/user/Desktop/esos32/src/esos.c ****        * found the new task already allocated (u8_FoundFcn),
+ 156:/Users/user/Desktop/esos32/src/esos.c ****        OR
+ 157:/Users/user/Desktop/esos32/src/esos.c ****        * we did not.  In this case, there are two cases:
+ 158:/Users/user/Desktop/esos32/src/esos.c ****           # We found a dead/free task slot in our search (u8_FoundFree),
+ 159:/Users/user/Desktop/esos32/src/esos.c ****           OR
+ 160:/Users/user/Desktop/esos32/src/esos.c ****           # we did not.  (All slots are already being used.  WE ARE IN TROUBLE!)
+ 161:/Users/user/Desktop/esos32/src/esos.c **** 
+ 162:/Users/user/Desktop/esos32/src/esos.c ****        If we found the new task already (dead but allocated) in the pool, then we need to
+ 163:/Users/user/Desktop/esos32/src/esos.c ****          1) initialize the task, its flags, and its mailbox, and
+ 164:/Users/user/Desktop/esos32/src/esos.c ****          2) add the task to the task rotation
+ 165:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 166:/Users/user/Desktop/esos32/src/esos.c ****     if (u8_FoundFcn) {
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 5
+
+
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK( &__astUserTaskPool[u8_IndexFcn]);                 // reset the task state
+ 168:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ 169:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFcn]);      // reset the task mailbox
+ 170:/Users/user/Desktop/esos32/src/esos.c ****       __au8UserTaskStructIndex[__u8UserTasksRegistered] = u8_IndexFcn;
+ 171:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 172:/Users/user/Desktop/esos32/src/esos.c ****       // make sure this task has a non-zero task identifier
+ 173:/Users/user/Desktop/esos32/src/esos.c ****       if ( __astUserTaskPool[u8_IndexFree].u16_taskID == 0 ) {
+ 174:/Users/user/Desktop/esos32/src/esos.c ****         // we will simply assign a sequential task ID number (sorta like unix does for PIDs)
+ 175:/Users/user/Desktop/esos32/src/esos.c ****         __u16NumTasksEverCreated++;
+ 176:/Users/user/Desktop/esos32/src/esos.c ****         __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 177:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 178:/Users/user/Desktop/esos32/src/esos.c ****       return &__astUserTaskPool[u8_IndexFcn];
+ 179:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 180:/Users/user/Desktop/esos32/src/esos.c ****     /* We did NOT find our task already in the pool, so allocate a new struct
+ 181:/Users/user/Desktop/esos32/src/esos.c ****        It has never been registered before, or it's location was garbage collected at some
+ 182:/Users/user/Desktop/esos32/src/esos.c ****        point.
+ 183:/Users/user/Desktop/esos32/src/esos.c **** 
+ 184:/Users/user/Desktop/esos32/src/esos.c ****        If we found a free task slot in the pool, then give this free slot to the new task.
+ 185:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 186:/Users/user/Desktop/esos32/src/esos.c ****     if (u8_FoundFree) {
+ 187:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].pfn = taskname;                   // attach task to the free 
+ 188:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK(&__astUserTaskPool[u8_IndexFree]);               // reset the task state
+ 189:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].flags = 0;                        // reset the task flags
+ 190:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFree]);   // reset the task mailbox
+ 191:/Users/user/Desktop/esos32/src/esos.c ****       __au8UserTaskStructIndex[__u8UserTasksRegistered] = u8_IndexFree;
+ 192:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 193:/Users/user/Desktop/esos32/src/esos.c ****       // Since this is a "new" task, give it a new task ID number
+ 194:/Users/user/Desktop/esos32/src/esos.c ****       __u16NumTasksEverCreated++;
+ 195:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 196:/Users/user/Desktop/esos32/src/esos.c ****       return &__astUserTaskPool[u8_IndexFree];
+ 197:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 198:/Users/user/Desktop/esos32/src/esos.c ****     /*  we did NOT find our function in the pool OR a free struct to use, so
+ 199:/Users/user/Desktop/esos32/src/esos.c ****         we will return a NULLPTR for now.  In the future, maybe the garbage can be called here
+ 200:/Users/user/Desktop/esos32/src/esos.c ****         to find some space by looking for killed/dead tasks.  (Current dead tasks are garbaged
+ 201:/Users/user/Desktop/esos32/src/esos.c ****         at the end of a complete pool rotation.  Possibly we can do an early garbage collection
+ 202:/Users/user/Desktop/esos32/src/esos.c ****         here, but it will only help in very rare circumstances.)
+ 203:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 204:/Users/user/Desktop/esos32/src/esos.c ****     return NULLPTR;
+ 205:/Users/user/Desktop/esos32/src/esos.c ****   } else {
+ 206:/Users/user/Desktop/esos32/src/esos.c ****     return NULLPTR;
+  62              		.loc 1 206 12 view .LVU13
+  63 0012 0020     		movs	r0, #0
+  64              	.LVL2:
+  65              		.loc 1 206 12 view .LVU14
+  66 0014 3AE0     		b	.L1
+  67              	.LVL3:
+  68              	.L5:
+ 138:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  69              		.loc 1 138 43 is_stmt 1 discriminator 2 view .LVU15
+ 138:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  70              		.loc 1 138 47 is_stmt 0 discriminator 2 view .LVU16
+  71 0016 0133     		adds	r3, r3, #1
+  72              	.LVL4:
+ 138:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  73              		.loc 1 138 47 discriminator 2 view .LVU17
+  74 0018 DBB2     		uxtb	r3, r3
+  75              	.LVL5:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 6
+
+
+  76              	.L2:
+ 138:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  77              		.loc 1 138 18 is_stmt 1 discriminator 1 view .LVU18
+ 138:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  78              		.loc 1 138 5 is_stmt 0 discriminator 1 view .LVU19
+  79 001a 1F2B     		cmp	r3, #31
+  80 001c 37D8     		bhi	.L15
+ 139:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  81              		.loc 1 139 7 is_stmt 1 view .LVU20
+ 139:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  82              		.loc 1 139 34 is_stmt 0 view .LVU21
+  83 001e 03EB4302 		add	r2, r3, r3, lsl #1
+  84 0022 2C49     		ldr	r1, .L16+4
+  85 0024 01EBC202 		add	r2, r1, r2, lsl #3
+  86 0028 5268     		ldr	r2, [r2, #4]
+ 139:/Users/user/Desktop/esos32/src/esos.c ****       if (__astUserTaskPool[u8_i].pfn == taskname) {
+  87              		.loc 1 139 10 view .LVU22
+  88 002a 8242     		cmp	r2, r0
+  89 002c 06D0     		beq	.L4
+ 148:/Users/user/Desktop/esos32/src/esos.c ****         u8_FoundFree = TRUE;
+  90              		.loc 1 148 7 is_stmt 1 view .LVU23
+ 148:/Users/user/Desktop/esos32/src/esos.c ****         u8_FoundFree = TRUE;
+  91              		.loc 1 148 10 is_stmt 0 view .LVU24
+  92 002e 002C     		cmp	r4, #0
+  93 0030 F1D1     		bne	.L5
+ 148:/Users/user/Desktop/esos32/src/esos.c ****         u8_FoundFree = TRUE;
+  94              		.loc 1 148 27 discriminator 1 view .LVU25
+  95 0032 002A     		cmp	r2, #0
+  96 0034 EFD1     		bne	.L5
+ 150:/Users/user/Desktop/esos32/src/esos.c ****       } // endof if()
+  97              		.loc 1 150 22 view .LVU26
+  98 0036 9E46     		mov	lr, r3
+  99              	.LVL6:
+ 149:/Users/user/Desktop/esos32/src/esos.c ****         u8_IndexFree = u8_i;
+ 100              		.loc 1 149 22 view .LVU27
+ 101 0038 0124     		movs	r4, #1
+ 102              	.LVL7:
+ 149:/Users/user/Desktop/esos32/src/esos.c ****         u8_IndexFree = u8_i;
+ 103              		.loc 1 149 22 view .LVU28
+ 104 003a ECE7     		b	.L5
+ 105              	.LVL8:
+ 106              	.L4:
+ 140:/Users/user/Desktop/esos32/src/esos.c ****         u8_IndexFcn = u8_i;
+ 107              		.loc 1 140 9 is_stmt 1 view .LVU29
+ 141:/Users/user/Desktop/esos32/src/esos.c ****         break;
+ 108              		.loc 1 141 9 view .LVU30
+ 142:/Users/user/Desktop/esos32/src/esos.c ****       } // endof if()
+ 109              		.loc 1 142 9 view .LVU31
+ 166:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK( &__astUserTaskPool[u8_IndexFcn]);                 // reset the task state
+ 110              		.loc 1 166 5 view .LVU32
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ 111              		.loc 1 167 7 view .LVU33
+ 112 003c 254A     		ldr	r2, .L16+4
+ 113 003e 03EB4301 		add	r1, r3, r3, lsl #1
+ 114 0042 CC00     		lsls	r4, r1, #3
+ 115              	.LVL9:
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 7
+
+
+ 116              		.loc 1 167 7 is_stmt 0 view .LVU34
+ 117 0044 02EBC101 		add	r1, r2, r1, lsl #3
+ 118 0048 0020     		movs	r0, #0
+ 119              	.LVL10:
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ 120              		.loc 1 167 7 view .LVU35
+ 121 004a 1053     		strh	r0, [r2, r4]	@ movhi
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ 122              		.loc 1 167 7 is_stmt 1 view .LVU36
+ 167:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFcn].flags = 0;                           // reset the task flags
+ 123              		.loc 1 167 57 view .LVU37
+ 168:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFcn]);      // reset the task mailbox
+ 124              		.loc 1 168 7 view .LVU38
+ 168:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFcn]);      // reset the task mailbox
+ 125              		.loc 1 168 44 is_stmt 0 view .LVU39
+ 126 004c 8870     		strb	r0, [r1, #2]
+ 169:/Users/user/Desktop/esos32/src/esos.c ****       __au8UserTaskStructIndex[__u8UserTasksRegistered] = u8_IndexFcn;
+ 127              		.loc 1 169 7 is_stmt 1 view .LVU40
+ 128 004e 4969     		ldr	r1, [r1, #20]
+ 129 0050 0968     		ldr	r1, [r1]
+ 130 0052 8880     		strh	r0, [r1, #4]	@ movhi
+ 170:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 131              		.loc 1 170 7 view .LVU41
+ 170:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 132              		.loc 1 170 57 is_stmt 0 view .LVU42
+ 133 0054 2049     		ldr	r1, .L16+8
+ 134 0056 4B55     		strb	r3, [r1, r5]
+ 171:/Users/user/Desktop/esos32/src/esos.c ****       // make sure this task has a non-zero task identifier
+ 135              		.loc 1 171 7 is_stmt 1 view .LVU43
+ 171:/Users/user/Desktop/esos32/src/esos.c ****       // make sure this task has a non-zero task identifier
+ 136              		.loc 1 171 30 is_stmt 0 view .LVU44
+ 137 0058 0135     		adds	r5, r5, #1
+ 138 005a 1D49     		ldr	r1, .L16
+ 139 005c 0D70     		strb	r5, [r1]
+ 173:/Users/user/Desktop/esos32/src/esos.c ****         // we will simply assign a sequential task ID number (sorta like unix does for PIDs)
+ 140              		.loc 1 173 7 is_stmt 1 view .LVU45
+ 173:/Users/user/Desktop/esos32/src/esos.c ****         // we will simply assign a sequential task ID number (sorta like unix does for PIDs)
+ 141              		.loc 1 173 43 is_stmt 0 view .LVU46
+ 142 005e 0EEB4E01 		add	r1, lr, lr, lsl #1
+ 143 0062 02EBC102 		add	r2, r2, r1, lsl #3
+ 144 0066 128A     		ldrh	r2, [r2, #16]
+ 173:/Users/user/Desktop/esos32/src/esos.c ****         // we will simply assign a sequential task ID number (sorta like unix does for PIDs)
+ 145              		.loc 1 173 10 view .LVU47
+ 146 0068 5AB9     		cbnz	r2, .L8
+ 175:/Users/user/Desktop/esos32/src/esos.c ****         __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 147              		.loc 1 175 9 is_stmt 1 view .LVU48
+ 175:/Users/user/Desktop/esos32/src/esos.c ****         __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 148              		.loc 1 175 33 is_stmt 0 view .LVU49
+ 149 006a 1C49     		ldr	r1, .L16+12
+ 150 006c 0A88     		ldrh	r2, [r1]
+ 151 006e 0132     		adds	r2, r2, #1
+ 152 0070 92B2     		uxth	r2, r2
+ 153 0072 0A80     		strh	r2, [r1]	@ movhi
+ 176:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 154              		.loc 1 176 9 is_stmt 1 view .LVU50
+ 176:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 155              		.loc 1 176 52 is_stmt 0 view .LVU51
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 8
+
+
+ 156 0074 0EEB4E0E 		add	lr, lr, lr, lsl #1
+ 157              	.LVL11:
+ 176:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 158              		.loc 1 176 52 view .LVU52
+ 159 0078 1649     		ldr	r1, .L16+4
+ 160 007a 01EBCE0E 		add	lr, r1, lr, lsl #3
+ 161 007e AEF81020 		strh	r2, [lr, #16]	@ movhi
+ 162              	.L8:
+ 178:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 163              		.loc 1 178 7 is_stmt 1 view .LVU53
+ 178:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 164              		.loc 1 178 14 is_stmt 0 view .LVU54
+ 165 0082 03EB4303 		add	r3, r3, r3, lsl #1
+ 166              	.LVL12:
+ 178:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 167              		.loc 1 178 14 view .LVU55
+ 168 0086 1348     		ldr	r0, .L16+4
+ 169 0088 00EBC300 		add	r0, r0, r3, lsl #3
+ 170              	.LVL13:
+ 171              	.L1:
+ 207:/Users/user/Desktop/esos32/src/esos.c ****   } //end of if-else
+ 208:/Users/user/Desktop/esos32/src/esos.c **** }// end esos_RegisterTask()
+ 172              		.loc 1 208 1 view .LVU56
+ 173 008c 30BD     		pop	{r4, r5, pc}
+ 174              	.LVL14:
+ 175              	.L15:
+ 166:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK( &__astUserTaskPool[u8_IndexFcn]);                 // reset the task state
+ 176              		.loc 1 166 5 is_stmt 1 view .LVU57
+ 186:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].pfn = taskname;                   // attach task to the free 
+ 177              		.loc 1 186 5 view .LVU58
+ 186:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].pfn = taskname;                   // attach task to the free 
+ 178              		.loc 1 186 8 is_stmt 0 view .LVU59
+ 179 008e E4B1     		cbz	r4, .L11
+ 187:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK(&__astUserTaskPool[u8_IndexFree]);               // reset the task state
+ 180              		.loc 1 187 7 is_stmt 1 view .LVU60
+ 187:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK(&__astUserTaskPool[u8_IndexFree]);               // reset the task state
+ 181              		.loc 1 187 43 is_stmt 0 view .LVU61
+ 182 0090 104B     		ldr	r3, .L16+4
+ 183              	.LVL15:
+ 187:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK(&__astUserTaskPool[u8_IndexFree]);               // reset the task state
+ 184              		.loc 1 187 43 view .LVU62
+ 185 0092 0EEB4E02 		add	r2, lr, lr, lsl #1
+ 186 0096 D400     		lsls	r4, r2, #3
+ 187              	.LVL16:
+ 187:/Users/user/Desktop/esos32/src/esos.c ****       __ESOS_INIT_TASK(&__astUserTaskPool[u8_IndexFree]);               // reset the task state
+ 188              		.loc 1 187 43 view .LVU63
+ 189 0098 03EBC202 		add	r2, r3, r2, lsl #3
+ 190 009c 5060     		str	r0, [r2, #4]
+ 188:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].flags = 0;                        // reset the task flags
+ 191              		.loc 1 188 7 is_stmt 1 view .LVU64
+ 192 009e 0021     		movs	r1, #0
+ 193 00a0 1953     		strh	r1, [r3, r4]	@ movhi
+ 188:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].flags = 0;                        // reset the task flags
+ 194              		.loc 1 188 7 view .LVU65
+ 188:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].flags = 0;                        // reset the task flags
+ 195              		.loc 1 188 57 view .LVU66
+ 189:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFree]);   // reset the task mailbox
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 9
+
+
+ 196              		.loc 1 189 7 view .LVU67
+ 189:/Users/user/Desktop/esos32/src/esos.c ****       ESOS_TASK_FLUSH_TASK_MAILBOX(&__astUserTaskPool[u8_IndexFree]);   // reset the task mailbox
+ 197              		.loc 1 189 45 is_stmt 0 view .LVU68
+ 198 00a2 9170     		strb	r1, [r2, #2]
+ 190:/Users/user/Desktop/esos32/src/esos.c ****       __au8UserTaskStructIndex[__u8UserTasksRegistered] = u8_IndexFree;
+ 199              		.loc 1 190 7 is_stmt 1 view .LVU69
+ 200 00a4 5069     		ldr	r0, [r2, #20]
+ 201              	.LVL17:
+ 190:/Users/user/Desktop/esos32/src/esos.c ****       __au8UserTaskStructIndex[__u8UserTasksRegistered] = u8_IndexFree;
+ 202              		.loc 1 190 7 is_stmt 0 view .LVU70
+ 203 00a6 0068     		ldr	r0, [r0]
+ 204 00a8 8180     		strh	r1, [r0, #4]	@ movhi
+ 205              	.LVL18:
+ 191:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 206              		.loc 1 191 7 is_stmt 1 view .LVU71
+ 191:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered++;
+ 207              		.loc 1 191 57 is_stmt 0 view .LVU72
+ 208 00aa 0B49     		ldr	r1, .L16+8
+ 209 00ac 01F805E0 		strb	lr, [r1, r5]
+ 192:/Users/user/Desktop/esos32/src/esos.c ****       // Since this is a "new" task, give it a new task ID number
+ 210              		.loc 1 192 7 is_stmt 1 view .LVU73
+ 192:/Users/user/Desktop/esos32/src/esos.c ****       // Since this is a "new" task, give it a new task ID number
+ 211              		.loc 1 192 30 is_stmt 0 view .LVU74
+ 212 00b0 0135     		adds	r5, r5, #1
+ 213 00b2 0749     		ldr	r1, .L16
+ 214 00b4 0D70     		strb	r5, [r1]
+ 194:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 215              		.loc 1 194 7 is_stmt 1 view .LVU75
+ 194:/Users/user/Desktop/esos32/src/esos.c ****       __astUserTaskPool[u8_IndexFree].u16_taskID = __u16NumTasksEverCreated;
+ 216              		.loc 1 194 31 is_stmt 0 view .LVU76
+ 217 00b6 0948     		ldr	r0, .L16+12
+ 218 00b8 0188     		ldrh	r1, [r0]
+ 219 00ba 0131     		adds	r1, r1, #1
+ 220 00bc 89B2     		uxth	r1, r1
+ 221 00be 0180     		strh	r1, [r0]	@ movhi
+ 195:/Users/user/Desktop/esos32/src/esos.c ****       return &__astUserTaskPool[u8_IndexFree];
+ 222              		.loc 1 195 7 is_stmt 1 view .LVU77
+ 195:/Users/user/Desktop/esos32/src/esos.c ****       return &__astUserTaskPool[u8_IndexFree];
+ 223              		.loc 1 195 50 is_stmt 0 view .LVU78
+ 224 00c0 1182     		strh	r1, [r2, #16]	@ movhi
+ 196:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 225              		.loc 1 196 7 is_stmt 1 view .LVU79
+ 196:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 226              		.loc 1 196 14 is_stmt 0 view .LVU80
+ 227 00c2 0EEB4E0E 		add	lr, lr, lr, lsl #1
+ 228              	.LVL19:
+ 196:/Users/user/Desktop/esos32/src/esos.c ****     } // endof if
+ 229              		.loc 1 196 14 view .LVU81
+ 230 00c6 1046     		mov	r0, r2
+ 231 00c8 E0E7     		b	.L1
+ 232              	.LVL20:
+ 233              	.L11:
+ 204:/Users/user/Desktop/esos32/src/esos.c ****   } else {
+ 234              		.loc 1 204 12 view .LVU82
+ 235 00ca 0020     		movs	r0, #0
+ 236              	.LVL21:
+ 204:/Users/user/Desktop/esos32/src/esos.c ****   } else {
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 10
+
+
+ 237              		.loc 1 204 12 view .LVU83
+ 238 00cc DEE7     		b	.L1
+ 239              	.L17:
+ 240 00ce 00BF     		.align	2
+ 241              	.L16:
+ 242 00d0 00000000 		.word	.LANCHOR0
+ 243 00d4 00000000 		.word	.LANCHOR1
+ 244 00d8 00000000 		.word	.LANCHOR2
+ 245 00dc 00000000 		.word	.LANCHOR3
+ 246              		.cfi_endproc
+ 247              	.LFE0:
+ 249              		.section	.text.esos_UnregisterTask,"ax",%progbits
+ 250              		.align	1
+ 251              		.global	esos_UnregisterTask
+ 252              		.syntax unified
+ 253              		.thumb
+ 254              		.thumb_func
+ 256              	esos_UnregisterTask:
+ 257              	.LVL22:
+ 258              	.LFB1:
+ 209:/Users/user/Desktop/esos32/src/esos.c **** 
+ 210:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 211:/Users/user/Desktop/esos32/src/esos.c ****  * Removes the task from the scheduler
+ 212:/Users/user/Desktop/esos32/src/esos.c ****  * \param taskname name of task (argument to \ref ESOS_USER_TASK declaration
+ 213:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TRUE if task was found in scheduler and removed
+ 214:/Users/user/Desktop/esos32/src/esos.c ****  * \retval FALSE  otherwise
+ 215:/Users/user/Desktop/esos32/src/esos.c ****  * \sa ESOS_USER_TASK
+ 216:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_RegisterTask
+ 217:/Users/user/Desktop/esos32/src/esos.c **** */
+ 218:/Users/user/Desktop/esos32/src/esos.c **** uint8_t    esos_UnregisterTask( uint8_t (*taskname)(ESOS_TASK_HANDLE pstTask) ) {
+ 259              		.loc 1 218 81 is_stmt 1 view -0
+ 260              		.cfi_startproc
+ 261              		@ args = 0, pretend = 0, frame = 0
+ 262              		@ frame_needed = 0, uses_anonymous_args = 0
+ 263              		@ link register save eliminated.
+ 219:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t                 u8Status=FALSE;
+ 264              		.loc 1 219 3 view .LVU85
+ 220:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t                 u8_i, u8_z;
+ 265              		.loc 1 220 3 view .LVU86
+ 221:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE      pstNowTask;
+ 266              		.loc 1 221 3 view .LVU87
+ 222:/Users/user/Desktop/esos32/src/esos.c **** 
+ 223:/Users/user/Desktop/esos32/src/esos.c ****   /* Search through the pool and find out where the task needing unregistering
+ 224:/Users/user/Desktop/esos32/src/esos.c ****      is residing in the pool.  Then, we will mark this slot as needing removal
+ 225:/Users/user/Desktop/esos32/src/esos.c ****      and setting a flag for task pool repacking at the end of the current
+ 226:/Users/user/Desktop/esos32/src/esos.c ****      rotation through the pool.
+ 227:/Users/user/Desktop/esos32/src/esos.c ****   */
+ 228:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<__u8UserTasksRegistered; u8_i++) {
+ 267              		.loc 1 228 3 view .LVU88
+ 268              		.loc 1 228 12 is_stmt 0 view .LVU89
+ 269 0000 0023     		movs	r3, #0
+ 270              		.loc 1 228 3 view .LVU90
+ 271 0002 01E0     		b	.L19
+ 272              	.LVL23:
+ 273              	.L20:
+ 274              		.loc 1 228 46 is_stmt 1 discriminator 2 view .LVU91
+ 275              		.loc 1 228 50 is_stmt 0 discriminator 2 view .LVU92
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 11
+
+
+ 276 0004 0133     		adds	r3, r3, #1
+ 277              	.LVL24:
+ 278              		.loc 1 228 50 discriminator 2 view .LVU93
+ 279 0006 DBB2     		uxtb	r3, r3
+ 280              	.LVL25:
+ 281              	.L19:
+ 282              		.loc 1 228 16 is_stmt 1 discriminator 1 view .LVU94
+ 283              		.loc 1 228 20 is_stmt 0 discriminator 1 view .LVU95
+ 284 0008 0E4A     		ldr	r2, .L24
+ 285 000a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 286              		.loc 1 228 3 discriminator 1 view .LVU96
+ 287 000c 9A42     		cmp	r2, r3
+ 288 000e 17D9     		bls	.L23
+ 229:/Users/user/Desktop/esos32/src/esos.c ****     // get next index from array so we can get the task handle
+ 230:/Users/user/Desktop/esos32/src/esos.c ****     u8_z = __au8UserTaskStructIndex[u8_i];
+ 289              		.loc 1 230 5 is_stmt 1 view .LVU97
+ 290              		.loc 1 230 36 is_stmt 0 view .LVU98
+ 291 0010 9C46     		mov	ip, r3
+ 292              		.loc 1 230 10 view .LVU99
+ 293 0012 0D4A     		ldr	r2, .L24+4
+ 294 0014 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 295              	.LVL26:
+ 231:/Users/user/Desktop/esos32/src/esos.c ****     /* check tasks that have been allocated (not a NULLIDX) and
+ 232:/Users/user/Desktop/esos32/src/esos.c ****        not been garbage collected (not REMOVE_IDX) yet.  If our
+ 233:/Users/user/Desktop/esos32/src/esos.c ****        task is among them, the mark it to be garbaged collected
+ 234:/Users/user/Desktop/esos32/src/esos.c ****        (REMOVE_IDX) at the next opportunity
+ 235:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 236:/Users/user/Desktop/esos32/src/esos.c ****     if ((u8_z != NULLIDX) & (u8_z != REMOVE_IDX)) {
+ 296              		.loc 1 236 5 is_stmt 1 view .LVU100
+ 297              		.loc 1 236 8 is_stmt 0 view .LVU101
+ 298 0016 FD2A     		cmp	r2, #253
+ 299 0018 F4D8     		bhi	.L20
+ 237:/Users/user/Desktop/esos32/src/esos.c ****       pstNowTask = &__astUserTaskPool[u8_z];
+ 300              		.loc 1 237 7 is_stmt 1 view .LVU102
+ 301              	.LVL27:
+ 238:/Users/user/Desktop/esos32/src/esos.c ****       // If we find our task, mark it and signal ESOS to repack task pool
+ 239:/Users/user/Desktop/esos32/src/esos.c ****       if (pstNowTask->pfn == taskname) {
+ 302              		.loc 1 239 7 view .LVU103
+ 303              		.loc 1 239 21 is_stmt 0 view .LVU104
+ 304 001a 02EB4202 		add	r2, r2, r2, lsl #1
+ 305              	.LVL28:
+ 306              		.loc 1 239 21 view .LVU105
+ 307 001e 0B49     		ldr	r1, .L24+8
+ 308 0020 01EBC202 		add	r2, r1, r2, lsl #3
+ 309 0024 5268     		ldr	r2, [r2, #4]
+ 310              		.loc 1 239 10 view .LVU106
+ 311 0026 8242     		cmp	r2, r0
+ 312 0028 ECD1     		bne	.L20
+ 240:/Users/user/Desktop/esos32/src/esos.c ****         __au8UserTaskStructIndex[u8_i] = REMOVE_IDX;
+ 313              		.loc 1 240 9 is_stmt 1 view .LVU107
+ 314              		.loc 1 240 40 is_stmt 0 view .LVU108
+ 315 002a 074B     		ldr	r3, .L24+4
+ 316              	.LVL29:
+ 317              		.loc 1 240 40 view .LVU109
+ 318 002c FE22     		movs	r2, #254
+ 319 002e 03F80C20 		strb	r2, [r3, ip]
+ 320              	.LVL30:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 12
+
+
+ 241:/Users/user/Desktop/esos32/src/esos.c ****         __esos_SetSystemFlag( __ESOS_SYS_FLAG_PACK_TASKS );
+ 321              		.loc 1 241 9 is_stmt 1 view .LVU110
+ 322 0032 074A     		ldr	r2, .L24+12
+ 323 0034 1368     		ldr	r3, [r2]
+ 324 0036 43F00103 		orr	r3, r3, #1
+ 325 003a 1360     		str	r3, [r2]
+ 242:/Users/user/Desktop/esos32/src/esos.c ****         u8Status=TRUE;
+ 326              		.loc 1 242 9 view .LVU111
+ 327              	.LVL31:
+ 243:/Users/user/Desktop/esos32/src/esos.c ****         break;
+ 328              		.loc 1 243 9 view .LVU112
+ 242:/Users/user/Desktop/esos32/src/esos.c ****         u8Status=TRUE;
+ 329              		.loc 1 242 17 is_stmt 0 view .LVU113
+ 330 003c 0120     		movs	r0, #1
+ 331              	.LVL32:
+ 332              		.loc 1 243 9 view .LVU114
+ 333 003e 7047     		bx	lr
+ 334              	.LVL33:
+ 335              	.L23:
+ 219:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t                 u8_i, u8_z;
+ 336              		.loc 1 219 27 view .LVU115
+ 337 0040 0020     		movs	r0, #0
+ 338              	.LVL34:
+ 244:/Users/user/Desktop/esos32/src/esos.c ****       } // end if (pfn == taskname)
+ 245:/Users/user/Desktop/esos32/src/esos.c ****     } // end if (!NULLIDX)
+ 246:/Users/user/Desktop/esos32/src/esos.c ****   } // end for
+ 247:/Users/user/Desktop/esos32/src/esos.c ****   return  u8Status;
+ 339              		.loc 1 247 3 is_stmt 1 view .LVU116
+ 248:/Users/user/Desktop/esos32/src/esos.c **** }// end esos_UnregisterTask()
+ 340              		.loc 1 248 1 is_stmt 0 view .LVU117
+ 341 0042 7047     		bx	lr
+ 342              	.L25:
+ 343              		.align	2
+ 344              	.L24:
+ 345 0044 00000000 		.word	.LANCHOR0
+ 346 0048 00000000 		.word	.LANCHOR2
+ 347 004c 00000000 		.word	.LANCHOR1
+ 348 0050 00000000 		.word	.LANCHOR4
+ 349              		.cfi_endproc
+ 350              	.LFE1:
+ 352              		.section	.text.esos_GetTaskHandle,"ax",%progbits
+ 353              		.align	1
+ 354              		.global	esos_GetTaskHandle
+ 355              		.syntax unified
+ 356              		.thumb
+ 357              		.thumb_func
+ 359              	esos_GetTaskHandle:
+ 360              	.LVL35:
+ 361              	.LFB2:
+ 249:/Users/user/Desktop/esos32/src/esos.c **** 
+ 250:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 251:/Users/user/Desktop/esos32/src/esos.c ****  * Find the (active) task handle for a given task function
+ 252:/Users/user/Desktop/esos32/src/esos.c ****  * \param taskname name of task (argument to \ref ESOS_USER_TASK declaration
+ 253:/Users/user/Desktop/esos32/src/esos.c ****  * \retval NULLPTR   if task is not found among the active tasks
+ 254:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TaskHandle the handle to the task function requested
+ 255:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa ESOS_USER_TASK
+ 256:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa esos_RegisterTask
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 13
+
+
+ 257:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa esos_UnregisterTask
+ 258:/Users/user/Desktop/esos32/src/esos.c **** */
+ 259:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TASK_HANDLE    esos_GetTaskHandle( uint8_t (*taskname)(ESOS_TASK_HANDLE pstTask) ) {
+ 362              		.loc 1 259 89 is_stmt 1 view -0
+ 363              		.cfi_startproc
+ 364              		@ args = 0, pretend = 0, frame = 0
+ 365              		@ frame_needed = 0, uses_anonymous_args = 0
+ 366              		.loc 1 259 89 is_stmt 0 view .LVU119
+ 367 0000 00B5     		push	{lr}
+ 368              	.LCFI1:
+ 369              		.cfi_def_cfa_offset 4
+ 370              		.cfi_offset 14, -4
+ 371 0002 8646     		mov	lr, r0
+ 260:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t                 u8_i, u8_z;
+ 372              		.loc 1 260 3 is_stmt 1 view .LVU120
+ 261:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE      pst_NowTask;
+ 373              		.loc 1 261 3 view .LVU121
+ 262:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE      pst_ReturnTask = (ESOS_TASK_HANDLE) NULLPTR;
+ 374              		.loc 1 262 3 view .LVU122
+ 375              	.LVL36:
+ 263:/Users/user/Desktop/esos32/src/esos.c **** 
+ 264:/Users/user/Desktop/esos32/src/esos.c ****   /* Scan through the pool of "registered" tasks and see
+ 265:/Users/user/Desktop/esos32/src/esos.c ****      if we can find the task function name requested
+ 266:/Users/user/Desktop/esos32/src/esos.c ****   */
+ 267:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<__u8UserTasksRegistered; u8_i++) {
+ 376              		.loc 1 267 3 view .LVU123
+ 377              		.loc 1 267 12 is_stmt 0 view .LVU124
+ 378 0004 0023     		movs	r3, #0
+ 379              		.loc 1 267 3 view .LVU125
+ 380 0006 01E0     		b	.L27
+ 381              	.LVL37:
+ 382              	.L28:
+ 383              		.loc 1 267 46 is_stmt 1 discriminator 2 view .LVU126
+ 384              		.loc 1 267 50 is_stmt 0 discriminator 2 view .LVU127
+ 385 0008 0133     		adds	r3, r3, #1
+ 386              	.LVL38:
+ 387              		.loc 1 267 50 discriminator 2 view .LVU128
+ 388 000a DBB2     		uxtb	r3, r3
+ 389              	.LVL39:
+ 390              	.L27:
+ 391              		.loc 1 267 16 is_stmt 1 discriminator 1 view .LVU129
+ 392              		.loc 1 267 20 is_stmt 0 discriminator 1 view .LVU130
+ 393 000c 094A     		ldr	r2, .L33
+ 394 000e 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 395              		.loc 1 267 3 discriminator 1 view .LVU131
+ 396 0010 9A42     		cmp	r2, r3
+ 397 0012 0CD9     		bls	.L32
+ 268:/Users/user/Desktop/esos32/src/esos.c ****     // get next index from array so we can get the task handle
+ 269:/Users/user/Desktop/esos32/src/esos.c ****     u8_z = __au8UserTaskStructIndex[u8_i];
+ 398              		.loc 1 269 5 is_stmt 1 view .LVU132
+ 399              		.loc 1 269 10 is_stmt 0 view .LVU133
+ 400 0014 084A     		ldr	r2, .L33+4
+ 401 0016 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 402              	.LVL40:
+ 270:/Users/user/Desktop/esos32/src/esos.c ****     /* check tasks that have been allocated (not a NULLIDX) and
+ 271:/Users/user/Desktop/esos32/src/esos.c ****        not been garbage collected (not REMOVE_IDX) yet.  If our
+ 272:/Users/user/Desktop/esos32/src/esos.c ****        task is among them, then return the handle to the caller
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 14
+
+
+ 273:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 274:/Users/user/Desktop/esos32/src/esos.c ****     if ((u8_z != NULLIDX) & (u8_z != REMOVE_IDX)) {
+ 403              		.loc 1 274 5 is_stmt 1 view .LVU134
+ 404              		.loc 1 274 8 is_stmt 0 view .LVU135
+ 405 0018 FD2A     		cmp	r2, #253
+ 406 001a F5D8     		bhi	.L28
+ 275:/Users/user/Desktop/esos32/src/esos.c ****       pst_NowTask = &__astUserTaskPool[u8_z];
+ 407              		.loc 1 275 7 is_stmt 1 view .LVU136
+ 408              		.loc 1 275 19 is_stmt 0 view .LVU137
+ 409 001c 0749     		ldr	r1, .L33+8
+ 410 001e 02EB420C 		add	ip, r2, r2, lsl #1
+ 411 0022 01EBCC00 		add	r0, r1, ip, lsl #3
+ 412              	.LVL41:
+ 276:/Users/user/Desktop/esos32/src/esos.c ****       // If we find our task, save the pstXXX so we can return it
+ 277:/Users/user/Desktop/esos32/src/esos.c ****       if (pst_NowTask->pfn == taskname) {
+ 413              		.loc 1 277 7 is_stmt 1 view .LVU138
+ 414              		.loc 1 277 22 is_stmt 0 view .LVU139
+ 415 0026 4268     		ldr	r2, [r0, #4]
+ 416              	.LVL42:
+ 417              		.loc 1 277 10 view .LVU140
+ 418 0028 7245     		cmp	r2, lr
+ 419 002a EDD1     		bne	.L28
+ 420 002c 00E0     		b	.L26
+ 421              	.LVL43:
+ 422              	.L32:
+ 262:/Users/user/Desktop/esos32/src/esos.c **** 
+ 423              		.loc 1 262 25 view .LVU141
+ 424 002e 0020     		movs	r0, #0
+ 278:/Users/user/Desktop/esos32/src/esos.c ****         pst_ReturnTask = pst_NowTask;
+ 279:/Users/user/Desktop/esos32/src/esos.c ****         break;
+ 280:/Users/user/Desktop/esos32/src/esos.c ****       } // end if (pfn == taskname)
+ 281:/Users/user/Desktop/esos32/src/esos.c ****     } // end if (!NULLIDX)
+ 282:/Users/user/Desktop/esos32/src/esos.c ****   } //end for
+ 283:/Users/user/Desktop/esos32/src/esos.c ****   return pst_ReturnTask;
+ 425              		.loc 1 283 3 is_stmt 1 view .LVU142
+ 426              	.L26:
+ 284:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_GetTaskHandle()
+ 427              		.loc 1 284 1 is_stmt 0 view .LVU143
+ 428 0030 5DF804FB 		ldr	pc, [sp], #4
+ 429              	.L34:
+ 430              		.align	2
+ 431              	.L33:
+ 432 0034 00000000 		.word	.LANCHOR0
+ 433 0038 00000000 		.word	.LANCHOR2
+ 434 003c 00000000 		.word	.LANCHOR1
+ 435              		.cfi_endproc
+ 436              	.LFE2:
+ 438              		.section	.text.esos_GetTaskHandleFromID,"ax",%progbits
+ 439              		.align	1
+ 440              		.global	esos_GetTaskHandleFromID
+ 441              		.syntax unified
+ 442              		.thumb
+ 443              		.thumb_func
+ 445              	esos_GetTaskHandleFromID:
+ 446              	.LVL44:
+ 447              	.LFB3:
+ 285:/Users/user/Desktop/esos32/src/esos.c **** 
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 15
+
+
+ 286:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 287:/Users/user/Desktop/esos32/src/esos.c ****  * Find the (active) task handle for a given task function
+ 288:/Users/user/Desktop/esos32/src/esos.c ****  * \param u16_TaskID name of task (argument to \ref ESOS_USER_TASK declaration)
+ 289:/Users/user/Desktop/esos32/src/esos.c ****  * \retval NULLPTR   if task is not found among the active tasks
+ 290:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TaskHandle the handle to the task function requested
+ 291:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa ESOS_USER_TASK
+ 292:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa esos_RegisterTask
+ 293:/Users/user/Desktop/esos32/src/esos.c ****  *  \sa esos_UnregisterTask
+ 294:/Users/user/Desktop/esos32/src/esos.c **** */
+ 295:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TASK_HANDLE    esos_GetTaskHandleFromID( uint16_t u16_TaskID ) {
+ 448              		.loc 1 295 69 is_stmt 1 view -0
+ 449              		.cfi_startproc
+ 450              		@ args = 0, pretend = 0, frame = 0
+ 451              		@ frame_needed = 0, uses_anonymous_args = 0
+ 452              		.loc 1 295 69 is_stmt 0 view .LVU145
+ 453 0000 00B5     		push	{lr}
+ 454              	.LCFI2:
+ 455              		.cfi_def_cfa_offset 4
+ 456              		.cfi_offset 14, -4
+ 457 0002 8646     		mov	lr, r0
+ 296:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t             u8_i, u8_z;
+ 458              		.loc 1 296 3 is_stmt 1 view .LVU146
+ 297:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE      pst_NowTask;
+ 459              		.loc 1 297 3 view .LVU147
+ 298:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE      pst_ReturnTask = (ESOS_TASK_HANDLE) NULLPTR;
+ 460              		.loc 1 298 3 view .LVU148
+ 461              	.LVL45:
+ 299:/Users/user/Desktop/esos32/src/esos.c **** 
+ 300:/Users/user/Desktop/esos32/src/esos.c ****   /* Scan through the pool of "registered" tasks and see
+ 301:/Users/user/Desktop/esos32/src/esos.c ****      if we can find the task function name requested
+ 302:/Users/user/Desktop/esos32/src/esos.c ****   */
+ 303:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<__u8UserTasksRegistered; u8_i++) {
+ 462              		.loc 1 303 3 view .LVU149
+ 463              		.loc 1 303 12 is_stmt 0 view .LVU150
+ 464 0004 0023     		movs	r3, #0
+ 465              		.loc 1 303 3 view .LVU151
+ 466 0006 01E0     		b	.L36
+ 467              	.LVL46:
+ 468              	.L37:
+ 469              		.loc 1 303 46 is_stmt 1 discriminator 2 view .LVU152
+ 470              		.loc 1 303 50 is_stmt 0 discriminator 2 view .LVU153
+ 471 0008 0133     		adds	r3, r3, #1
+ 472              	.LVL47:
+ 473              		.loc 1 303 50 discriminator 2 view .LVU154
+ 474 000a DBB2     		uxtb	r3, r3
+ 475              	.LVL48:
+ 476              	.L36:
+ 477              		.loc 1 303 16 is_stmt 1 discriminator 1 view .LVU155
+ 478              		.loc 1 303 20 is_stmt 0 discriminator 1 view .LVU156
+ 479 000c 094A     		ldr	r2, .L42
+ 480 000e 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 481              		.loc 1 303 3 discriminator 1 view .LVU157
+ 482 0010 9A42     		cmp	r2, r3
+ 483 0012 0CD9     		bls	.L41
+ 304:/Users/user/Desktop/esos32/src/esos.c ****     // get next index from array so we can get the task handle
+ 305:/Users/user/Desktop/esos32/src/esos.c ****     u8_z = __au8UserTaskStructIndex[u8_i];
+ 484              		.loc 1 305 5 is_stmt 1 view .LVU158
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 16
+
+
+ 485              		.loc 1 305 10 is_stmt 0 view .LVU159
+ 486 0014 084A     		ldr	r2, .L42+4
+ 487 0016 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 488              	.LVL49:
+ 306:/Users/user/Desktop/esos32/src/esos.c ****     /* check tasks that have been allocated (not a NULLIDX) and
+ 307:/Users/user/Desktop/esos32/src/esos.c ****        not been garbage collected (not REMOVE_IDX) yet.  If our
+ 308:/Users/user/Desktop/esos32/src/esos.c ****        task is among them, then return the handle to the caller
+ 309:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 310:/Users/user/Desktop/esos32/src/esos.c ****     if ((u8_z != NULLIDX) & (u8_z != REMOVE_IDX)) {
+ 489              		.loc 1 310 5 is_stmt 1 view .LVU160
+ 490              		.loc 1 310 8 is_stmt 0 view .LVU161
+ 491 0018 FD2A     		cmp	r2, #253
+ 492 001a F5D8     		bhi	.L37
+ 311:/Users/user/Desktop/esos32/src/esos.c ****       pst_NowTask = &__astUserTaskPool[u8_z];
+ 493              		.loc 1 311 7 is_stmt 1 view .LVU162
+ 494              		.loc 1 311 19 is_stmt 0 view .LVU163
+ 495 001c 0749     		ldr	r1, .L42+8
+ 496 001e 02EB420C 		add	ip, r2, r2, lsl #1
+ 497 0022 01EBCC00 		add	r0, r1, ip, lsl #3
+ 498              	.LVL50:
+ 312:/Users/user/Desktop/esos32/src/esos.c ****       // If we find our task, save the pstXXX so we can return it
+ 313:/Users/user/Desktop/esos32/src/esos.c ****       if (pst_NowTask->u16_taskID == u16_TaskID) {
+ 499              		.loc 1 313 7 is_stmt 1 view .LVU164
+ 500              		.loc 1 313 22 is_stmt 0 view .LVU165
+ 501 0026 028A     		ldrh	r2, [r0, #16]
+ 502              	.LVL51:
+ 503              		.loc 1 313 10 view .LVU166
+ 504 0028 7245     		cmp	r2, lr
+ 505 002a EDD1     		bne	.L37
+ 506 002c 00E0     		b	.L35
+ 507              	.LVL52:
+ 508              	.L41:
+ 298:/Users/user/Desktop/esos32/src/esos.c **** 
+ 509              		.loc 1 298 25 view .LVU167
+ 510 002e 0020     		movs	r0, #0
+ 314:/Users/user/Desktop/esos32/src/esos.c ****         pst_ReturnTask = pst_NowTask;
+ 315:/Users/user/Desktop/esos32/src/esos.c ****         break;
+ 316:/Users/user/Desktop/esos32/src/esos.c ****       } // end if (pfn == taskname)
+ 317:/Users/user/Desktop/esos32/src/esos.c ****     } // end if (!NULLIDX)
+ 318:/Users/user/Desktop/esos32/src/esos.c ****   } //end for
+ 319:/Users/user/Desktop/esos32/src/esos.c ****   return pst_ReturnTask;
+ 511              		.loc 1 319 3 is_stmt 1 view .LVU168
+ 512              	.L35:
+ 320:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_GetTaskHandleFromID()
+ 513              		.loc 1 320 1 is_stmt 0 view .LVU169
+ 514 0030 5DF804FB 		ldr	pc, [sp], #4
+ 515              	.L43:
+ 516              		.align	2
+ 517              	.L42:
+ 518 0034 00000000 		.word	.LANCHOR0
+ 519 0038 00000000 		.word	.LANCHOR2
+ 520 003c 00000000 		.word	.LANCHOR1
+ 521              		.cfi_endproc
+ 522              	.LFE3:
+ 524              		.section	.text.esos_GetFreeChildTaskStruct,"ax",%progbits
+ 525              		.align	1
+ 526              		.global	esos_GetFreeChildTaskStruct
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 17
+
+
+ 527              		.syntax unified
+ 528              		.thumb
+ 529              		.thumb_func
+ 531              	esos_GetFreeChildTaskStruct:
+ 532              	.LFB4:
+ 321:/Users/user/Desktop/esos32/src/esos.c **** 
+ 322:/Users/user/Desktop/esos32/src/esos.c **** 
+ 323:/Users/user/Desktop/esos32/src/esos.c **** 
+ 324:/Users/user/Desktop/esos32/src/esos.c **** // TODO: I DONT THINK I NEED TO STORE THE ACTUAL PFNs SINCE THE PARENT'S
+ 325:/Users/user/Desktop/esos32/src/esos.c **** // WAIT FUNCTION WILL DECOMPOSE INTO A CALL TO THE CHILD TASK AUTOMATICALLY.
+ 326:/Users/user/Desktop/esos32/src/esos.c **** //
+ 327:/Users/user/Desktop/esos32/src/esos.c **** // INVESTIGATE MORE!
+ 328:/Users/user/Desktop/esos32/src/esos.c **** //
+ 329:/Users/user/Desktop/esos32/src/esos.c **** // TODO:  make sure childs get restarted if they yield and some other task
+ 330:/Users/user/Desktop/esos32/src/esos.c **** //        executes in the meantime!
+ 331:/Users/user/Desktop/esos32/src/esos.c **** 
+ 332:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 333:/Users/user/Desktop/esos32/src/esos.c **** * Searches child task pool to find a free child task structure and returns
+ 334:/Users/user/Desktop/esos32/src/esos.c **** *    a handle (pst) back to the caller
+ 335:/Users/user/Desktop/esos32/src/esos.c **** * \retval TaskHandle if a child task structure is available
+ 336:/Users/user/Desktop/esos32/src/esos.c **** * \retval ESOS_BAD_CHILD_TASK_HANDLE  if no structures are available at this time
+ 337:/Users/user/Desktop/esos32/src/esos.c **** */
+ 338:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TASK_HANDLE  esos_GetFreeChildTaskStruct() {
+ 533              		.loc 1 338 49 is_stmt 1 view -0
+ 534              		.cfi_startproc
+ 535              		@ args = 0, pretend = 0, frame = 0
+ 536              		@ frame_needed = 0, uses_anonymous_args = 0
+ 537              		@ link register save eliminated.
+ 339:/Users/user/Desktop/esos32/src/esos.c ****   uint16_t    u16_i = 0;
+ 538              		.loc 1 339 3 view .LVU171
+ 539              	.LVL53:
+ 340:/Users/user/Desktop/esos32/src/esos.c **** 
+ 341:/Users/user/Desktop/esos32/src/esos.c ****   while (u16_i < MAX_NUM_CHILD_TASKS) {
+ 540              		.loc 1 341 3 view .LVU172
+ 339:/Users/user/Desktop/esos32/src/esos.c ****   uint16_t    u16_i = 0;
+ 541              		.loc 1 339 15 is_stmt 0 view .LVU173
+ 542 0000 0023     		movs	r3, #0
+ 543              	.LVL54:
+ 544              	.L45:
+ 545              		.loc 1 341 9 is_stmt 1 view .LVU174
+ 546 0002 1F2B     		cmp	r3, #31
+ 547 0004 0ED8     		bhi	.L49
+ 342:/Users/user/Desktop/esos32/src/esos.c ****     if (ESOS_IS_TASK_INITED( &__astChildTaskPool[u16_i]) )
+ 548              		.loc 1 342 5 view .LVU175
+ 549              		.loc 1 342 9 is_stmt 0 view .LVU176
+ 550 0006 03EB4301 		add	r1, r3, r3, lsl #1
+ 551 000a CA00     		lsls	r2, r1, #3
+ 552 000c 0649     		ldr	r1, .L51
+ 553 000e 8A5A     		ldrh	r2, [r1, r2]
+ 554              		.loc 1 342 8 view .LVU177
+ 555 0010 12B1     		cbz	r2, .L50
+ 343:/Users/user/Desktop/esos32/src/esos.c ****       return &__astChildTaskPool[u16_i];
+ 344:/Users/user/Desktop/esos32/src/esos.c ****     u16_i++;
+ 556              		.loc 1 344 5 is_stmt 1 view .LVU178
+ 557              		.loc 1 344 10 is_stmt 0 view .LVU179
+ 558 0012 0133     		adds	r3, r3, #1
+ 559              	.LVL55:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 18
+
+
+ 560              		.loc 1 344 10 view .LVU180
+ 561 0014 9BB2     		uxth	r3, r3
+ 562              	.LVL56:
+ 563              		.loc 1 344 10 view .LVU181
+ 564 0016 F4E7     		b	.L45
+ 565              	.L50:
+ 343:/Users/user/Desktop/esos32/src/esos.c ****       return &__astChildTaskPool[u16_i];
+ 566              		.loc 1 343 7 is_stmt 1 view .LVU182
+ 343:/Users/user/Desktop/esos32/src/esos.c ****       return &__astChildTaskPool[u16_i];
+ 567              		.loc 1 343 14 is_stmt 0 view .LVU183
+ 568 0018 03EB4300 		add	r0, r3, r3, lsl #1
+ 569 001c C300     		lsls	r3, r0, #3
+ 570              	.LVL57:
+ 343:/Users/user/Desktop/esos32/src/esos.c ****       return &__astChildTaskPool[u16_i];
+ 571              		.loc 1 343 14 view .LVU184
+ 572 001e 0846     		mov	r0, r1
+ 573 0020 1844     		add	r0, r0, r3
+ 574 0022 7047     		bx	lr
+ 575              	.LVL58:
+ 576              	.L49:
+ 345:/Users/user/Desktop/esos32/src/esos.c ****   }
+ 346:/Users/user/Desktop/esos32/src/esos.c ****   return NULLPTR;
+ 577              		.loc 1 346 10 view .LVU185
+ 578 0024 0020     		movs	r0, #0
+ 347:/Users/user/Desktop/esos32/src/esos.c **** }// end esos_u16GetFreeChildTaskStruct()
+ 579              		.loc 1 347 1 view .LVU186
+ 580 0026 7047     		bx	lr
+ 581              	.L52:
+ 582              		.align	2
+ 583              	.L51:
+ 584 0028 00000000 		.word	.LANCHOR5
+ 585              		.cfi_endproc
+ 586              	.LFE4:
+ 588              		.section	.text.esos_GetMaxNumberTasks,"ax",%progbits
+ 589              		.align	1
+ 590              		.global	esos_GetMaxNumberTasks
+ 591              		.syntax unified
+ 592              		.thumb
+ 593              		.thumb_func
+ 595              	esos_GetMaxNumberTasks:
+ 596              	.LFB5:
+ 348:/Users/user/Desktop/esos32/src/esos.c **** 
+ 349:/Users/user/Desktop/esos32/src/esos.c **** /********************************************************************************/
+ 350:/Users/user/Desktop/esos32/src/esos.c **** 
+ 351:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 352:/Users/user/Desktop/esos32/src/esos.c **** * Returns the number of tasks we can execute
+ 353:/Users/user/Desktop/esos32/src/esos.c **** * \retval N the number of tasks this version of ESOS can execute
+ 354:/Users/user/Desktop/esos32/src/esos.c **** */
+ 355:/Users/user/Desktop/esos32/src/esos.c **** uint8_t   esos_GetMaxNumberTasks(void) {
+ 597              		.loc 1 355 40 is_stmt 1 view -0
+ 598              		.cfi_startproc
+ 599              		@ args = 0, pretend = 0, frame = 0
+ 600              		@ frame_needed = 0, uses_anonymous_args = 0
+ 601              		@ link register save eliminated.
+ 356:/Users/user/Desktop/esos32/src/esos.c ****   return MAX_NUM_USER_TASKS;
+ 602              		.loc 1 356 3 view .LVU188
+ 357:/Users/user/Desktop/esos32/src/esos.c **** } // end osGetMaxNumberTasks()
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 19
+
+
+ 603              		.loc 1 357 1 is_stmt 0 view .LVU189
+ 604 0000 2020     		movs	r0, #32
+ 605 0002 7047     		bx	lr
+ 606              		.cfi_endproc
+ 607              	.LFE5:
+ 609              		.section	.text.__esos_hasTickDurationPassed,"ax",%progbits
+ 610              		.align	1
+ 611              		.global	__esos_hasTickDurationPassed
+ 612              		.syntax unified
+ 613              		.thumb
+ 614              		.thumb_func
+ 616              	__esos_hasTickDurationPassed:
+ 617              	.LVL59:
+ 618              	.LFB6:
+ 358:/Users/user/Desktop/esos32/src/esos.c **** 
+ 359:/Users/user/Desktop/esos32/src/esos.c **** /*
+ 360:/Users/user/Desktop/esos32/src/esos.c **** * Determine whether a period of time has elapsed.  Users
+ 361:/Users/user/Desktop/esos32/src/esos.c **** * have no need to call this function.  It is used by ESOS
+ 362:/Users/user/Desktop/esos32/src/esos.c **** * internally.
+ 363:/Users/user/Desktop/esos32/src/esos.c **** * \param u32_startTick system tick count when timer was created
+ 364:/Users/user/Desktop/esos32/src/esos.c **** * \param u32_period duration of period in system ticks
+ 365:/Users/user/Desktop/esos32/src/esos.c **** * \retval TRUE if the period of time has elapsed
+ 366:/Users/user/Desktop/esos32/src/esos.c **** * \retval FALSE if the period of time has not yet elapsed
+ 367:/Users/user/Desktop/esos32/src/esos.c **** */
+ 368:/Users/user/Desktop/esos32/src/esos.c **** uint16_t  __esos_hasTickDurationPassed(uint32_t u32_startTick, uint32_t u32_period) {
+ 619              		.loc 1 368 85 is_stmt 1 view -0
+ 620              		.cfi_startproc
+ 621              		@ args = 0, pretend = 0, frame = 0
+ 622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 623              		.loc 1 368 85 is_stmt 0 view .LVU191
+ 624 0000 38B5     		push	{r3, r4, r5, lr}
+ 625              	.LCFI3:
+ 626              		.cfi_def_cfa_offset 16
+ 627              		.cfi_offset 3, -16
+ 628              		.cfi_offset 4, -12
+ 629              		.cfi_offset 5, -8
+ 630              		.cfi_offset 14, -4
+ 631 0002 0446     		mov	r4, r0
+ 632 0004 0D46     		mov	r5, r1
+ 369:/Users/user/Desktop/esos32/src/esos.c ****   uint32_t    u32_delta, u32_current;
+ 633              		.loc 1 369 3 is_stmt 1 view .LVU192
+ 370:/Users/user/Desktop/esos32/src/esos.c **** 
+ 371:/Users/user/Desktop/esos32/src/esos.c ****   u32_current = esos_GetSystemTick();
+ 634              		.loc 1 371 3 view .LVU193
+ 635              		.loc 1 371 17 is_stmt 0 view .LVU194
+ 636 0006 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 637              	.LVL60:
+ 372:/Users/user/Desktop/esos32/src/esos.c ****   u32_delta = u32_current - u32_startTick;
+ 638              		.loc 1 372 3 is_stmt 1 view .LVU195
+ 639              		.loc 1 372 13 is_stmt 0 view .LVU196
+ 640 000a 031B     		subs	r3, r0, r4
+ 641              	.LVL61:
+ 373:/Users/user/Desktop/esos32/src/esos.c ****   if (u32_current < u32_startTick)
+ 642              		.loc 1 373 3 is_stmt 1 view .LVU197
+ 643              		.loc 1 373 6 is_stmt 0 view .LVU198
+ 644 000c A042     		cmp	r0, r4
+ 645 000e 00D2     		bcs	.L55
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 20
+
+
+ 374:/Users/user/Desktop/esos32/src/esos.c ****     u32_delta += 0xFFFFFFFF;    // account for rollover (DELTA=0xFFFFFFF-start+current)
+ 646              		.loc 1 374 5 is_stmt 1 view .LVU199
+ 647              		.loc 1 374 15 is_stmt 0 view .LVU200
+ 648 0010 013B     		subs	r3, r3, #1
+ 649              	.LVL62:
+ 650              	.L55:
+ 375:/Users/user/Desktop/esos32/src/esos.c ****   if (u32_delta > u32_period)
+ 651              		.loc 1 375 3 is_stmt 1 view .LVU201
+ 652              		.loc 1 375 6 is_stmt 0 view .LVU202
+ 653 0012 AB42     		cmp	r3, r5
+ 654 0014 01D9     		bls	.L57
+ 376:/Users/user/Desktop/esos32/src/esos.c ****     return TRUE;
+ 655              		.loc 1 376 12 view .LVU203
+ 656 0016 0120     		movs	r0, #1
+ 657              	.LVL63:
+ 658              	.L56:
+ 377:/Users/user/Desktop/esos32/src/esos.c ****   else
+ 378:/Users/user/Desktop/esos32/src/esos.c ****     return FALSE;
+ 379:/Users/user/Desktop/esos32/src/esos.c **** } // end __esos_hasSystemTickDurationPassed()
+ 659              		.loc 1 379 1 view .LVU204
+ 660 0018 38BD     		pop	{r3, r4, r5, pc}
+ 661              	.LVL64:
+ 662              	.L57:
+ 378:/Users/user/Desktop/esos32/src/esos.c **** } // end __esos_hasSystemTickDurationPassed()
+ 663              		.loc 1 378 12 view .LVU205
+ 664 001a 0020     		movs	r0, #0
+ 665              	.LVL65:
+ 378:/Users/user/Desktop/esos32/src/esos.c **** } // end __esos_hasSystemTickDurationPassed()
+ 666              		.loc 1 378 12 view .LVU206
+ 667 001c FCE7     		b	.L56
+ 668              		.cfi_endproc
+ 669              	.LFE6:
+ 671              		.section	.text.__esos_tmrSvcsExecute,"ax",%progbits
+ 672              		.align	1
+ 673              		.global	__esos_tmrSvcsExecute
+ 674              		.syntax unified
+ 675              		.thumb
+ 676              		.thumb_func
+ 678              	__esos_tmrSvcsExecute:
+ 679              	.LFB7:
+ 380:/Users/user/Desktop/esos32/src/esos.c **** 
+ 381:/Users/user/Desktop/esos32/src/esos.c **** /*
+ 382:/Users/user/Desktop/esos32/src/esos.c **** * ESOS timer services callback function.  HW-specific code
+ 383:/Users/user/Desktop/esos32/src/esos.c **** * that creates the system tick must call this function at
+ 384:/Users/user/Desktop/esos32/src/esos.c **** * every ESOS system tick.
+ 385:/Users/user/Desktop/esos32/src/esos.c **** */
+ 386:/Users/user/Desktop/esos32/src/esos.c **** void __esos_tmrSvcsExecute(void) {
+ 680              		.loc 1 386 34 is_stmt 1 view -0
+ 681              		.cfi_startproc
+ 682              		@ args = 0, pretend = 0, frame = 0
+ 683              		@ frame_needed = 0, uses_anonymous_args = 0
+ 684 0000 38B5     		push	{r3, r4, r5, lr}
+ 685              	.LCFI4:
+ 686              		.cfi_def_cfa_offset 16
+ 687              		.cfi_offset 3, -16
+ 688              		.cfi_offset 4, -12
+ 689              		.cfi_offset 5, -8
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 21
+
+
+ 690              		.cfi_offset 14, -4
+ 387:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_cnt, u8_index;
+ 691              		.loc 1 387 3 view .LVU208
+ 388:/Users/user/Desktop/esos32/src/esos.c **** 
+ 389:/Users/user/Desktop/esos32/src/esos.c ****   u8_cnt = __esos_u8TmrSvcsRegistered;
+ 692              		.loc 1 389 3 view .LVU209
+ 693              		.loc 1 389 10 is_stmt 0 view .LVU210
+ 694 0002 134B     		ldr	r3, .L66
+ 695 0004 1D78     		ldrb	r5, [r3]	@ zero_extendqisi2
+ 696              	.LVL66:
+ 390:/Users/user/Desktop/esos32/src/esos.c ****   u8_index = 0;
+ 697              		.loc 1 390 3 is_stmt 1 view .LVU211
+ 391:/Users/user/Desktop/esos32/src/esos.c ****   while (u8_cnt) {
+ 698              		.loc 1 391 3 view .LVU212
+ 390:/Users/user/Desktop/esos32/src/esos.c ****   u8_index = 0;
+ 699              		.loc 1 390 12 is_stmt 0 view .LVU213
+ 700 0006 0024     		movs	r4, #0
+ 701              		.loc 1 391 9 view .LVU214
+ 702 0008 03E0     		b	.L60
+ 703              	.LVL67:
+ 704              	.L62:
+ 392:/Users/user/Desktop/esos32/src/esos.c ****     // if timer is running, update its structure and call it if necessary
+ 393:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_index)) {
+ 394:/Users/user/Desktop/esos32/src/esos.c ****       __astTmrSvcs[u8_index].u32_cntDown--;
+ 395:/Users/user/Desktop/esos32/src/esos.c ****       if (__astTmrSvcs[u8_index].u32_cntDown == 0 ) {
+ 396:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].u32_cntDown = __astTmrSvcs[u8_index].u32_period;
+ 397:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].pfn();
+ 398:/Users/user/Desktop/esos32/src/esos.c ****       } //endif timer has expired
+ 399:/Users/user/Desktop/esos32/src/esos.c ****       u8_cnt--;                         // denote we've serviced one of the active timers
+ 705              		.loc 1 399 7 is_stmt 1 view .LVU215
+ 706              		.loc 1 399 13 is_stmt 0 view .LVU216
+ 707 000a 013D     		subs	r5, r5, #1
+ 708              	.LVL68:
+ 709              		.loc 1 399 13 view .LVU217
+ 710 000c EDB2     		uxtb	r5, r5
+ 711              	.LVL69:
+ 712              	.L61:
+ 400:/Users/user/Desktop/esos32/src/esos.c ****     } // endif IsTimerRunning
+ 401:/Users/user/Desktop/esos32/src/esos.c ****     u8_index++;       // move index to next timer in array
+ 713              		.loc 1 401 5 is_stmt 1 view .LVU218
+ 714              		.loc 1 401 13 is_stmt 0 view .LVU219
+ 715 000e 0134     		adds	r4, r4, #1
+ 716              	.LVL70:
+ 717              		.loc 1 401 13 view .LVU220
+ 718 0010 E4B2     		uxtb	r4, r4
+ 719              	.LVL71:
+ 720              	.L60:
+ 391:/Users/user/Desktop/esos32/src/esos.c ****     // if timer is running, update its structure and call it if necessary
+ 721              		.loc 1 391 9 is_stmt 1 view .LVU221
+ 722 0012 E5B1     		cbz	r5, .L65
+ 393:/Users/user/Desktop/esos32/src/esos.c ****       __astTmrSvcs[u8_index].u32_cntDown--;
+ 723              		.loc 1 393 5 view .LVU222
+ 393:/Users/user/Desktop/esos32/src/esos.c ****       __astTmrSvcs[u8_index].u32_cntDown--;
+ 724              		.loc 1 393 9 is_stmt 0 view .LVU223
+ 725 0014 0123     		movs	r3, #1
+ 726 0016 A340     		lsls	r3, r3, r4
+ 727 0018 0E49     		ldr	r1, .L66+4
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 22
+
+
+ 728 001a 0968     		ldr	r1, [r1]
+ 393:/Users/user/Desktop/esos32/src/esos.c ****       __astTmrSvcs[u8_index].u32_cntDown--;
+ 729              		.loc 1 393 8 view .LVU224
+ 730 001c 0B42     		tst	r3, r1
+ 731 001e F6D0     		beq	.L61
+ 394:/Users/user/Desktop/esos32/src/esos.c ****       if (__astTmrSvcs[u8_index].u32_cntDown == 0 ) {
+ 732              		.loc 1 394 7 is_stmt 1 view .LVU225
+ 394:/Users/user/Desktop/esos32/src/esos.c ****       if (__astTmrSvcs[u8_index].u32_cntDown == 0 ) {
+ 733              		.loc 1 394 29 is_stmt 0 view .LVU226
+ 734 0020 04EB4401 		add	r1, r4, r4, lsl #1
+ 735 0024 8B00     		lsls	r3, r1, #2
+ 736 0026 0C49     		ldr	r1, .L66+8
+ 737 0028 1944     		add	r1, r1, r3
+ 738 002a 8B68     		ldr	r3, [r1, #8]
+ 394:/Users/user/Desktop/esos32/src/esos.c ****       if (__astTmrSvcs[u8_index].u32_cntDown == 0 ) {
+ 739              		.loc 1 394 41 view .LVU227
+ 740 002c 013B     		subs	r3, r3, #1
+ 741 002e 8B60     		str	r3, [r1, #8]
+ 395:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].u32_cntDown = __astTmrSvcs[u8_index].u32_period;
+ 742              		.loc 1 395 7 is_stmt 1 view .LVU228
+ 395:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].u32_cntDown = __astTmrSvcs[u8_index].u32_period;
+ 743              		.loc 1 395 10 is_stmt 0 view .LVU229
+ 744 0030 002B     		cmp	r3, #0
+ 745 0032 EAD1     		bne	.L62
+ 396:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].pfn();
+ 746              		.loc 1 396 9 is_stmt 1 view .LVU230
+ 396:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].pfn();
+ 747              		.loc 1 396 68 is_stmt 0 view .LVU231
+ 748 0034 0849     		ldr	r1, .L66+8
+ 749 0036 04EB4400 		add	r0, r4, r4, lsl #1
+ 750 003a 8300     		lsls	r3, r0, #2
+ 751 003c 0B44     		add	r3, r3, r1
+ 752 003e 5868     		ldr	r0, [r3, #4]
+ 396:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_index].pfn();
+ 753              		.loc 1 396 44 view .LVU232
+ 754 0040 9860     		str	r0, [r3, #8]
+ 397:/Users/user/Desktop/esos32/src/esos.c ****       } //endif timer has expired
+ 755              		.loc 1 397 9 is_stmt 1 view .LVU233
+ 397:/Users/user/Desktop/esos32/src/esos.c ****       } //endif timer has expired
+ 756              		.loc 1 397 31 is_stmt 0 view .LVU234
+ 757 0042 04EB4402 		add	r2, r4, r4, lsl #1
+ 758 0046 9300     		lsls	r3, r2, #2
+ 759 0048 CB58     		ldr	r3, [r1, r3]
+ 397:/Users/user/Desktop/esos32/src/esos.c ****       } //endif timer has expired
+ 760              		.loc 1 397 9 view .LVU235
+ 761 004a 9847     		blx	r3
+ 762              	.LVL72:
+ 763 004c DDE7     		b	.L62
+ 764              	.L65:
+ 402:/Users/user/Desktop/esos32/src/esos.c ****   } // end while(u8_cnt)
+ 403:/Users/user/Desktop/esos32/src/esos.c **** } //end __esos_tmrSvcsExecute()
+ 765              		.loc 1 403 1 view .LVU236
+ 766 004e 38BD     		pop	{r3, r4, r5, pc}
+ 767              	.LVL73:
+ 768              	.L67:
+ 769              		.loc 1 403 1 view .LVU237
+ 770              		.align	2
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 23
+
+
+ 771              	.L66:
+ 772 0050 00000000 		.word	.LANCHOR6
+ 773 0054 00000000 		.word	.LANCHOR7
+ 774 0058 00000000 		.word	.LANCHOR8
+ 775              		.cfi_endproc
+ 776              	.LFE7:
+ 778              		.section	.text.esos_RegisterTimer,"ax",%progbits
+ 779              		.align	1
+ 780              		.global	esos_RegisterTimer
+ 781              		.syntax unified
+ 782              		.thumb
+ 783              		.thumb_func
+ 785              	esos_RegisterTimer:
+ 786              	.LVL74:
+ 787              	.LFB8:
+ 404:/Users/user/Desktop/esos32/src/esos.c **** 
+ 405:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 406:/Users/user/Desktop/esos32/src/esos.c ****  * Adds a timer to the ESOS timer service.  Timer function will execute at its
+ 407:/Users/user/Desktop/esos32/src/esos.c ****  * next opportunity.  Timer functions must have \em void arguments and \em void
+ 408:/Users/user/Desktop/esos32/src/esos.c ****  * returns.
+ 409:/Users/user/Desktop/esos32/src/esos.c ****  * \param timername name under which timer was declared in \ref ESOS_USER_TIMER.
+ 410:/Users/user/Desktop/esos32/src/esos.c ****  * and contains the code to run when software timer expires
+ 411:/Users/user/Desktop/esos32/src/esos.c ****  * \param u32_period period of timer in system ticks (currently, milliseconds)
+ 412:/Users/user/Desktop/esos32/src/esos.c ****  * \retval ESOS_TMR_FAILURE   if no more timers can added at this time
+ 413:/Users/user/Desktop/esos32/src/esos.c ****  * \retval timerhandle   if timer service was registered
+ 414:/Users/user/Desktop/esos32/src/esos.c ****  * \sa ESOS_USER_TIMER
+ 415:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_UnregisterTimer
+ 416:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_GetTimerHandle
+ 417:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_ChangeTimerPeriod
+ 418:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_IsTimerRunning
+ 419:/Users/user/Desktop/esos32/src/esos.c ****  * \sa
+ 420:/Users/user/Desktop/esos32/src/esos.c ****  *
+ 421:/Users/user/Desktop/esos32/src/esos.c ****  */
+ 422:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TMR_HANDLE    esos_RegisterTimer( void (*timername)(void), uint32_t u32_period ) {
+ 788              		.loc 1 422 87 is_stmt 1 view -0
+ 789              		.cfi_startproc
+ 790              		@ args = 0, pretend = 0, frame = 0
+ 791              		@ frame_needed = 0, uses_anonymous_args = 0
+ 792              		.loc 1 422 87 is_stmt 0 view .LVU239
+ 793 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 794              	.LCFI5:
+ 795              		.cfi_def_cfa_offset 20
+ 796              		.cfi_offset 4, -20
+ 797              		.cfi_offset 5, -16
+ 798              		.cfi_offset 6, -12
+ 799              		.cfi_offset 7, -8
+ 800              		.cfi_offset 14, -4
+ 423:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t   u8_i;
+ 801              		.loc 1 423 3 is_stmt 1 view .LVU240
+ 424:/Users/user/Desktop/esos32/src/esos.c **** 
+ 425:/Users/user/Desktop/esos32/src/esos.c ****   if ( esos_GetNumberRunningTimers() < MAX_NUM_TMRS) {
+ 802              		.loc 1 425 3 view .LVU241
+ 803              		.loc 1 425 38 is_stmt 0 view .LVU242
+ 804 0002 144B     		ldr	r3, .L78
+ 805 0004 93F800E0 		ldrb	lr, [r3]	@ zero_extendqisi2
+ 806              		.loc 1 425 6 view .LVU243
+ 807 0008 BEF10F0F 		cmp	lr, #15
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 24
+
+
+ 808 000c 0CD8     		bhi	.L75
+ 809 000e 0546     		mov	r5, r0
+ 426:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++ ) {
+ 810              		.loc 1 426 14 view .LVU244
+ 811 0010 0020     		movs	r0, #0
+ 812              	.LVL75:
+ 813              	.L69:
+ 814              		.loc 1 426 18 is_stmt 1 discriminator 1 view .LVU245
+ 815              		.loc 1 426 5 is_stmt 0 discriminator 1 view .LVU246
+ 816 0012 0F28     		cmp	r0, #15
+ 817 0014 1CD8     		bhi	.L76
+ 427:/Users/user/Desktop/esos32/src/esos.c ****       if (!esos_IsTimerRunning(u8_i)) {
+ 818              		.loc 1 427 7 is_stmt 1 view .LVU247
+ 819              		.loc 1 427 12 is_stmt 0 view .LVU248
+ 820 0016 0123     		movs	r3, #1
+ 821 0018 8340     		lsls	r3, r3, r0
+ 822 001a 0F4A     		ldr	r2, .L78+4
+ 823 001c 1268     		ldr	r2, [r2]
+ 824              		.loc 1 427 10 view .LVU249
+ 825 001e 1342     		tst	r3, r2
+ 826 0020 04D0     		beq	.L77
+ 426:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++ ) {
+ 827              		.loc 1 426 37 is_stmt 1 discriminator 2 view .LVU250
+ 426:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++ ) {
+ 828              		.loc 1 426 41 is_stmt 0 discriminator 2 view .LVU251
+ 829 0022 0130     		adds	r0, r0, #1
+ 830              	.LVL76:
+ 426:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++ ) {
+ 831              		.loc 1 426 41 discriminator 2 view .LVU252
+ 832 0024 C0B2     		uxtb	r0, r0
+ 833              	.LVL77:
+ 426:/Users/user/Desktop/esos32/src/esos.c ****     for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++ ) {
+ 834              		.loc 1 426 41 discriminator 2 view .LVU253
+ 835 0026 F4E7     		b	.L69
+ 836              	.LVL78:
+ 837              	.L75:
+ 428:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].pfn = timername;
+ 429:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].u32_period = u32_period;
+ 430:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].u32_cntDown = u32_period;
+ 431:/Users/user/Desktop/esos32/src/esos.c ****         __esos_u8TmrSvcsRegistered++;
+ 432:/Users/user/Desktop/esos32/src/esos.c ****         __esos_MarkTimerRunning( u8_i );
+ 433:/Users/user/Desktop/esos32/src/esos.c ****         return u8_i;
+ 434:/Users/user/Desktop/esos32/src/esos.c ****       } // endif IsTimerRunning
+ 435:/Users/user/Desktop/esos32/src/esos.c ****     } // endfor
+ 436:/Users/user/Desktop/esos32/src/esos.c ****     return ESOS_TMR_FAILURE;
+ 437:/Users/user/Desktop/esos32/src/esos.c ****   } // endif
+ 438:/Users/user/Desktop/esos32/src/esos.c ****   else
+ 439:/Users/user/Desktop/esos32/src/esos.c ****     return ESOS_TMR_FAILURE;
+ 838              		.loc 1 439 12 view .LVU254
+ 839 0028 FF20     		movs	r0, #255
+ 840              	.LVL79:
+ 841              		.loc 1 439 12 view .LVU255
+ 842 002a 12E0     		b	.L70
+ 843              	.LVL80:
+ 844              	.L77:
+ 428:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].pfn = timername;
+ 845              		.loc 1 428 9 is_stmt 1 view .LVU256
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 25
+
+
+ 428:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].pfn = timername;
+ 846              		.loc 1 428 32 is_stmt 0 view .LVU257
+ 847 002c 0B4C     		ldr	r4, .L78+8
+ 848 002e 00EB4006 		add	r6, r0, r0, lsl #1
+ 849 0032 04EB8607 		add	r7, r4, r6, lsl #2
+ 850 0036 44F82650 		str	r5, [r4, r6, lsl #2]
+ 429:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].u32_cntDown = u32_period;
+ 851              		.loc 1 429 9 is_stmt 1 view .LVU258
+ 429:/Users/user/Desktop/esos32/src/esos.c ****         __astTmrSvcs[u8_i].u32_cntDown = u32_period;
+ 852              		.loc 1 429 39 is_stmt 0 view .LVU259
+ 853 003a 7960     		str	r1, [r7, #4]
+ 430:/Users/user/Desktop/esos32/src/esos.c ****         __esos_u8TmrSvcsRegistered++;
+ 854              		.loc 1 430 9 is_stmt 1 view .LVU260
+ 430:/Users/user/Desktop/esos32/src/esos.c ****         __esos_u8TmrSvcsRegistered++;
+ 855              		.loc 1 430 40 is_stmt 0 view .LVU261
+ 856 003c B960     		str	r1, [r7, #8]
+ 431:/Users/user/Desktop/esos32/src/esos.c ****         __esos_MarkTimerRunning( u8_i );
+ 857              		.loc 1 431 9 is_stmt 1 view .LVU262
+ 431:/Users/user/Desktop/esos32/src/esos.c ****         __esos_MarkTimerRunning( u8_i );
+ 858              		.loc 1 431 35 is_stmt 0 view .LVU263
+ 859 003e 0EF1010E 		add	lr, lr, #1
+ 860 0042 0449     		ldr	r1, .L78
+ 861              	.LVL81:
+ 431:/Users/user/Desktop/esos32/src/esos.c ****         __esos_MarkTimerRunning( u8_i );
+ 862              		.loc 1 431 35 view .LVU264
+ 863 0044 81F800E0 		strb	lr, [r1]
+ 432:/Users/user/Desktop/esos32/src/esos.c ****         return u8_i;
+ 864              		.loc 1 432 9 is_stmt 1 view .LVU265
+ 865 0048 1343     		orrs	r3, r3, r2
+ 866 004a 034A     		ldr	r2, .L78+4
+ 867 004c 1360     		str	r3, [r2]
+ 433:/Users/user/Desktop/esos32/src/esos.c ****       } // endif IsTimerRunning
+ 868              		.loc 1 433 9 view .LVU266
+ 433:/Users/user/Desktop/esos32/src/esos.c ****       } // endif IsTimerRunning
+ 869              		.loc 1 433 16 is_stmt 0 view .LVU267
+ 870 004e 00E0     		b	.L70
+ 871              	.LVL82:
+ 872              	.L76:
+ 436:/Users/user/Desktop/esos32/src/esos.c ****   } // endif
+ 873              		.loc 1 436 12 view .LVU268
+ 874 0050 FF20     		movs	r0, #255
+ 875              	.LVL83:
+ 876              	.L70:
+ 440:/Users/user/Desktop/esos32/src/esos.c **** } // end esos_RegisterTimer
+ 877              		.loc 1 440 1 view .LVU269
+ 878 0052 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 879              	.L79:
+ 880              		.align	2
+ 881              	.L78:
+ 882 0054 00000000 		.word	.LANCHOR6
+ 883 0058 00000000 		.word	.LANCHOR7
+ 884 005c 00000000 		.word	.LANCHOR8
+ 885              		.cfi_endproc
+ 886              	.LFE8:
+ 888              		.section	.text.esos_UnregisterTimer,"ax",%progbits
+ 889              		.align	1
+ 890              		.global	esos_UnregisterTimer
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 26
+
+
+ 891              		.syntax unified
+ 892              		.thumb
+ 893              		.thumb_func
+ 895              	esos_UnregisterTimer:
+ 896              	.LVL84:
+ 897              	.LFB9:
+ 441:/Users/user/Desktop/esos32/src/esos.c **** 
+ 442:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 443:/Users/user/Desktop/esos32/src/esos.c ****  * Removes a timer from the ESOS timer service.
+ 444:/Users/user/Desktop/esos32/src/esos.c ****  * \param hnd_timer handle to timer to remove
+ 445:/Users/user/Desktop/esos32/src/esos.c ****  * \retval FALSE  if timer wasn't active in the first place
+ 446:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TRUE   if timer was stopped and removed
+ 447:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_RegisterTimer
+ 448:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_GetTimerHandle
+ 449:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_ChangeTimerPeriod
+ 450:/Users/user/Desktop/esos32/src/esos.c ****  */
+ 451:/Users/user/Desktop/esos32/src/esos.c **** uint8_t    esos_UnregisterTimer( ESOS_TMR_HANDLE hnd_timer ) {
+ 898              		.loc 1 451 62 is_stmt 1 view -0
+ 899              		.cfi_startproc
+ 900              		@ args = 0, pretend = 0, frame = 0
+ 901              		@ frame_needed = 0, uses_anonymous_args = 0
+ 902              		@ link register save eliminated.
+ 452:/Users/user/Desktop/esos32/src/esos.c **** 
+ 453:/Users/user/Desktop/esos32/src/esos.c ****   if ( esos_IsTimerRunning(hnd_timer) ) {
+ 903              		.loc 1 453 3 view .LVU271
+ 904              		.loc 1 453 8 is_stmt 0 view .LVU272
+ 905 0000 0123     		movs	r3, #1
+ 906 0002 8340     		lsls	r3, r3, r0
+ 907 0004 0C4A     		ldr	r2, .L87
+ 908 0006 1268     		ldr	r2, [r2]
+ 909              		.loc 1 453 6 view .LVU273
+ 910 0008 1342     		tst	r3, r2
+ 911 000a 12D0     		beq	.L82
+ 451:/Users/user/Desktop/esos32/src/esos.c **** 
+ 912              		.loc 1 451 62 view .LVU274
+ 913 000c 10B4     		push	{r4}
+ 914              	.LCFI6:
+ 915              		.cfi_def_cfa_offset 4
+ 916              		.cfi_offset 4, -4
+ 454:/Users/user/Desktop/esos32/src/esos.c ****     __astTmrSvcs[hnd_timer].pfn = NULLPTR;
+ 917              		.loc 1 454 5 is_stmt 1 view .LVU275
+ 918              		.loc 1 454 33 is_stmt 0 view .LVU276
+ 919 000e 00EB4000 		add	r0, r0, r0, lsl #1
+ 920              	.LVL85:
+ 921              		.loc 1 454 33 view .LVU277
+ 922 0012 8000     		lsls	r0, r0, #2
+ 923 0014 0949     		ldr	r1, .L87+4
+ 924 0016 0024     		movs	r4, #0
+ 925 0018 0C50     		str	r4, [r1, r0]
+ 455:/Users/user/Desktop/esos32/src/esos.c ****     __esos_u8TmrSvcsRegistered--;
+ 926              		.loc 1 455 5 is_stmt 1 view .LVU278
+ 927              		.loc 1 455 31 is_stmt 0 view .LVU279
+ 928 001a 0948     		ldr	r0, .L87+8
+ 929 001c 0178     		ldrb	r1, [r0]	@ zero_extendqisi2
+ 930 001e 0139     		subs	r1, r1, #1
+ 931 0020 0170     		strb	r1, [r0]
+ 456:/Users/user/Desktop/esos32/src/esos.c ****     __esos_MarkTimerStopped(hnd_timer);
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 27
+
+
+ 932              		.loc 1 456 5 is_stmt 1 view .LVU280
+ 933 0022 22EA0303 		bic	r3, r2, r3
+ 934 0026 044A     		ldr	r2, .L87
+ 935 0028 1360     		str	r3, [r2]
+ 457:/Users/user/Desktop/esos32/src/esos.c ****     return TRUE;
+ 936              		.loc 1 457 5 view .LVU281
+ 937              		.loc 1 457 12 is_stmt 0 view .LVU282
+ 938 002a 0120     		movs	r0, #1
+ 458:/Users/user/Desktop/esos32/src/esos.c ****   } else
+ 459:/Users/user/Desktop/esos32/src/esos.c ****     return FALSE;
+ 460:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_UnregisterTimer()
+ 939              		.loc 1 460 1 view .LVU283
+ 940 002c 5DF8044B 		ldr	r4, [sp], #4
+ 941              	.LCFI7:
+ 942              		.cfi_restore 4
+ 943              		.cfi_def_cfa_offset 0
+ 944 0030 7047     		bx	lr
+ 945              	.LVL86:
+ 946              	.L82:
+ 459:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_UnregisterTimer()
+ 947              		.loc 1 459 12 view .LVU284
+ 948 0032 0020     		movs	r0, #0
+ 949              	.LVL87:
+ 950              		.loc 1 460 1 view .LVU285
+ 951 0034 7047     		bx	lr
+ 952              	.L88:
+ 953 0036 00BF     		.align	2
+ 954              	.L87:
+ 955 0038 00000000 		.word	.LANCHOR7
+ 956 003c 00000000 		.word	.LANCHOR8
+ 957 0040 00000000 		.word	.LANCHOR6
+ 958              		.cfi_endproc
+ 959              	.LFE9:
+ 961              		.section	.text.esos_GetTimerHandle,"ax",%progbits
+ 962              		.align	1
+ 963              		.global	esos_GetTimerHandle
+ 964              		.syntax unified
+ 965              		.thumb
+ 966              		.thumb_func
+ 968              	esos_GetTimerHandle:
+ 969              	.LVL88:
+ 970              	.LFB10:
+ 461:/Users/user/Desktop/esos32/src/esos.c **** 
+ 462:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 463:/Users/user/Desktop/esos32/src/esos.c ****  * Finds the timer handle to the provided and ACTIVE timer function
+ 464:/Users/user/Desktop/esos32/src/esos.c ****  * \param pfnTmrFcn pointer to timer function (will execute each time timer expires)
+ 465:/Users/user/Desktop/esos32/src/esos.c ****  * \retval ESOS_TMR_FAILURE    could not find the function in the active timer list
+ 466:/Users/user/Desktop/esos32/src/esos.c ****  * \retval timerHandle       handle to timer
+ 467:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_RegisterTimer
+ 468:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_UnregisterTimer
+ 469:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_ChangeTimerPeriod
+ 470:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_IsTimerRunning
+ 471:/Users/user/Desktop/esos32/src/esos.c ****  */
+ 472:/Users/user/Desktop/esos32/src/esos.c **** ESOS_TMR_HANDLE    esos_GetTimerHandle( void (*pfnTmrFcn)(void) ) {
+ 971              		.loc 1 472 67 is_stmt 1 view -0
+ 972              		.cfi_startproc
+ 973              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 28
+
+
+ 974              		@ frame_needed = 0, uses_anonymous_args = 0
+ 975              		@ link register save eliminated.
+ 976              		.loc 1 472 67 is_stmt 0 view .LVU287
+ 977 0000 8446     		mov	ip, r0
+ 473:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t   u8_i=0;
+ 978              		.loc 1 473 3 is_stmt 1 view .LVU288
+ 979              	.LVL89:
+ 474:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t   u8_cnt;
+ 980              		.loc 1 474 3 view .LVU289
+ 475:/Users/user/Desktop/esos32/src/esos.c **** 
+ 476:/Users/user/Desktop/esos32/src/esos.c ****   u8_cnt = esos_GetNumberRunningTimers();
+ 981              		.loc 1 476 3 view .LVU290
+ 982              		.loc 1 476 10 is_stmt 0 view .LVU291
+ 983 0002 0C4B     		ldr	r3, .L96
+ 984 0004 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 985              	.LVL90:
+ 477:/Users/user/Desktop/esos32/src/esos.c ****   while (u8_cnt) {
+ 986              		.loc 1 477 3 is_stmt 1 view .LVU292
+ 473:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t   u8_cnt;
+ 987              		.loc 1 473 13 is_stmt 0 view .LVU293
+ 988 0006 0020     		movs	r0, #0
+ 989              	.LVL91:
+ 990              		.loc 1 477 9 view .LVU294
+ 991 0008 03E0     		b	.L90
+ 992              	.LVL92:
+ 993              	.L95:
+ 478:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_i) ) {
+ 479:/Users/user/Desktop/esos32/src/esos.c ****       if ( __astTmrSvcs[u8_i].pfn == pfnTmrFcn ) return u8_i;
+ 480:/Users/user/Desktop/esos32/src/esos.c ****       u8_cnt--;
+ 994              		.loc 1 480 7 is_stmt 1 view .LVU295
+ 995              		.loc 1 480 13 is_stmt 0 view .LVU296
+ 996 000a 013A     		subs	r2, r2, #1
+ 997              	.LVL93:
+ 998              		.loc 1 480 13 view .LVU297
+ 999 000c D2B2     		uxtb	r2, r2
+ 1000              	.LVL94:
+ 1001              	.L91:
+ 481:/Users/user/Desktop/esos32/src/esos.c ****     } //endif
+ 482:/Users/user/Desktop/esos32/src/esos.c ****     u8_i++;
+ 1002              		.loc 1 482 5 is_stmt 1 view .LVU298
+ 1003              		.loc 1 482 9 is_stmt 0 view .LVU299
+ 1004 000e 0130     		adds	r0, r0, #1
+ 1005              	.LVL95:
+ 1006              		.loc 1 482 9 view .LVU300
+ 1007 0010 C0B2     		uxtb	r0, r0
+ 1008              	.LVL96:
+ 1009              	.L90:
+ 477:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_i) ) {
+ 1010              		.loc 1 477 9 is_stmt 1 view .LVU301
+ 1011 0012 6AB1     		cbz	r2, .L94
+ 478:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_i) ) {
+ 1012              		.loc 1 478 5 view .LVU302
+ 478:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_i) ) {
+ 1013              		.loc 1 478 9 is_stmt 0 view .LVU303
+ 1014 0014 0123     		movs	r3, #1
+ 1015 0016 8340     		lsls	r3, r3, r0
+ 1016 0018 0749     		ldr	r1, .L96+4
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 29
+
+
+ 1017 001a 0968     		ldr	r1, [r1]
+ 478:/Users/user/Desktop/esos32/src/esos.c ****     if (esos_IsTimerRunning(u8_i) ) {
+ 1018              		.loc 1 478 8 view .LVU304
+ 1019 001c 0B42     		tst	r3, r1
+ 1020 001e F6D0     		beq	.L91
+ 479:/Users/user/Desktop/esos32/src/esos.c ****       u8_cnt--;
+ 1021              		.loc 1 479 7 is_stmt 1 view .LVU305
+ 479:/Users/user/Desktop/esos32/src/esos.c ****       u8_cnt--;
+ 1022              		.loc 1 479 30 is_stmt 0 view .LVU306
+ 1023 0020 00EB4003 		add	r3, r0, r0, lsl #1
+ 1024 0024 0549     		ldr	r1, .L96+8
+ 1025 0026 51F82330 		ldr	r3, [r1, r3, lsl #2]
+ 479:/Users/user/Desktop/esos32/src/esos.c ****       u8_cnt--;
+ 1026              		.loc 1 479 10 view .LVU307
+ 1027 002a 6345     		cmp	r3, ip
+ 1028 002c EDD1     		bne	.L95
+ 1029 002e 00E0     		b	.L92
+ 1030              	.L94:
+ 483:/Users/user/Desktop/esos32/src/esos.c ****   } // endwhile
+ 484:/Users/user/Desktop/esos32/src/esos.c ****   return ESOS_TMR_FAILURE;
+ 1031              		.loc 1 484 10 view .LVU308
+ 1032 0030 FF20     		movs	r0, #255
+ 1033              	.LVL97:
+ 1034              	.L92:
+ 485:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_GetTimerHandle()
+ 1035              		.loc 1 485 1 view .LVU309
+ 1036 0032 7047     		bx	lr
+ 1037              	.L97:
+ 1038              		.align	2
+ 1039              	.L96:
+ 1040 0034 00000000 		.word	.LANCHOR6
+ 1041 0038 00000000 		.word	.LANCHOR7
+ 1042 003c 00000000 		.word	.LANCHOR8
+ 1043              		.cfi_endproc
+ 1044              	.LFE10:
+ 1046              		.section	.text.esos_ChangeTimerPeriod,"ax",%progbits
+ 1047              		.align	1
+ 1048              		.global	esos_ChangeTimerPeriod
+ 1049              		.syntax unified
+ 1050              		.thumb
+ 1051              		.thumb_func
+ 1053              	esos_ChangeTimerPeriod:
+ 1054              	.LVL98:
+ 1055              	.LFB11:
+ 486:/Users/user/Desktop/esos32/src/esos.c **** 
+ 487:/Users/user/Desktop/esos32/src/esos.c **** 
+ 488:/Users/user/Desktop/esos32/src/esos.c **** /**
+ 489:/Users/user/Desktop/esos32/src/esos.c ****  * Change a timer period.
+ 490:/Users/user/Desktop/esos32/src/esos.c ****  * \param hnd_timer handle to timer whose period is to be changed
+ 491:/Users/user/Desktop/esos32/src/esos.c ****  * \param u32_period new period for timer selected by mask
+ 492:/Users/user/Desktop/esos32/src/esos.c ****  * \retval FALSE if timer is not currently running
+ 493:/Users/user/Desktop/esos32/src/esos.c ****  * \retval TRUE if timer period was changed
+ 494:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_RegisterTimer
+ 495:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_UnregisterTimer
+ 496:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_GetTimerHandle
+ 497:/Users/user/Desktop/esos32/src/esos.c ****  * \sa esos_IsTimerRunning
+ 498:/Users/user/Desktop/esos32/src/esos.c ****  */
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 30
+
+
+ 499:/Users/user/Desktop/esos32/src/esos.c **** uint8_t    esos_ChangeTimerPeriod( ESOS_TMR_HANDLE hnd_timer, uint32_t u32_period ) {
+ 1056              		.loc 1 499 85 is_stmt 1 view -0
+ 1057              		.cfi_startproc
+ 1058              		@ args = 0, pretend = 0, frame = 0
+ 1059              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1060              		@ link register save eliminated.
+ 500:/Users/user/Desktop/esos32/src/esos.c **** 
+ 501:/Users/user/Desktop/esos32/src/esos.c ****   if (esos_IsTimerRunning(hnd_timer) ) {
+ 1061              		.loc 1 501 3 view .LVU311
+ 1062              		.loc 1 501 7 is_stmt 0 view .LVU312
+ 1063 0000 0123     		movs	r3, #1
+ 1064 0002 8340     		lsls	r3, r3, r0
+ 1065 0004 064A     		ldr	r2, .L101
+ 1066 0006 1268     		ldr	r2, [r2]
+ 1067              		.loc 1 501 6 view .LVU313
+ 1068 0008 1342     		tst	r3, r2
+ 1069 000a 07D0     		beq	.L100
+ 502:/Users/user/Desktop/esos32/src/esos.c ****     __astTmrSvcs[hnd_timer].u32_period = u32_period;
+ 1070              		.loc 1 502 5 is_stmt 1 view .LVU314
+ 1071              		.loc 1 502 40 is_stmt 0 view .LVU315
+ 1072 000c 00EB4000 		add	r0, r0, r0, lsl #1
+ 1073              	.LVL99:
+ 1074              		.loc 1 502 40 view .LVU316
+ 1075 0010 044B     		ldr	r3, .L101+4
+ 1076 0012 03EB8000 		add	r0, r3, r0, lsl #2
+ 1077 0016 4160     		str	r1, [r0, #4]
+ 503:/Users/user/Desktop/esos32/src/esos.c ****     return TRUE;
+ 1078              		.loc 1 503 5 is_stmt 1 view .LVU317
+ 1079              		.loc 1 503 12 is_stmt 0 view .LVU318
+ 1080 0018 0120     		movs	r0, #1
+ 1081 001a 7047     		bx	lr
+ 1082              	.LVL100:
+ 1083              	.L100:
+ 504:/Users/user/Desktop/esos32/src/esos.c ****   } else return FALSE;
+ 1084              		.loc 1 504 17 view .LVU319
+ 1085 001c 0020     		movs	r0, #0
+ 1086              	.LVL101:
+ 505:/Users/user/Desktop/esos32/src/esos.c **** } //end esos_geTimerHandle()
+ 1087              		.loc 1 505 1 view .LVU320
+ 1088 001e 7047     		bx	lr
+ 1089              	.L102:
+ 1090              		.align	2
+ 1091              	.L101:
+ 1092 0020 00000000 		.word	.LANCHOR7
+ 1093 0024 00000000 		.word	.LANCHOR8
+ 1094              		.cfi_endproc
+ 1095              	.LFE11:
+ 1097              		.section	.text.__esosInit,"ax",%progbits
+ 1098              		.align	1
+ 1099              		.global	__esosInit
+ 1100              		.syntax unified
+ 1101              		.thumb
+ 1102              		.thumb_func
+ 1104              	__esosInit:
+ 1105              	.LFB12:
+ 506:/Users/user/Desktop/esos32/src/esos.c **** 
+ 507:/Users/user/Desktop/esos32/src/esos.c **** void __esosInit(void) {
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 31
+
+
+ 1106              		.loc 1 507 23 is_stmt 1 view -0
+ 1107              		.cfi_startproc
+ 1108              		@ args = 0, pretend = 0, frame = 0
+ 1109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1110 0000 10B5     		push	{r4, lr}
+ 1111              	.LCFI8:
+ 1112              		.cfi_def_cfa_offset 8
+ 1113              		.cfi_offset 4, -8
+ 1114              		.cfi_offset 14, -4
+ 508:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t     u8_i;
+ 1115              		.loc 1 508 3 view .LVU322
+ 509:/Users/user/Desktop/esos32/src/esos.c **** 
+ 510:/Users/user/Desktop/esos32/src/esos.c ****   // initialize the pool of available user tasks
+ 511:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_USER_TASKS; u8_i++) {
+ 1116              		.loc 1 511 3 view .LVU323
+ 1117              	.LVL102:
+ 1118              		.loc 1 511 12 is_stmt 0 view .LVU324
+ 1119 0002 0024     		movs	r4, #0
+ 1120              		.loc 1 511 3 view .LVU325
+ 1121 0004 23E0     		b	.L104
+ 1122              	.LVL103:
+ 1123              	.L105:
+ 512:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1124              		.loc 1 512 5 is_stmt 1 discriminator 3 view .LVU326
+ 1125              		.loc 1 512 33 is_stmt 0 discriminator 3 view .LVU327
+ 1126 0006 04EB4403 		add	r3, r4, r4, lsl #1
+ 1127 000a DA00     		lsls	r2, r3, #3
+ 1128 000c 214B     		ldr	r3, .L110
+ 1129 000e 1344     		add	r3, r3, r2
+ 1130 0010 0021     		movs	r1, #0
+ 1131 0012 5960     		str	r1, [r3, #4]
+ 513:/Users/user/Desktop/esos32/src/esos.c ****     __au8UserTaskStructIndex[u8_i] = NULLIDX;
+ 1132              		.loc 1 513 5 is_stmt 1 discriminator 3 view .LVU328
+ 1133              		.loc 1 513 36 is_stmt 0 discriminator 3 view .LVU329
+ 1134 0014 204A     		ldr	r2, .L110+4
+ 1135 0016 FF20     		movs	r0, #255
+ 1136 0018 1055     		strb	r0, [r2, r4]
+ 514:/Users/user/Desktop/esos32/src/esos.c ****     __astChildTaskPool[u8_i].pfn = NULLPTR;
+ 1137              		.loc 1 514 5 is_stmt 1 discriminator 3 view .LVU330
+ 1138              		.loc 1 514 34 is_stmt 0 discriminator 3 view .LVU331
+ 1139 001a 04EB4402 		add	r2, r4, r4, lsl #1
+ 1140 001e D000     		lsls	r0, r2, #3
+ 1141 0020 1E4A     		ldr	r2, .L110+8
+ 1142 0022 0244     		add	r2, r2, r0
+ 1143 0024 5160     		str	r1, [r2, #4]
+ 515:/Users/user/Desktop/esos32/src/esos.c ****     // assign each possible user task a mailbox and initialize it
+ 516:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pst_Mailbox = &__astMailbox[u8_i];
+ 1144              		.loc 1 516 5 is_stmt 1 discriminator 3 view .LVU332
+ 1145              		.loc 1 516 43 is_stmt 0 discriminator 3 view .LVU333
+ 1146 0026 1E4A     		ldr	r2, .L110+12
+ 1147 0028 02EBC400 		add	r0, r2, r4, lsl #3
+ 1148              		.loc 1 516 41 discriminator 3 view .LVU334
+ 1149 002c 5861     		str	r0, [r3, #20]
+ 517:/Users/user/Desktop/esos32/src/esos.c ****     (__astUserTaskPool[u8_i].pst_Mailbox)->pst_CBuffer = &__astCircularBuffers[u8_i];
+ 1150              		.loc 1 517 5 is_stmt 1 discriminator 3 view .LVU335
+ 1151              		.loc 1 517 58 is_stmt 0 discriminator 3 view .LVU336
+ 1152 002e 04EB4403 		add	r3, r4, r4, lsl #1
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 32
+
+
+ 1153 0032 9900     		lsls	r1, r3, #2
+ 1154 0034 1B4B     		ldr	r3, .L110+16
+ 1155 0036 0B44     		add	r3, r3, r1
+ 1156              		.loc 1 517 56 discriminator 3 view .LVU337
+ 1157 0038 42F83430 		str	r3, [r2, r4, lsl #3]
+ 518:/Users/user/Desktop/esos32/src/esos.c ****     __esos_InitMailbox(__astUserTaskPool[u8_i].pst_Mailbox, &__au8_MBData[u8_i][0]);
+ 1158              		.loc 1 518 5 is_stmt 1 discriminator 3 view .LVU338
+ 1159 003c C4EB0412 		rsb	r2, r4, r4, lsl #4
+ 1160 0040 D300     		lsls	r3, r2, #3
+ 1161 0042 1949     		ldr	r1, .L110+20
+ 1162 0044 1944     		add	r1, r1, r3
+ 1163 0046 FFF7FEFF 		bl	__esos_InitMailbox
+ 1164              	.LVL104:
+ 511:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1165              		.loc 1 511 41 discriminator 3 view .LVU339
+ 511:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1166              		.loc 1 511 45 is_stmt 0 discriminator 3 view .LVU340
+ 1167 004a 0134     		adds	r4, r4, #1
+ 1168              	.LVL105:
+ 511:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1169              		.loc 1 511 45 discriminator 3 view .LVU341
+ 1170 004c E4B2     		uxtb	r4, r4
+ 1171              	.LVL106:
+ 1172              	.L104:
+ 511:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1173              		.loc 1 511 16 is_stmt 1 discriminator 1 view .LVU342
+ 511:/Users/user/Desktop/esos32/src/esos.c ****     __astUserTaskPool[u8_i].pfn = NULLPTR;
+ 1174              		.loc 1 511 3 is_stmt 0 discriminator 1 view .LVU343
+ 1175 004e 1F2C     		cmp	r4, #31
+ 1176 0050 D9D9     		bls	.L105
+ 519:/Users/user/Desktop/esos32/src/esos.c ****   }
+ 520:/Users/user/Desktop/esos32/src/esos.c ****   __esos_u32TmrActiveFlags = 0;
+ 1177              		.loc 1 520 3 is_stmt 1 view .LVU344
+ 1178              		.loc 1 520 28 is_stmt 0 view .LVU345
+ 1179 0052 0023     		movs	r3, #0
+ 1180 0054 154A     		ldr	r2, .L110+24
+ 1181 0056 1360     		str	r3, [r2]
+ 521:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++) {
+ 1182              		.loc 1 521 3 is_stmt 1 view .LVU346
+ 1183              	.LVL107:
+ 1184              	.L106:
+ 1185              		.loc 1 521 16 discriminator 1 view .LVU347
+ 1186              		.loc 1 521 3 is_stmt 0 discriminator 1 view .LVU348
+ 1187 0058 0F2B     		cmp	r3, #15
+ 1188 005a 08D8     		bhi	.L109
+ 522:/Users/user/Desktop/esos32/src/esos.c ****     __astTmrSvcs[u8_i].pfn = NULLPTR;
+ 1189              		.loc 1 522 5 is_stmt 1 discriminator 3 view .LVU349
+ 1190              		.loc 1 522 28 is_stmt 0 discriminator 3 view .LVU350
+ 1191 005c 03EB4301 		add	r1, r3, r3, lsl #1
+ 1192 0060 8A00     		lsls	r2, r1, #2
+ 1193 0062 1349     		ldr	r1, .L110+28
+ 1194 0064 0020     		movs	r0, #0
+ 1195 0066 8850     		str	r0, [r1, r2]
+ 521:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++) {
+ 1196              		.loc 1 521 35 is_stmt 1 discriminator 3 view .LVU351
+ 521:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++) {
+ 1197              		.loc 1 521 39 is_stmt 0 discriminator 3 view .LVU352
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 33
+
+
+ 1198 0068 0133     		adds	r3, r3, #1
+ 1199              	.LVL108:
+ 521:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++) {
+ 1200              		.loc 1 521 39 discriminator 3 view .LVU353
+ 1201 006a DBB2     		uxtb	r3, r3
+ 1202              	.LVL109:
+ 521:/Users/user/Desktop/esos32/src/esos.c ****   for (u8_i=0; u8_i<MAX_NUM_TMRS; u8_i++) {
+ 1203              		.loc 1 521 39 discriminator 3 view .LVU354
+ 1204 006c F4E7     		b	.L106
+ 1205              	.L109:
+ 523:/Users/user/Desktop/esos32/src/esos.c ****   }
+ 524:/Users/user/Desktop/esos32/src/esos.c **** 
+ 525:/Users/user/Desktop/esos32/src/esos.c ****   // no user tasks are currently registered
+ 526:/Users/user/Desktop/esos32/src/esos.c ****   __u8UserTasksRegistered = 0;
+ 1206              		.loc 1 526 3 is_stmt 1 view .LVU355
+ 1207              		.loc 1 526 27 is_stmt 0 view .LVU356
+ 1208 006e 0023     		movs	r3, #0
+ 1209              	.LVL110:
+ 1210              		.loc 1 526 27 view .LVU357
+ 1211 0070 104A     		ldr	r2, .L110+32
+ 1212 0072 1370     		strb	r3, [r2]
+ 527:/Users/user/Desktop/esos32/src/esos.c ****   // no child tasks are active
+ 528:/Users/user/Desktop/esos32/src/esos.c ****   __u8ChildTasksRegistered = 0;
+ 1213              		.loc 1 528 3 is_stmt 1 view .LVU358
+ 1214              		.loc 1 528 28 is_stmt 0 view .LVU359
+ 1215 0074 104A     		ldr	r2, .L110+36
+ 1216 0076 1370     		strb	r3, [r2]
+ 529:/Users/user/Desktop/esos32/src/esos.c ****   // no timer services are active
+ 530:/Users/user/Desktop/esos32/src/esos.c ****   __esos_u8TmrSvcsRegistered = 0;
+ 1217              		.loc 1 530 3 is_stmt 1 view .LVU360
+ 1218              		.loc 1 530 30 is_stmt 0 view .LVU361
+ 1219 0078 104A     		ldr	r2, .L110+40
+ 1220 007a 1370     		strb	r3, [r2]
+ 531:/Users/user/Desktop/esos32/src/esos.c **** 
+ 532:/Users/user/Desktop/esos32/src/esos.c ****   // initialize the ESOS pseudo-random number generator
+ 533:/Users/user/Desktop/esos32/src/esos.c ****   // see value, in case the hardware-functions don't..
+ 534:/Users/user/Desktop/esos32/src/esos.c ****   // Also, some internal ESOS functions may use the SW PRNG
+ 535:/Users/user/Desktop/esos32/src/esos.c ****   // in ESOS via the hidden function, so let's make sure it 
+ 536:/Users/user/Desktop/esos32/src/esos.c ****   // is seed.  We will use MAX_NUM_USER_TASKS for now.
+ 537:/Users/user/Desktop/esos32/src/esos.c ****   __esos_set_PRNG_U32Seed( MAX_NUM_USER_TASKS );
+ 1221              		.loc 1 537 3 is_stmt 1 view .LVU362
+ 1222 007c 2020     		movs	r0, #32
+ 1223 007e FFF7FEFF 		bl	__esos_set_PRNG_U32Seed
+ 1224              	.LVL111:
+ 538:/Users/user/Desktop/esos32/src/esos.c ****   // call the config routine for the hardware PRNG.
+ 539:/Users/user/Desktop/esos32/src/esos.c ****   __esos_hw_config_PRNG();
+ 1225              		.loc 1 539 3 view .LVU363
+ 1226 0082 FFF7FEFF 		bl	__esos_hw_config_PRNG
+ 1227              	.LVL112:
+ 540:/Users/user/Desktop/esos32/src/esos.c **** 
+ 541:/Users/user/Desktop/esos32/src/esos.c ****   /* Call the user provided function to initialize the
+ 542:/Users/user/Desktop/esos32/src/esos.c ****    *    and start the ESOS system tick..
+ 543:/Users/user/Desktop/esos32/src/esos.c ****    */
+ 544:/Users/user/Desktop/esos32/src/esos.c ****   __esos_hw_InitSystemTick();
+ 1228              		.loc 1 544 3 view .LVU364
+ 1229 0086 FFF7FEFF 		bl	__esos_hw_InitSystemTick
+ 1230              	.LVL113:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 34
+
+
+ 545:/Users/user/Desktop/esos32/src/esos.c **** 
+ 546:/Users/user/Desktop/esos32/src/esos.c ****   // initialize the HW interrupts
+ 547:/Users/user/Desktop/esos32/src/esos.c ****   //   (This routine is considered HW specific, because
+ 548:/Users/user/Desktop/esos32/src/esos.c ****   //      we don't know the number of HW interrupts on the
+ 549:/Users/user/Desktop/esos32/src/esos.c ****   //      CPU at this point....)
+ 550:/Users/user/Desktop/esos32/src/esos.c **** #ifdef  ESOS_USE_IRQS
+ 551:/Users/user/Desktop/esos32/src/esos.c ****   _esos_hw_InitUserInterrupts();
+ 552:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 553:/Users/user/Desktop/esos32/src/esos.c ****   /*
+ 554:/Users/user/Desktop/esos32/src/esos.c ****    * Now, initialize one of the communication systems if
+ 555:/Users/user/Desktop/esos32/src/esos.c ****    * the user has requested it in user_config.h
+ 556:/Users/user/Desktop/esos32/src/esos.c ****    *
+ 557:/Users/user/Desktop/esos32/src/esos.c ****    * TODO: At some point, I want to be able to run both comm
+ 558:/Users/user/Desktop/esos32/src/esos.c ****    * systems independently so we can use USB and debug via
+ 559:/Users/user/Desktop/esos32/src/esos.c ****    * RS232 or vice-versa.  I'll worry about that later.
+ 560:/Users/user/Desktop/esos32/src/esos.c ****    */
+ 561:/Users/user/Desktop/esos32/src/esos.c **** #ifdef  ESOS_USE_BULK_CDC_USB
+ 562:/Users/user/Desktop/esos32/src/esos.c ****   __esos_InitCommSystem();
+ 563:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 564:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_SERIAL_PORT
+ 565:/Users/user/Desktop/esos32/src/esos.c ****   __esos_InitCommSystem();
+ 1231              		.loc 1 565 3 view .LVU365
+ 1232 008a FFF7FEFF 		bl	__esos_InitCommSystem
+ 1233              	.LVL114:
+ 566:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 567:/Users/user/Desktop/esos32/src/esos.c **** 
+ 568:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_LCD
+ 569:/Users/user/Desktop/esos32/src/esos.c ****   // Initialize LCD services
+ 570:/Users/user/Desktop/esos32/src/esos.c ****   __esos_lcd44780_init();
+ 571:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 572:/Users/user/Desktop/esos32/src/esos.c **** 
+ 573:/Users/user/Desktop/esos32/src/esos.c ****   
+ 574:/Users/user/Desktop/esos32/src/esos.c ****   user_init();
+ 1234              		.loc 1 574 3 view .LVU366
+ 1235 008e FFF7FEFF 		bl	user_init
+ 1236              	.LVL115:
+ 575:/Users/user/Desktop/esos32/src/esos.c **** 
+ 576:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_SUI
+ 577:/Users/user/Desktop/esos32/src/esos.c ****   // must be called **AFTER** user_init() because we expect the user
+ 578:/Users/user/Desktop/esos32/src/esos.c ****   // to "register" their SUI elements before we try to initialize the
+ 579:/Users/user/Desktop/esos32/src/esos.c ****   // devices
+ 580:/Users/user/Desktop/esos32/src/esos.c ****   __esos_InitSUI();
+ 581:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 582:/Users/user/Desktop/esos32/src/esos.c **** 
+ 583:/Users/user/Desktop/esos32/src/esos.c **** #if defined (ESOS_USE_I2C_100KBPS) || defined (ESOS_USE_I2C) || defined (ESOS_USE_I2C_400KBPS)
+ 584:/Users/user/Desktop/esos32/src/esos.c ****   // Cal **AFTER** user_init() because the user might have set
+ 585:/Users/user/Desktop/esos32/src/esos.c ****   // pin directions and peripheral functions in their user_init()
+ 586:/Users/user/Desktop/esos32/src/esos.c ****   // ESOS will call the specific __esos_i2c_hw_config( u32_i2cbps)
+ 587:/Users/user/Desktop/esos32/src/esos.c ****   //  as well.
+ 588:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_I2C_400KBPS
+ 589:/Users/user/Desktop/esos32/src/esos.c ****   #warning Using 400kbps I2C service.... Can your I2C slaves handle it?
+ 590:/Users/user/Desktop/esos32/src/esos.c ****   __esos_i2c_config(400000UL);
+ 591:/Users/user/Desktop/esos32/src/esos.c **** #else
+ 592:/Users/user/Desktop/esos32/src/esos.c ****   __esos_i2c_config(100000UL);
+ 593:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 594:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 595:/Users/user/Desktop/esos32/src/esos.c **** 
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 35
+
+
+ 596:/Users/user/Desktop/esos32/src/esos.c **** // Call **AFTER** user_init() because the user might have set
+ 597:/Users/user/Desktop/esos32/src/esos.c **** // pin directions and peripheral functions in their user_init()
+ 598:/Users/user/Desktop/esos32/src/esos.c **** // ESOS will call the specific __esos_spi_hw_config( u32_spibps)
+ 599:/Users/user/Desktop/esos32/src/esos.c **** //  as well.
+ 600:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_SPI
+ 601:/Users/user/Desktop/esos32/src/esos.c ****   __esos_spi_config(1000000UL);
+ 602:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 603:/Users/user/Desktop/esos32/src/esos.c **** 
+ 604:/Users/user/Desktop/esos32/src/esos.c **** #ifdef ESOS_USE_WATCHDOG
+ 605:/Users/user/Desktop/esos32/src/esos.c ****   // must be called at the very end so that watchdog doesnt reset
+ 606:/Users/user/Desktop/esos32/src/esos.c ****   // us before the user gets around to feeding the watchdog
+ 607:/Users/user/Desktop/esos32/src/esos.c ****   // We will use a 1000 ms = 1 second watchdog period for now....
+ 608:/Users/user/Desktop/esos32/src/esos.c ****   _esos_wdog_initWatchdog( 1000 );
+ 609:/Users/user/Desktop/esos32/src/esos.c **** #endif
+ 610:/Users/user/Desktop/esos32/src/esos.c **** 
+ 611:/Users/user/Desktop/esos32/src/esos.c **** } // end osInit()
+ 1237              		.loc 1 611 1 is_stmt 0 view .LVU367
+ 1238 0092 10BD     		pop	{r4, pc}
+ 1239              	.L111:
+ 1240              		.align	2
+ 1241              	.L110:
+ 1242 0094 00000000 		.word	.LANCHOR1
+ 1243 0098 00000000 		.word	.LANCHOR2
+ 1244 009c 00000000 		.word	.LANCHOR5
+ 1245 00a0 00000000 		.word	.LANCHOR9
+ 1246 00a4 00000000 		.word	.LANCHOR10
+ 1247 00a8 00000000 		.word	.LANCHOR11
+ 1248 00ac 00000000 		.word	.LANCHOR7
+ 1249 00b0 00000000 		.word	.LANCHOR8
+ 1250 00b4 00000000 		.word	.LANCHOR0
+ 1251 00b8 00000000 		.word	.LANCHOR12
+ 1252 00bc 00000000 		.word	.LANCHOR6
+ 1253              		.cfi_endproc
+ 1254              	.LFE12:
+ 1256              		.section	.text.main,"ax",%progbits
+ 1257              		.align	1
+ 1258              		.global	main
+ 1259              		.syntax unified
+ 1260              		.thumb
+ 1261              		.thumb_func
+ 1263              	main:
+ 1264              	.LFB13:
+ 612:/Users/user/Desktop/esos32/src/esos.c **** 
+ 613:/Users/user/Desktop/esos32/src/esos.c **** main_t main(void) {
+ 1265              		.loc 1 613 19 is_stmt 1 view -0
+ 1266              		.cfi_startproc
+ 1267              		@ args = 0, pretend = 0, frame = 0
+ 1268              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1269 0000 70B5     		push	{r4, r5, r6, lr}
+ 1270              	.LCFI9:
+ 1271              		.cfi_def_cfa_offset 16
+ 1272              		.cfi_offset 4, -16
+ 1273              		.cfi_offset 5, -12
+ 1274              		.cfi_offset 6, -8
+ 1275              		.cfi_offset 14, -4
+ 614:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t             u8TaskReturnedVal=0;
+ 1276              		.loc 1 614 3 view .LVU369
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 36
+
+
+ 1277              	.LVL116:
+ 615:/Users/user/Desktop/esos32/src/esos.c ****   uint8_t             u8i,u8j, u8NumRegdTasksTemp;
+ 1278              		.loc 1 615 3 view .LVU370
+ 616:/Users/user/Desktop/esos32/src/esos.c ****   ESOS_TASK_HANDLE  pstNowTask;
+ 1279              		.loc 1 616 3 view .LVU371
+ 617:/Users/user/Desktop/esos32/src/esos.c **** 
+ 618:/Users/user/Desktop/esos32/src/esos.c ****   __esosInit();
+ 1280              		.loc 1 618 3 view .LVU372
+ 1281 0002 FFF7FEFF 		bl	__esosInit
+ 1282              	.LVL117:
+ 619:/Users/user/Desktop/esos32/src/esos.c ****   /* Keep a running counter of number of tasks we've created
+ 620:/Users/user/Desktop/esos32/src/esos.c ****   ** to serve as stupid/simple task identifier
+ 621:/Users/user/Desktop/esos32/src/esos.c ****   */
+ 622:/Users/user/Desktop/esos32/src/esos.c ****   __u16NumTasksEverCreated = 0;
+ 1283              		.loc 1 622 3 view .LVU373
+ 1284              		.loc 1 622 28 is_stmt 0 view .LVU374
+ 1285 0006 234B     		ldr	r3, .L127
+ 1286 0008 0022     		movs	r2, #0
+ 1287 000a 1A80     		strh	r2, [r3]	@ movhi
+ 1288 000c 1CE0     		b	.L116
+ 1289              	.LVL118:
+ 1290              	.L114:
+ 623:/Users/user/Desktop/esos32/src/esos.c ****   while (TRUE) {
+ 624:/Users/user/Desktop/esos32/src/esos.c ****     /* First, let ESOS get something done.....
+ 625:/Users/user/Desktop/esos32/src/esos.c ****      *      service communications, garbage collection, etc.
+ 626:/Users/user/Desktop/esos32/src/esos.c ****      *      Whatever a nice little OS needs to do.
+ 627:/Users/user/Desktop/esos32/src/esos.c ****      */
+ 628:/Users/user/Desktop/esos32/src/esos.c **** 
+ 629:/Users/user/Desktop/esos32/src/esos.c ****     u8i = 0;
+ 630:/Users/user/Desktop/esos32/src/esos.c ****     /* get the number of currently registered tasks.... we must make
+ 631:/Users/user/Desktop/esos32/src/esos.c ****      * a local copy, because the tasks themselves may unregister and
+ 632:/Users/user/Desktop/esos32/src/esos.c ****      * change the variable __u8UserTasksRegistered as they go!
+ 633:/Users/user/Desktop/esos32/src/esos.c ****      */
+ 634:/Users/user/Desktop/esos32/src/esos.c ****     u8NumRegdTasksTemp = __u8UserTasksRegistered;
+ 635:/Users/user/Desktop/esos32/src/esos.c **** 
+ 636:/Users/user/Desktop/esos32/src/esos.c ****     // if there are registered tasks, let them run (call them)
+ 637:/Users/user/Desktop/esos32/src/esos.c ****     while ( u8i < u8NumRegdTasksTemp  ) {
+ 638:/Users/user/Desktop/esos32/src/esos.c ****       /* Get the next task up for execution.  Call it and catch
+ 639:/Users/user/Desktop/esos32/src/esos.c ****          its state (returned value) when it gives focus back.
+ 640:/Users/user/Desktop/esos32/src/esos.c ****          We may need to do something depending on its new state,
+ 641:/Users/user/Desktop/esos32/src/esos.c ****          e.g. if it has ended, we need to remove it from the rotation
+ 642:/Users/user/Desktop/esos32/src/esos.c ****       */
+ 643:/Users/user/Desktop/esos32/src/esos.c ****       pstNowTask = &__astUserTaskPool[__au8UserTaskStructIndex[u8i]];
+ 644:/Users/user/Desktop/esos32/src/esos.c ****       u8TaskReturnedVal = pstNowTask->pfn( pstNowTask );
+ 645:/Users/user/Desktop/esos32/src/esos.c ****       if (u8TaskReturnedVal == ESOS_TASK_ENDED) {
+ 646:/Users/user/Desktop/esos32/src/esos.c ****         //printf ("Unregistering an ENDED protothread\n");
+ 647:/Users/user/Desktop/esos32/src/esos.c ****         esos_UnregisterTask( pstNowTask->pfn );
+ 648:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 649:/Users/user/Desktop/esos32/src/esos.c ****       u8i++;
+ 1291              		.loc 1 649 7 is_stmt 1 view .LVU375
+ 1292              		.loc 1 649 10 is_stmt 0 view .LVU376
+ 1293 000e 0134     		adds	r4, r4, #1
+ 1294              	.LVL119:
+ 1295              		.loc 1 649 10 view .LVU377
+ 1296 0010 E4B2     		uxtb	r4, r4
+ 1297              	.LVL120:
+ 1298              	.L113:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 37
+
+
+ 650:/Users/user/Desktop/esos32/src/esos.c ****       OS_ITERATE;
+ 1299              		.loc 1 650 17 is_stmt 1 view .LVU378
+ 637:/Users/user/Desktop/esos32/src/esos.c ****       /* Get the next task up for execution.  Call it and catch
+ 1300              		.loc 1 637 11 view .LVU379
+ 1301 0012 B442     		cmp	r4, r6
+ 1302 0014 13D2     		bcs	.L124
+ 643:/Users/user/Desktop/esos32/src/esos.c ****       u8TaskReturnedVal = pstNowTask->pfn( pstNowTask );
+ 1303              		.loc 1 643 7 view .LVU380
+ 643:/Users/user/Desktop/esos32/src/esos.c ****       u8TaskReturnedVal = pstNowTask->pfn( pstNowTask );
+ 1304              		.loc 1 643 63 is_stmt 0 view .LVU381
+ 1305 0016 204B     		ldr	r3, .L127+4
+ 1306 0018 1D5D     		ldrb	r5, [r3, r4]	@ zero_extendqisi2
+ 643:/Users/user/Desktop/esos32/src/esos.c ****       u8TaskReturnedVal = pstNowTask->pfn( pstNowTask );
+ 1307              		.loc 1 643 18 view .LVU382
+ 1308 001a 05EB4503 		add	r3, r5, r5, lsl #1
+ 1309 001e 1F48     		ldr	r0, .L127+8
+ 1310 0020 00EBC300 		add	r0, r0, r3, lsl #3
+ 1311              	.LVL121:
+ 644:/Users/user/Desktop/esos32/src/esos.c ****       if (u8TaskReturnedVal == ESOS_TASK_ENDED) {
+ 1312              		.loc 1 644 7 is_stmt 1 view .LVU383
+ 644:/Users/user/Desktop/esos32/src/esos.c ****       if (u8TaskReturnedVal == ESOS_TASK_ENDED) {
+ 1313              		.loc 1 644 37 is_stmt 0 view .LVU384
+ 1314 0024 4368     		ldr	r3, [r0, #4]
+ 644:/Users/user/Desktop/esos32/src/esos.c ****       if (u8TaskReturnedVal == ESOS_TASK_ENDED) {
+ 1315              		.loc 1 644 27 view .LVU385
+ 1316 0026 9847     		blx	r3
+ 1317              	.LVL122:
+ 645:/Users/user/Desktop/esos32/src/esos.c ****         //printf ("Unregistering an ENDED protothread\n");
+ 1318              		.loc 1 645 7 is_stmt 1 view .LVU386
+ 645:/Users/user/Desktop/esos32/src/esos.c ****         //printf ("Unregistering an ENDED protothread\n");
+ 1319              		.loc 1 645 10 is_stmt 0 view .LVU387
+ 1320 0028 0328     		cmp	r0, #3
+ 1321 002a F0D1     		bne	.L114
+ 647:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 1322              		.loc 1 647 9 is_stmt 1 view .LVU388
+ 1323 002c 05EB4505 		add	r5, r5, r5, lsl #1
+ 1324              	.LVL123:
+ 647:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 1325              		.loc 1 647 9 is_stmt 0 view .LVU389
+ 1326 0030 1A4B     		ldr	r3, .L127+8
+ 1327              	.LVL124:
+ 647:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 1328              		.loc 1 647 9 view .LVU390
+ 1329 0032 03EBC505 		add	r5, r3, r5, lsl #3
+ 1330              	.LVL125:
+ 647:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 1331              		.loc 1 647 9 view .LVU391
+ 1332 0036 6868     		ldr	r0, [r5, #4]
+ 1333              	.LVL126:
+ 647:/Users/user/Desktop/esos32/src/esos.c ****       } // endif
+ 1334              		.loc 1 647 9 view .LVU392
+ 1335 0038 FFF7FEFF 		bl	esos_UnregisterTask
+ 1336              	.LVL127:
+ 1337 003c E7E7     		b	.L114
+ 1338              	.LVL128:
+ 1339              	.L124:
+ 651:/Users/user/Desktop/esos32/src/esos.c ****     } //end while()
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 38
+
+
+ 652:/Users/user/Desktop/esos32/src/esos.c **** 
+ 653:/Users/user/Desktop/esos32/src/esos.c ****     /* we have completed a rotation through the set of active tasks
+ 654:/Users/user/Desktop/esos32/src/esos.c ****        Now repack the pool (if necessary) to keep everything nice and
+ 655:/Users/user/Desktop/esos32/src/esos.c ****        tight.
+ 656:/Users/user/Desktop/esos32/src/esos.c ****     */
+ 657:/Users/user/Desktop/esos32/src/esos.c ****     if (__esos_IsSystemFlagSet( __ESOS_SYS_FLAG_PACK_TASKS) ) {
+ 1340              		.loc 1 657 5 is_stmt 1 view .LVU393
+ 1341              		.loc 1 657 9 is_stmt 0 view .LVU394
+ 1342 003e 184B     		ldr	r3, .L127+12
+ 1343 0040 1B68     		ldr	r3, [r3]
+ 1344              		.loc 1 657 8 view .LVU395
+ 1345 0042 13F0010F 		tst	r3, #1
+ 1346 0046 03D1     		bne	.L125
+ 1347              	.LVL129:
+ 1348              	.L116:
+ 623:/Users/user/Desktop/esos32/src/esos.c ****     /* First, let ESOS get something done.....
+ 1349              		.loc 1 623 3 is_stmt 1 view .LVU396
+ 629:/Users/user/Desktop/esos32/src/esos.c ****     /* get the number of currently registered tasks.... we must make
+ 1350              		.loc 1 629 5 view .LVU397
+ 634:/Users/user/Desktop/esos32/src/esos.c **** 
+ 1351              		.loc 1 634 5 view .LVU398
+ 634:/Users/user/Desktop/esos32/src/esos.c **** 
+ 1352              		.loc 1 634 24 is_stmt 0 view .LVU399
+ 1353 0048 164B     		ldr	r3, .L127+16
+ 1354 004a 1E78     		ldrb	r6, [r3]	@ zero_extendqisi2
+ 1355              	.LVL130:
+ 637:/Users/user/Desktop/esos32/src/esos.c ****       /* Get the next task up for execution.  Call it and catch
+ 1356              		.loc 1 637 5 is_stmt 1 view .LVU400
+ 629:/Users/user/Desktop/esos32/src/esos.c ****     /* get the number of currently registered tasks.... we must make
+ 1357              		.loc 1 629 9 is_stmt 0 view .LVU401
+ 1358 004c 0024     		movs	r4, #0
+ 637:/Users/user/Desktop/esos32/src/esos.c ****       /* Get the next task up for execution.  Call it and catch
+ 1359              		.loc 1 637 11 view .LVU402
+ 1360 004e E0E7     		b	.L113
+ 1361              	.LVL131:
+ 1362              	.L125:
+ 658:/Users/user/Desktop/esos32/src/esos.c ****       /* Now, loop over the UserTasks and pack them into
+ 659:/Users/user/Desktop/esos32/src/esos.c ****          the beginning of our arrays.  We loop through the list
+ 660:/Users/user/Desktop/esos32/src/esos.c ****          backwards.....
+ 661:/Users/user/Desktop/esos32/src/esos.c **** 
+ 662:/Users/user/Desktop/esos32/src/esos.c ****           Loop over the original number of registered tasks and
+ 663:/Users/user/Desktop/esos32/src/esos.c ****           look for NULLPTRs.  If you find one, scoot all the following
+ 664:/Users/user/Desktop/esos32/src/esos.c ****           tasks down by one and make the last one a NULLPTR.  Reduce
+ 665:/Users/user/Desktop/esos32/src/esos.c ****           our count of tasks by one to make the next search shorter.
+ 666:/Users/user/Desktop/esos32/src/esos.c **** 
+ 667:/Users/user/Desktop/esos32/src/esos.c ****           NOTE: we can't "break" the for-loop search because there
+ 668:/Users/user/Desktop/esos32/src/esos.c ****                 may be more than one unregistered tasks in the pool
+ 669:/Users/user/Desktop/esos32/src/esos.c ****       */
+ 670:/Users/user/Desktop/esos32/src/esos.c ****       u8i = __u8UserTasksRegistered;
+ 1363              		.loc 1 670 7 is_stmt 1 view .LVU403
+ 1364              		.loc 1 670 11 is_stmt 0 view .LVU404
+ 1365 0050 144A     		ldr	r2, .L127+16
+ 1366 0052 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 1367              	.LVL132:
+ 1368              	.L121:
+ 671:/Users/user/Desktop/esos32/src/esos.c ****       // TODO:  CHANGE THIS TO A   do{}while(u8i)
+ 672:/Users/user/Desktop/esos32/src/esos.c ****       while(TRUE) {
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 39
+
+
+ 1369              		.loc 1 672 7 is_stmt 1 view .LVU405
+ 673:/Users/user/Desktop/esos32/src/esos.c ****         pstNowTask = &__astUserTaskPool[u8i];
+ 1370              		.loc 1 673 9 view .LVU406
+ 674:/Users/user/Desktop/esos32/src/esos.c ****         if (__au8UserTaskStructIndex[u8i] == REMOVE_IDX) {
+ 1371              		.loc 1 674 9 view .LVU407
+ 1372              		.loc 1 674 37 is_stmt 0 view .LVU408
+ 1373 0054 104A     		ldr	r2, .L127+4
+ 1374 0056 525C     		ldrb	r2, [r2, r1]	@ zero_extendqisi2
+ 1375              		.loc 1 674 12 view .LVU409
+ 1376 0058 FE2A     		cmp	r2, #254
+ 1377 005a 03D0     		beq	.L126
+ 1378              	.L117:
+ 675:/Users/user/Desktop/esos32/src/esos.c ****           for ( u8j=u8i+1; u8j<u8NumRegdTasksTemp; u8j++) {
+ 676:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 677:/Users/user/Desktop/esos32/src/esos.c ****           } // end for
+ 678:/Users/user/Desktop/esos32/src/esos.c ****           __au8UserTaskStructIndex[u8NumRegdTasksTemp-1] = NULLIDX;
+ 679:/Users/user/Desktop/esos32/src/esos.c ****           u8NumRegdTasksTemp--;
+ 680:/Users/user/Desktop/esos32/src/esos.c ****         } // end if
+ 681:/Users/user/Desktop/esos32/src/esos.c ****         /* Have we hit the beginning of the task pool yet?
+ 682:/Users/user/Desktop/esos32/src/esos.c ****            If not, decrement (do another).
+ 683:/Users/user/Desktop/esos32/src/esos.c ****            If so, we are done (break)
+ 684:/Users/user/Desktop/esos32/src/esos.c ****         */
+ 685:/Users/user/Desktop/esos32/src/esos.c ****         if (u8i)
+ 1379              		.loc 1 685 9 is_stmt 1 view .LVU410
+ 1380              		.loc 1 685 12 is_stmt 0 view .LVU411
+ 1381 005c 99B1     		cbz	r1, .L120
+ 686:/Users/user/Desktop/esos32/src/esos.c ****           u8i--;
+ 1382              		.loc 1 686 11 is_stmt 1 view .LVU412
+ 1383              		.loc 1 686 14 is_stmt 0 view .LVU413
+ 1384 005e 0139     		subs	r1, r1, #1
+ 1385              	.LVL133:
+ 1386              		.loc 1 686 14 view .LVU414
+ 1387 0060 C9B2     		uxtb	r1, r1
+ 1388              	.LVL134:
+ 672:/Users/user/Desktop/esos32/src/esos.c ****         pstNowTask = &__astUserTaskPool[u8i];
+ 1389              		.loc 1 672 12 is_stmt 1 view .LVU415
+ 673:/Users/user/Desktop/esos32/src/esos.c ****         if (__au8UserTaskStructIndex[u8i] == REMOVE_IDX) {
+ 1390              		.loc 1 673 20 is_stmt 0 view .LVU416
+ 1391 0062 F7E7     		b	.L121
+ 1392              	.LVL135:
+ 1393              	.L126:
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1394              		.loc 1 675 11 is_stmt 1 view .LVU417
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1395              		.loc 1 675 20 is_stmt 0 view .LVU418
+ 1396 0064 4A1C     		adds	r2, r1, #1
+ 1397 0066 D2B2     		uxtb	r2, r2
+ 1398              	.LVL136:
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1399              		.loc 1 675 11 view .LVU419
+ 1400 0068 05E0     		b	.L118
+ 1401              	.L119:
+ 676:/Users/user/Desktop/esos32/src/esos.c ****           } // end for
+ 1402              		.loc 1 676 13 is_stmt 1 discriminator 3 view .LVU420
+ 676:/Users/user/Desktop/esos32/src/esos.c ****           } // end for
+ 1403              		.loc 1 676 41 is_stmt 0 discriminator 3 view .LVU421
+ 1404 006a 541E     		subs	r4, r2, #1
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 40
+
+
+ 676:/Users/user/Desktop/esos32/src/esos.c ****           } // end for
+ 1405              		.loc 1 676 71 discriminator 3 view .LVU422
+ 1406 006c 0A48     		ldr	r0, .L127+4
+ 1407 006e 855C     		ldrb	r5, [r0, r2]	@ zero_extendqisi2
+ 676:/Users/user/Desktop/esos32/src/esos.c ****           } // end for
+ 1408              		.loc 1 676 45 discriminator 3 view .LVU423
+ 1409 0070 0555     		strb	r5, [r0, r4]
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1410              		.loc 1 675 52 is_stmt 1 discriminator 3 view .LVU424
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1411              		.loc 1 675 55 is_stmt 0 discriminator 3 view .LVU425
+ 1412 0072 0132     		adds	r2, r2, #1
+ 1413              	.LVL137:
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1414              		.loc 1 675 55 discriminator 3 view .LVU426
+ 1415 0074 D2B2     		uxtb	r2, r2
+ 1416              	.LVL138:
+ 1417              	.L118:
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1418              		.loc 1 675 28 is_stmt 1 discriminator 1 view .LVU427
+ 675:/Users/user/Desktop/esos32/src/esos.c ****             __au8UserTaskStructIndex[u8j-1] = __au8UserTaskStructIndex[u8j];
+ 1419              		.loc 1 675 11 is_stmt 0 discriminator 1 view .LVU428
+ 1420 0076 B242     		cmp	r2, r6
+ 1421 0078 F7D3     		bcc	.L119
+ 678:/Users/user/Desktop/esos32/src/esos.c ****           u8NumRegdTasksTemp--;
+ 1422              		.loc 1 678 11 is_stmt 1 view .LVU429
+ 678:/Users/user/Desktop/esos32/src/esos.c ****           u8NumRegdTasksTemp--;
+ 1423              		.loc 1 678 54 is_stmt 0 view .LVU430
+ 1424 007a 013E     		subs	r6, r6, #1
+ 1425              	.LVL139:
+ 678:/Users/user/Desktop/esos32/src/esos.c ****           u8NumRegdTasksTemp--;
+ 1426              		.loc 1 678 58 view .LVU431
+ 1427 007c 064A     		ldr	r2, .L127+4
+ 1428              	.LVL140:
+ 678:/Users/user/Desktop/esos32/src/esos.c ****           u8NumRegdTasksTemp--;
+ 1429              		.loc 1 678 58 view .LVU432
+ 1430 007e FF20     		movs	r0, #255
+ 1431 0080 9055     		strb	r0, [r2, r6]
+ 679:/Users/user/Desktop/esos32/src/esos.c ****         } // end if
+ 1432              		.loc 1 679 11 is_stmt 1 view .LVU433
+ 679:/Users/user/Desktop/esos32/src/esos.c ****         } // end if
+ 1433              		.loc 1 679 29 is_stmt 0 view .LVU434
+ 1434 0082 F6B2     		uxtb	r6, r6
+ 1435              	.LVL141:
+ 679:/Users/user/Desktop/esos32/src/esos.c ****         } // end if
+ 1436              		.loc 1 679 29 view .LVU435
+ 1437 0084 EAE7     		b	.L117
+ 1438              	.L120:
+ 687:/Users/user/Desktop/esos32/src/esos.c ****         else
+ 688:/Users/user/Desktop/esos32/src/esos.c ****           break;
+ 689:/Users/user/Desktop/esos32/src/esos.c ****       } // end while
+ 690:/Users/user/Desktop/esos32/src/esos.c ****       /* We have repacked the task pool (possibly multiple times), so update
+ 691:/Users/user/Desktop/esos32/src/esos.c ****          the new number of registered tasks and clear the task PACK flag
+ 692:/Users/user/Desktop/esos32/src/esos.c ****       */
+ 693:/Users/user/Desktop/esos32/src/esos.c ****       __u8UserTasksRegistered=u8NumRegdTasksTemp;   // set record the new number of registered task
+ 1439              		.loc 1 693 7 is_stmt 1 view .LVU436
+ 1440              		.loc 1 693 30 is_stmt 0 view .LVU437
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 41
+
+
+ 1441 0086 074A     		ldr	r2, .L127+16
+ 1442 0088 1670     		strb	r6, [r2]
+ 694:/Users/user/Desktop/esos32/src/esos.c ****       __esos_ClearSystemFlag( __ESOS_SYS_FLAG_PACK_TASKS );
+ 1443              		.loc 1 694 7 is_stmt 1 view .LVU438
+ 1444 008a 23F00103 		bic	r3, r3, #1
+ 1445 008e 044A     		ldr	r2, .L127+12
+ 1446 0090 1360     		str	r3, [r2]
+ 1447 0092 D9E7     		b	.L116
+ 1448              	.L128:
+ 1449              		.align	2
+ 1450              	.L127:
+ 1451 0094 00000000 		.word	.LANCHOR3
+ 1452 0098 00000000 		.word	.LANCHOR2
+ 1453 009c 00000000 		.word	.LANCHOR1
+ 1454 00a0 00000000 		.word	.LANCHOR4
+ 1455 00a4 00000000 		.word	.LANCHOR0
+ 1456              		.cfi_endproc
+ 1457              	.LFE13:
+ 1459              		.global	__esos_u32SystemFlags
+ 1460              		.global	__esos_u32UserFlags
+ 1461              		.global	__astCircularBuffers
+ 1462              		.global	__au8_MBData
+ 1463              		.global	__astMailbox
+ 1464              		.global	__esos_u32TmrActiveFlags
+ 1465              		.global	__esos_u8TmrSvcsRegistered
+ 1466              		.global	__astTmrSvcs
+ 1467              		.global	__u16NumTasksEverCreated
+ 1468              		.global	__u8ChildTasksRegistered
+ 1469              		.global	__u8UserTasksRegistered
+ 1470              		.global	__astChildTaskPool
+ 1471              		.global	__au8UserTaskStructIndex
+ 1472              		.global	__astUserTaskPool
+ 1473              		.section	.bss.__astChildTaskPool,"aw",%nobits
+ 1474              		.align	2
+ 1475              		.set	.LANCHOR5,. + 0
+ 1478              	__astChildTaskPool:
+ 1479 0000 00000000 		.space	768
+ 1479      00000000 
+ 1479      00000000 
+ 1479      00000000 
+ 1479      00000000 
+ 1480              		.section	.bss.__astCircularBuffers,"aw",%nobits
+ 1481              		.align	2
+ 1482              		.set	.LANCHOR10,. + 0
+ 1485              	__astCircularBuffers:
+ 1486 0000 00000000 		.space	384
+ 1486      00000000 
+ 1486      00000000 
+ 1486      00000000 
+ 1486      00000000 
+ 1487              		.section	.bss.__astMailbox,"aw",%nobits
+ 1488              		.align	2
+ 1489              		.set	.LANCHOR9,. + 0
+ 1492              	__astMailbox:
+ 1493 0000 00000000 		.space	256
+ 1493      00000000 
+ 1493      00000000 
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 42
+
+
+ 1493      00000000 
+ 1493      00000000 
+ 1494              		.section	.bss.__astTmrSvcs,"aw",%nobits
+ 1495              		.align	2
+ 1496              		.set	.LANCHOR8,. + 0
+ 1499              	__astTmrSvcs:
+ 1500 0000 00000000 		.space	192
+ 1500      00000000 
+ 1500      00000000 
+ 1500      00000000 
+ 1500      00000000 
+ 1501              		.section	.bss.__astUserTaskPool,"aw",%nobits
+ 1502              		.align	2
+ 1503              		.set	.LANCHOR1,. + 0
+ 1506              	__astUserTaskPool:
+ 1507 0000 00000000 		.space	768
+ 1507      00000000 
+ 1507      00000000 
+ 1507      00000000 
+ 1507      00000000 
+ 1508              		.section	.bss.__au8UserTaskStructIndex,"aw",%nobits
+ 1509              		.align	2
+ 1510              		.set	.LANCHOR2,. + 0
+ 1513              	__au8UserTaskStructIndex:
+ 1514 0000 00000000 		.space	32
+ 1514      00000000 
+ 1514      00000000 
+ 1514      00000000 
+ 1514      00000000 
+ 1515              		.section	.bss.__au8_MBData,"aw",%nobits
+ 1516              		.align	2
+ 1517              		.set	.LANCHOR11,. + 0
+ 1520              	__au8_MBData:
+ 1521 0000 00000000 		.space	3840
+ 1521      00000000 
+ 1521      00000000 
+ 1521      00000000 
+ 1521      00000000 
+ 1522              		.section	.bss.__esos_u32SystemFlags,"aw",%nobits
+ 1523              		.align	2
+ 1524              		.set	.LANCHOR4,. + 0
+ 1527              	__esos_u32SystemFlags:
+ 1528 0000 00000000 		.space	4
+ 1529              		.section	.bss.__esos_u32TmrActiveFlags,"aw",%nobits
+ 1530              		.align	2
+ 1531              		.set	.LANCHOR7,. + 0
+ 1534              	__esos_u32TmrActiveFlags:
+ 1535 0000 00000000 		.space	4
+ 1536              		.section	.bss.__esos_u32UserFlags,"aw",%nobits
+ 1537              		.align	2
+ 1540              	__esos_u32UserFlags:
+ 1541 0000 00000000 		.space	4
+ 1542              		.section	.bss.__esos_u8TmrSvcsRegistered,"aw",%nobits
+ 1543              		.set	.LANCHOR6,. + 0
+ 1546              	__esos_u8TmrSvcsRegistered:
+ 1547 0000 00       		.space	1
+ 1548              		.section	.bss.__u16NumTasksEverCreated,"aw",%nobits
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 43
+
+
+ 1549              		.align	1
+ 1550              		.set	.LANCHOR3,. + 0
+ 1553              	__u16NumTasksEverCreated:
+ 1554 0000 0000     		.space	2
+ 1555              		.section	.bss.__u8ChildTasksRegistered,"aw",%nobits
+ 1556              		.set	.LANCHOR12,. + 0
+ 1559              	__u8ChildTasksRegistered:
+ 1560 0000 00       		.space	1
+ 1561              		.section	.bss.__u8UserTasksRegistered,"aw",%nobits
+ 1562              		.set	.LANCHOR0,. + 0
+ 1565              	__u8UserTasksRegistered:
+ 1566 0000 00       		.space	1
+ 1567              		.text
+ 1568              	.Letext0:
+ 1569              		.file 2 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/m
+ 1570              		.file 3 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/s
+ 1571              		.file 4 "/Users/user/Desktop/esos32/include/lc-switch.h"
+ 1572              		.file 5 "/Users/user/Desktop/esos32/include/esos_cb.h"
+ 1573              		.file 6 "/Users/user/Desktop/esos32/include/esos_mail.h"
+ 1574              		.file 7 "/Users/user/Desktop/esos32/include/esos_task.h"
+ 1575              		.file 8 "/Users/user/Desktop/esos32/include/esos.h"
+ 1576              		.file 9 "/Users/user/Desktop/esos32/include/esos_utils.h"
+ 1577              		.file 10 "/Users/user/Desktop/esos32/include/all_generic.h"
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos.c
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:20     .text.esos_RegisterTask:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:26     .text.esos_RegisterTask:0000000000000000 esos_RegisterTask
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:242    .text.esos_RegisterTask:00000000000000d0 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:250    .text.esos_UnregisterTask:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:256    .text.esos_UnregisterTask:0000000000000000 esos_UnregisterTask
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:345    .text.esos_UnregisterTask:0000000000000044 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:353    .text.esos_GetTaskHandle:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:359    .text.esos_GetTaskHandle:0000000000000000 esos_GetTaskHandle
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:432    .text.esos_GetTaskHandle:0000000000000034 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:439    .text.esos_GetTaskHandleFromID:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:445    .text.esos_GetTaskHandleFromID:0000000000000000 esos_GetTaskHandleFromID
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:518    .text.esos_GetTaskHandleFromID:0000000000000034 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:525    .text.esos_GetFreeChildTaskStruct:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:531    .text.esos_GetFreeChildTaskStruct:0000000000000000 esos_GetFreeChildTaskStruct
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:584    .text.esos_GetFreeChildTaskStruct:0000000000000028 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:589    .text.esos_GetMaxNumberTasks:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:595    .text.esos_GetMaxNumberTasks:0000000000000000 esos_GetMaxNumberTasks
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:610    .text.__esos_hasTickDurationPassed:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:616    .text.__esos_hasTickDurationPassed:0000000000000000 __esos_hasTickDurationPassed
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:672    .text.__esos_tmrSvcsExecute:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:678    .text.__esos_tmrSvcsExecute:0000000000000000 __esos_tmrSvcsExecute
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:772    .text.__esos_tmrSvcsExecute:0000000000000050 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:779    .text.esos_RegisterTimer:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:785    .text.esos_RegisterTimer:0000000000000000 esos_RegisterTimer
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:882    .text.esos_RegisterTimer:0000000000000054 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:889    .text.esos_UnregisterTimer:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:895    .text.esos_UnregisterTimer:0000000000000000 esos_UnregisterTimer
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:955    .text.esos_UnregisterTimer:0000000000000038 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:962    .text.esos_GetTimerHandle:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:968    .text.esos_GetTimerHandle:0000000000000000 esos_GetTimerHandle
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1040   .text.esos_GetTimerHandle:0000000000000034 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1047   .text.esos_ChangeTimerPeriod:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1053   .text.esos_ChangeTimerPeriod:0000000000000000 esos_ChangeTimerPeriod
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1092   .text.esos_ChangeTimerPeriod:0000000000000020 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1098   .text.__esosInit:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1104   .text.__esosInit:0000000000000000 __esosInit
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1242   .text.__esosInit:0000000000000094 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1257   .text.main:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1263   .text.main:0000000000000000 main
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1451   .text.main:0000000000000094 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1527   .bss.__esos_u32SystemFlags:0000000000000000 __esos_u32SystemFlags
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1540   .bss.__esos_u32UserFlags:0000000000000000 __esos_u32UserFlags
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1485   .bss.__astCircularBuffers:0000000000000000 __astCircularBuffers
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1520   .bss.__au8_MBData:0000000000000000 __au8_MBData
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1492   .bss.__astMailbox:0000000000000000 __astMailbox
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1534   .bss.__esos_u32TmrActiveFlags:0000000000000000 __esos_u32TmrActiveFlags
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1546   .bss.__esos_u8TmrSvcsRegistered:0000000000000000 __esos_u8TmrSvcsRegistered
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1499   .bss.__astTmrSvcs:0000000000000000 __astTmrSvcs
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1553   .bss.__u16NumTasksEverCreated:0000000000000000 __u16NumTasksEverCreated
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1559   .bss.__u8ChildTasksRegistered:0000000000000000 __u8ChildTasksRegistered
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1565   .bss.__u8UserTasksRegistered:0000000000000000 __u8UserTasksRegistered
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1478   .bss.__astChildTaskPool:0000000000000000 __astChildTaskPool
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1513   .bss.__au8UserTaskStructIndex:0000000000000000 __au8UserTaskStructIndex
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1506   .bss.__astUserTaskPool:0000000000000000 __astUserTaskPool
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1474   .bss.__astChildTaskPool:0000000000000000 $d
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s 			page 45
+
+
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1481   .bss.__astCircularBuffers:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1488   .bss.__astMailbox:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1495   .bss.__astTmrSvcs:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1502   .bss.__astUserTaskPool:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1509   .bss.__au8UserTaskStructIndex:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1516   .bss.__au8_MBData:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1523   .bss.__esos_u32SystemFlags:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1530   .bss.__esos_u32TmrActiveFlags:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1537   .bss.__esos_u32UserFlags:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1547   .bss.__esos_u8TmrSvcsRegistered:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1549   .bss.__u16NumTasksEverCreated:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1560   .bss.__u8ChildTasksRegistered:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//ccTt5QsB.s:1566   .bss.__u8UserTasksRegistered:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__esos_hw_GetSystemTickCount
+__esos_InitMailbox
+__esos_set_PRNG_U32Seed
+__esos_hw_config_PRNG
+__esos_hw_InitSystemTick
+__esos_InitCommSystem
+user_init

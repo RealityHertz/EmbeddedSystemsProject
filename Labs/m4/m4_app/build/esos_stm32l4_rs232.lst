@@ -1,0 +1,853 @@
+ARM GAS  /tmp/ccD1ABIX.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_stm32l4_rs232.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.__esos_hw_signal_start_tx,"ax",%progbits
+  20              		.align	1
+  21              		.global	__esos_hw_signal_start_tx
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	__esos_hw_signal_start_tx:
+  27              	.LFB0:
+  28              		.file 1 "/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c"
+   1:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /*
+   2:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * All rights reserved.
+   4:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+   6:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  11:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  16:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  22:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * these files.
+  24:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  25:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  26:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  */
+  27:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  28:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  29:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /**
+  30:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * \addtogroup ESOS_UART_Service
+ARM GAS  /tmp/ccD1ABIX.s 			page 2
+
+
+  31:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * @{
+  32:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  */
+  33:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  34:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  35:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** // Documentation for this file. If the \file tag isn't present,
+  36:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** // this file won't be documented.
+  37:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /** \file
+  38:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * \brief STM32L4xx hardware support for RS-232 serial communications
+  39:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  40:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  */
+  41:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  42:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /*** I N C L U D E S *************************************************/
+  43:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #include "esos_stm32l4_rs232.h"
+  44:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  45:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /*** G L O B A L S *************************************************/
+  46:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** uint8_t         u8_uartRXbuf;
+  47:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** uint8_t         u8_uartTXbuf;
+  48:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** //UART_HandleTypeDef    st_huart2;
+  49:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  50:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /*** T H E   C O D E *************************************************/
+  51:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** // probably need to define a flag for this so ISRs can start/stop
+  52:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** //  transfers
+  53:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #define   __ESOS_HW_SIGNAL_START_TX()     __esos_SetSystemFlag(__ESOS_SYS_COMM_TX_ONGOING)
+  54:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #define   __ESOS_HW_SIGNAL_STOP_TX()        __esos_ClearSystemFlag(__ESOS_SYS_COMM_TX_ONGOING)
+  55:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  56:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /*********************************************************
+  57:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Public functions intended to be called by other files *
+  58:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *********************************************************/
+  59:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** inline void    __esos_hw_signal_start_tx(void) {
+  29              		.loc 1 59 48 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  60:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   if __esos_IsSystemFlagClear(__ESOS_SYS_COMM_TX_ONGOING) {
+  33              		.loc 1 60 3 view .LVU1
+  34              		.loc 1 60 6 is_stmt 0 view .LVU2
+  35 0000 0C4B     		ldr	r3, .L8
+  36 0002 1B68     		ldr	r3, [r3]
+  37 0004 13F0100F 		tst	r3, #16
+  38 0008 00D0     		beq	.L7
+  39 000a 7047     		bx	lr
+  40              	.L7:
+  59:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   if __esos_IsSystemFlagClear(__ESOS_SYS_COMM_TX_ONGOING) {
+  41              		.loc 1 59 48 view .LVU3
+  42 000c 10B5     		push	{r4, lr}
+  43              	.LCFI0:
+  44              		.cfi_def_cfa_offset 8
+  45              		.cfi_offset 4, -8
+  46              		.cfi_offset 14, -4
+  61:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     // no TX is currently ongoing, so kick it off.
+  62:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     __esos_SetSystemFlag(__ESOS_SYS_COMM_TX_ONGOING);
+  47              		.loc 1 62 5 is_stmt 1 view .LVU4
+  48 000e 43F01003 		orr	r3, r3, #16
+  49 0012 084A     		ldr	r2, .L8
+  50 0014 1360     		str	r3, [r2]
+  63:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	  
+  64:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     // HAL_UART_Transmit_IT requires a pointer to the data, so
+ARM GAS  /tmp/ccD1ABIX.s 			page 3
+
+
+  65:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     //  have CB return the data to a local variable and pass that
+  66:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     //  address to the HAL_UART_Transmit_IT.  The ESOS CB don't
+  67:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     //  have a routine that returns a pointer to data, and I
+  68:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     //  don't trust the HAL enough to pass an address into my CB.
+  69:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	u8_uartTXbuf = __esos_CB_ReadUINT8(  __pst_CB_Tx );
+  51              		.loc 1 69 2 view .LVU5
+  52              		.loc 1 69 17 is_stmt 0 view .LVU6
+  53 0016 084B     		ldr	r3, .L8+4
+  54 0018 1868     		ldr	r0, [r3]
+  55 001a FFF7FEFF 		bl	__esos_CB_ReadUINT8
+  56              	.LVL0:
+  57 001e 0146     		mov	r1, r0
+  58              		.loc 1 69 15 view .LVU7
+  59 0020 064B     		ldr	r3, .L8+8
+  60 0022 1870     		strb	r0, [r3]
+  70:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	  
+  71:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_send(USART_CONSOLE, u8_uartTXbuf);
+  61              		.loc 1 71 2 is_stmt 1 view .LVU8
+  62 0024 064C     		ldr	r4, .L8+12
+  63 0026 2046     		mov	r0, r4
+  64 0028 FFF7FEFF 		bl	usart_send
+  65              	.LVL1:
+  72:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_enable_tx_interrupt(USART_CONSOLE);
+  66              		.loc 1 72 2 view .LVU9
+  67 002c 2046     		mov	r0, r4
+  68 002e FFF7FEFF 		bl	usart_enable_tx_interrupt
+  69              	.LVL2:
+  73:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//HAL_UART_Transmit_IT(&st_huart2, &u8_uartTXbuf, 1);
+  74:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   }
+  75:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }
+  70              		.loc 1 75 1 is_stmt 0 view .LVU10
+  71 0032 10BD     		pop	{r4, pc}
+  72              	.L9:
+  73              		.align	2
+  74              	.L8:
+  75 0034 00000000 		.word	__esos_u32SystemFlags
+  76 0038 00000000 		.word	__pst_CB_Tx
+  77 003c 00000000 		.word	.LANCHOR0
+  78 0040 00440040 		.word	1073759232
+  79              		.cfi_endproc
+  80              	.LFE0:
+  82              		.section	.text.__esos_hw_signal_stop_tx,"ax",%progbits
+  83              		.align	1
+  84              		.global	__esos_hw_signal_stop_tx
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	__esos_hw_signal_stop_tx:
+  90              	.LFB1:
+  76:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  77:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** inline void    __esos_hw_signal_stop_tx(void) {
+  91              		.loc 1 77 47 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              		@ link register save eliminated.
+  78:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   __esos_ClearSystemFlag(__ESOS_SYS_COMM_TX_ONGOING);
+ARM GAS  /tmp/ccD1ABIX.s 			page 4
+
+
+  96              		.loc 1 78 3 view .LVU12
+  97 0000 024A     		ldr	r2, .L11
+  98 0002 1368     		ldr	r3, [r2]
+  99 0004 23F01003 		bic	r3, r3, #16
+ 100 0008 1360     		str	r3, [r2]
+  79:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }
+ 101              		.loc 1 79 1 is_stmt 0 view .LVU13
+ 102 000a 7047     		bx	lr
+ 103              	.L12:
+ 104              		.align	2
+ 105              	.L11:
+ 106 000c 00000000 		.word	__esos_u32SystemFlags
+ 107              		.cfi_endproc
+ 108              	.LFE1:
+ 110              		.section	.text.usart2_isr,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	usart2_isr
+ 113              		.syntax unified
+ 114              		.thumb
+ 115              		.thumb_func
+ 117              	usart2_isr:
+ 118              	.LFB2:
+  80:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  81:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /** *******************************************
+  82:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * UART ISR callbacks
+  83:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  84:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * HAL will call these functions at the conclusion
+  85:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * of TX and RX operations
+  86:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  87:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * TODO:  STM32L4 ISRs below are using the standard
+  88:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *   STM32 cube priorities.  These ISRs have not
+  89:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *   been incorporated into ESOS's interrupt priority
+  90:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *   scheme.
+  91:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+  92:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * ********************************************
+  93:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  */
+  94:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+  95:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** void usart2_isr(void)
+  96:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** {
+ 119              		.loc 1 96 1 is_stmt 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ args = 0, pretend = 0, frame = 0
+ 122              		@ frame_needed = 0, uses_anonymous_args = 0
+ 123 0000 10B5     		push	{r4, lr}
+ 124              	.LCFI1:
+ 125              		.cfi_def_cfa_offset 8
+ 126              		.cfi_offset 4, -8
+ 127              		.cfi_offset 14, -4
+  97:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	/* If this function is called, one of the UART interrupt flags
+  98:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	 * has been fired. We will need to determine which one it is
+  99:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	 * and handle it appropriately.
+ 100:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	 */
+ 101:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	if(((USART_CR1(USART_CONSOLE) & USART_CR1_RXNEIE) != 0) &&
+ 128              		.loc 1 101 2 view .LVU15
+ 129              		.loc 1 101 7 is_stmt 0 view .LVU16
+ 130 0002 4FF04023 		mov	r3, #1073758208
+ 131 0006 D3F80034 		ldr	r3, [r3, #1024]
+ARM GAS  /tmp/ccD1ABIX.s 			page 5
+
+
+ 132              		.loc 1 101 4 view .LVU17
+ 133 000a 13F0200F 		tst	r3, #32
+ 134 000e 06D0     		beq	.L14
+ 102:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	   ((USART_ISR(USART_CONSOLE) & USART_ISR_RXNE) != 0 ))
+ 135              		.loc 1 102 7 discriminator 1 view .LVU18
+ 136 0010 4FF04023 		mov	r3, #1073758208
+ 137 0014 D3F81C34 		ldr	r3, [r3, #1052]
+ 101:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	   ((USART_ISR(USART_CONSOLE) & USART_ISR_RXNE) != 0 ))
+ 138              		.loc 1 101 58 discriminator 1 view .LVU19
+ 139 0018 13F0200F 		tst	r3, #32
+ 140 001c 1AD1     		bne	.L18
+ 141              	.L14:
+ 103:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	{
+ 104:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		/* If the code reaches here, we have received a
+ 105:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		 * byte into the UART.
+ 106:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		 */
+ 107:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		
+ 108:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		// call CB overwrite.... we can't block here in the ISR so
+ 109:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   		// if data comes in too fast, we will just overwrite existing
+ 110:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   		// data in the CBs
+ 111:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		u8_uartRXbuf = usart_recv(USART_CONSOLE);
+ 112:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		__esos_CB_OverwriteUINT8( __pst_CB_Rx, u8_uartRXbuf );
+ 113:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		// request HAL UART handler to get ONE more byte
+ 114:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		//enable the error condition flags (overrun, noise, framing)
+ 115:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		//usart_enable_error_interrupt(USART_CONSOLE);
+ 116:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		//usart_enable_rx_interrupt(USART_CONSOLE);
+ 117:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	}
+ 118:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	else if(((USART_CR1(USART_CONSOLE) & USART_CR1_TXEIE) != 0) &&
+ 142              		.loc 1 118 7 is_stmt 1 view .LVU20
+ 143              		.loc 1 118 12 is_stmt 0 view .LVU21
+ 144 001e 4FF04023 		mov	r3, #1073758208
+ 145 0022 D3F80034 		ldr	r3, [r3, #1024]
+ 146              		.loc 1 118 9 view .LVU22
+ 147 0026 13F0800F 		tst	r3, #128
+ 148 002a 1DD0     		beq	.L13
+ 119:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	   ((USART_ISR(USART_CONSOLE) & USART_ISR_TXE) != 0 ))
+ 149              		.loc 1 119 7 discriminator 1 view .LVU23
+ 150 002c 4FF04023 		mov	r3, #1073758208
+ 151 0030 D3F81C34 		ldr	r3, [r3, #1052]
+ 118:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	   ((USART_ISR(USART_CONSOLE) & USART_ISR_TXE) != 0 ))
+ 152              		.loc 1 118 62 discriminator 1 view .LVU24
+ 153 0034 13F0800F 		tst	r3, #128
+ 154 0038 16D0     		beq	.L13
+ 120:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	{
+ 121:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		/* If the code reaches here, the HW transmit buffer is empty
+ 122:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		 */
+ 123:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		if (__ESOS_CB_IS_EMPTY( __pst_CB_Tx)) {
+ 155              		.loc 1 123 3 is_stmt 1 view .LVU25
+ 156              		.loc 1 123 7 is_stmt 0 view .LVU26
+ 157 003a 124B     		ldr	r3, .L19
+ 158 003c 1868     		ldr	r0, [r3]
+ 159 003e 8388     		ldrh	r3, [r0, #4]
+ 160              		.loc 1 123 6 view .LVU27
+ 161 0040 9BB9     		cbnz	r3, .L16
+ 124:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     		//empty TX buffer, disable the interrupt, do not clear the flag
+ 125:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     		usart_disable_tx_interrupt(USART_CONSOLE);
+ 162              		.loc 1 125 7 is_stmt 1 view .LVU28
+ARM GAS  /tmp/ccD1ABIX.s 			page 6
+
+
+ 163 0042 1148     		ldr	r0, .L19+4
+ 164 0044 FFF7FEFF 		bl	usart_disable_tx_interrupt
+ 165              	.LVL3:
+ 126:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			__esos_hw_signal_stop_tx();
+ 166              		.loc 1 126 4 view .LVU29
+ 167              	.LBB4:
+ 168              	.LBI4:
+  77:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   __esos_ClearSystemFlag(__ESOS_SYS_COMM_TX_ONGOING);
+ 169              		.loc 1 77 16 view .LVU30
+ 170              	.LBB5:
+  78:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }
+ 171              		.loc 1 78 3 view .LVU31
+ 172 0048 104A     		ldr	r2, .L19+8
+ 173 004a 1368     		ldr	r3, [r2]
+ 174 004c 23F01003 		bic	r3, r3, #16
+ 175 0050 1360     		str	r3, [r2]
+  79:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 176              		.loc 1 79 1 is_stmt 0 view .LVU32
+ 177 0052 09E0     		b	.L13
+ 178              	.L18:
+ 179              	.LBE5:
+ 180              	.LBE4:
+ 111:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		__esos_CB_OverwriteUINT8( __pst_CB_Rx, u8_uartRXbuf );
+ 181              		.loc 1 111 3 is_stmt 1 view .LVU33
+ 111:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		__esos_CB_OverwriteUINT8( __pst_CB_Rx, u8_uartRXbuf );
+ 182              		.loc 1 111 18 is_stmt 0 view .LVU34
+ 183 0054 0C48     		ldr	r0, .L19+4
+ 184 0056 FFF7FEFF 		bl	usart_recv
+ 185              	.LVL4:
+ 111:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		__esos_CB_OverwriteUINT8( __pst_CB_Rx, u8_uartRXbuf );
+ 186              		.loc 1 111 16 view .LVU35
+ 187 005a C1B2     		uxtb	r1, r0
+ 188 005c 0C4B     		ldr	r3, .L19+12
+ 189 005e 1970     		strb	r1, [r3]
+ 112:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		// request HAL UART handler to get ONE more byte
+ 190              		.loc 1 112 3 is_stmt 1 view .LVU36
+ 191 0060 0C4B     		ldr	r3, .L19+16
+ 192 0062 1868     		ldr	r0, [r3]
+ 193 0064 FFF7FEFF 		bl	__esos_CB_OverwriteUINT8
+ 194              	.LVL5:
+ 195              	.L13:
+ 127:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		}
+ 128:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		else
+ 129:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		{
+ 130:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			// HAL_UART_Transmit_IT requires a pointer to the data, so
+ 131:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			//  have CB return the data to a local variable and pass that
+ 132:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			//  address to the HAL_UART_Transmit_IT.  The ESOS CB don't
+ 133:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			//  have a routine that returns a pointer to data, and I
+ 134:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			//  don't trust the HAL enough to pass an address into my CB.
+ 135:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			u8_uartTXbuf = __esos_CB_ReadUINT8(  __pst_CB_Tx );
+ 136:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_send(USART_CONSOLE, u8_uartTXbuf);
+ 137:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_enable_tx_interrupt(USART_CONSOLE);
+ 138:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		}
+ 139:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	}
+ 140:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//else if(((USART_CR1(USART_CONSOLE) & USART_CR3_EIE) != 0) &&
+ 141:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//   ((USART_ISR(USART_CONSOLE) & USART_ISR_ORE) != 0 ))
+ 142:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//{
+ARM GAS  /tmp/ccD1ABIX.s 			page 7
+
+
+ 143:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//   // Error handler for the UART
+ 144:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		 //usart_enable_error_interrupt(USART_CONSOLE);
+ 145:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//	u8_uartRXbuf = usart_recv(USART_CONSOLE);
+ 146:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//}*/
+ 147:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }
+ 196              		.loc 1 147 1 is_stmt 0 view .LVU37
+ 197 0068 10BD     		pop	{r4, pc}
+ 198              	.L16:
+ 135:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_send(USART_CONSOLE, u8_uartTXbuf);
+ 199              		.loc 1 135 4 is_stmt 1 view .LVU38
+ 135:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_send(USART_CONSOLE, u8_uartTXbuf);
+ 200              		.loc 1 135 19 is_stmt 0 view .LVU39
+ 201 006a FFF7FEFF 		bl	__esos_CB_ReadUINT8
+ 202              	.LVL6:
+ 203 006e 0146     		mov	r1, r0
+ 135:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_send(USART_CONSOLE, u8_uartTXbuf);
+ 204              		.loc 1 135 17 view .LVU40
+ 205 0070 094B     		ldr	r3, .L19+20
+ 206 0072 1870     		strb	r0, [r3]
+ 136:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 			usart_enable_tx_interrupt(USART_CONSOLE);
+ 207              		.loc 1 136 4 is_stmt 1 view .LVU41
+ 208 0074 044C     		ldr	r4, .L19+4
+ 209 0076 2046     		mov	r0, r4
+ 210 0078 FFF7FEFF 		bl	usart_send
+ 211              	.LVL7:
+ 137:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 		}
+ 212              		.loc 1 137 4 view .LVU42
+ 213 007c 2046     		mov	r0, r4
+ 214 007e FFF7FEFF 		bl	usart_enable_tx_interrupt
+ 215              	.LVL8:
+ 216              		.loc 1 147 1 is_stmt 0 view .LVU43
+ 217 0082 F1E7     		b	.L13
+ 218              	.L20:
+ 219              		.align	2
+ 220              	.L19:
+ 221 0084 00000000 		.word	__pst_CB_Tx
+ 222 0088 00440040 		.word	1073759232
+ 223 008c 00000000 		.word	__esos_u32SystemFlags
+ 224 0090 00000000 		.word	.LANCHOR1
+ 225 0094 00000000 		.word	__pst_CB_Rx
+ 226 0098 00000000 		.word	.LANCHOR0
+ 227              		.cfi_endproc
+ 228              	.LFE2:
+ 230              		.section	.text.__esos_configUART1,"ax",%progbits
+ 231              		.align	1
+ 232              		.global	__esos_configUART1
+ 233              		.syntax unified
+ 234              		.thumb
+ 235              		.thumb_func
+ 237              	__esos_configUART1:
+ 238              	.LVL9:
+ 239              	.LFB3:
+ 148:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 149:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /** Configure the UART. Settings chosen:
+ 150:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *  - Format is 8 data bits, no parity, 1 stop bit
+ 151:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *  - CTS, RTS, and BCLK not used
+ 152:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ARM GAS  /tmp/ccD1ABIX.s 			page 8
+
+
+ 153:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *  \param u32_baudRate The baud rate to use.
+ 154:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  */
+ 155:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** void __esos_configUART1(uint32_t u32_baudRate) {
+ 240              		.loc 1 155 48 is_stmt 1 view -0
+ 241              		.cfi_startproc
+ 242              		@ args = 0, pretend = 0, frame = 0
+ 243              		@ frame_needed = 0, uses_anonymous_args = 0
+ 244              		.loc 1 155 48 is_stmt 0 view .LVU45
+ 245 0000 38B5     		push	{r3, r4, r5, lr}
+ 246              	.LCFI2:
+ 247              		.cfi_def_cfa_offset 16
+ 248              		.cfi_offset 3, -16
+ 249              		.cfi_offset 4, -12
+ 250              		.cfi_offset 5, -8
+ 251              		.cfi_offset 14, -4
+ 252 0002 0546     		mov	r5, r0
+ 156:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   /*************************  UART config ********************/
+ 157:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   	nvic_enable_irq(NVIC_USART2_IRQ);
+ 253              		.loc 1 157 4 is_stmt 1 view .LVU46
+ 254 0004 2620     		movs	r0, #38
+ 255              	.LVL10:
+ 256              		.loc 1 157 4 is_stmt 0 view .LVU47
+ 257 0006 FFF7FEFF 		bl	nvic_enable_irq
+ 258              	.LVL11:
+ 158:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	
+ 159:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 160:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #if (HARDWARE_PLATFORM == NUCLEO64)
+ 161:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** # warning Building configUART1() for Nucleo 64 development board
+ 162:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	rcc_periph_clock_enable(RCC_USART2);
+ 259              		.loc 1 162 2 is_stmt 1 view .LVU48
+ 260 000a 40F61130 		movw	r0, #2833
+ 261 000e FFF7FEFF 		bl	rcc_periph_clock_enable
+ 262              	.LVL12:
+ 163:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 164:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // we are using USART2.  On the STM32L452RE chip, this means
+ 165:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // that TX is PA2, and RX is PA3.
+ 166:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO2);
+ 263              		.loc 1 166 2 view .LVU49
+ 264 0012 0423     		movs	r3, #4
+ 265 0014 0022     		movs	r2, #0
+ 266 0016 0221     		movs	r1, #2
+ 267 0018 4FF09040 		mov	r0, #1207959552
+ 268 001c FFF7FEFF 		bl	gpio_mode_setup
+ 269              	.LVL13:
+ 167:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO3);
+ 270              		.loc 1 167 2 view .LVU50
+ 271 0020 0823     		movs	r3, #8
+ 272 0022 0022     		movs	r2, #0
+ 273 0024 0221     		movs	r1, #2
+ 274 0026 4FF09040 		mov	r0, #1207959552
+ 275 002a FFF7FEFF 		bl	gpio_mode_setup
+ 276              	.LVL14:
+ 168:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	gpio_set_output_options(GPIOA, GPIO_OTYPE_OD, GPIO_OSPEED_25MHZ, GPIO3);
+ 277              		.loc 1 168 2 view .LVU51
+ 278 002e 0823     		movs	r3, #8
+ 279 0030 0122     		movs	r2, #1
+ 280 0032 1146     		mov	r1, r2
+ARM GAS  /tmp/ccD1ABIX.s 			page 9
+
+
+ 281 0034 4FF09040 		mov	r0, #1207959552
+ 282 0038 FFF7FEFF 		bl	gpio_set_output_options
+ 283              	.LVL15:
+ 169:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	
+ 170:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	/* Setup USART2 TX pin as alternate function. */
+ 171:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	gpio_set_af(GPIOA, GPIO_AF7, GPIO2);
+ 284              		.loc 1 171 2 view .LVU52
+ 285 003c 0422     		movs	r2, #4
+ 286 003e 0721     		movs	r1, #7
+ 287 0040 4FF09040 		mov	r0, #1207959552
+ 288 0044 FFF7FEFF 		bl	gpio_set_af
+ 289              	.LVL16:
+ 172:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	gpio_set_af(GPIOA, GPIO_AF7, GPIO3);
+ 290              		.loc 1 172 2 view .LVU53
+ 291 0048 0822     		movs	r2, #8
+ 292 004a 0721     		movs	r1, #7
+ 293 004c 4FF09040 		mov	r0, #1207959552
+ 294 0050 FFF7FEFF 		bl	gpio_set_af
+ 295              	.LVL17:
+ 173:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	
+ 174:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_baudrate(USART_CONSOLE, u32_baudRate);
+ 296              		.loc 1 174 2 view .LVU54
+ 297 0054 114C     		ldr	r4, .L23
+ 298 0056 2946     		mov	r1, r5
+ 299 0058 2046     		mov	r0, r4
+ 300 005a FFF7FEFF 		bl	usart_set_baudrate
+ 301              	.LVL18:
+ 175:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_databits(USART_CONSOLE, 8);
+ 302              		.loc 1 175 2 view .LVU55
+ 303 005e 0821     		movs	r1, #8
+ 304 0060 2046     		mov	r0, r4
+ 305 0062 FFF7FEFF 		bl	usart_set_databits
+ 306              	.LVL19:
+ 176:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_stopbits(USART_CONSOLE, USART_STOPBITS_1);
+ 307              		.loc 1 176 2 view .LVU56
+ 308 0066 0021     		movs	r1, #0
+ 309 0068 2046     		mov	r0, r4
+ 310 006a FFF7FEFF 		bl	usart_set_stopbits
+ 311              	.LVL20:
+ 177:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_mode(USART_CONSOLE, USART_MODE_TX_RX);
+ 312              		.loc 1 177 2 view .LVU57
+ 313 006e 0C21     		movs	r1, #12
+ 314 0070 2046     		mov	r0, r4
+ 315 0072 FFF7FEFF 		bl	usart_set_mode
+ 316              	.LVL21:
+ 178:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_parity(USART_CONSOLE, USART_PARITY_NONE);
+ 317              		.loc 1 178 2 view .LVU58
+ 318 0076 0021     		movs	r1, #0
+ 319 0078 2046     		mov	r0, r4
+ 320 007a FFF7FEFF 		bl	usart_set_parity
+ 321              	.LVL22:
+ 179:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_set_flow_control(USART_CONSOLE, USART_FLOWCONTROL_NONE);
+ 322              		.loc 1 179 2 view .LVU59
+ 323 007e 0021     		movs	r1, #0
+ 324 0080 2046     		mov	r0, r4
+ 325 0082 FFF7FEFF 		bl	usart_set_flow_control
+ 326              	.LVL23:
+ARM GAS  /tmp/ccD1ABIX.s 			page 10
+
+
+ 180:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	
+ 181:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	// This interrupt will happen if the transmit buffer is empty
+ 182:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****     usart_disable_tx_interrupt(USART_CONSOLE);
+ 327              		.loc 1 182 5 view .LVU60
+ 328 0086 2046     		mov	r0, r4
+ 329 0088 FFF7FEFF 		bl	usart_disable_tx_interrupt
+ 330              	.LVL24:
+ 183:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//usart_enable_error_interrupt(USART_CONSOLE);
+ 184:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_enable_rx_interrupt(USART_CONSOLE);
+ 331              		.loc 1 184 2 view .LVU61
+ 332 008c 2046     		mov	r0, r4
+ 333 008e FFF7FEFF 		bl	usart_enable_rx_interrupt
+ 334              	.LVL25:
+ 185:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	// usart_disable_rx_interrupt(USART_CONSOLE);
+ 186:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 187:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	/* Finally enable the USART. */
+ 188:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	usart_enable(USART_CONSOLE);
+ 335              		.loc 1 188 2 view .LVU62
+ 336 0092 2046     		mov	r0, r4
+ 337 0094 FFF7FEFF 		bl	usart_enable
+ 338              	.LVL26:
+ 189:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #else
+ 190:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #error Can not configUART1() since target hardware has not been defined.
+ 191:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** #endif
+ 192:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 193:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // Now that UART is configured, let's enable the USART2 interrupts
+ 194:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 195:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 196:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // Kick off RX on UART via call to HAL.  Upon receipt of data
+ 197:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   //  the call back should kick off another one.  In the current
+ 198:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   //  specificaiton of ESOS, we always are "receiving", so RX is
+ 199:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   //  never disabled.
+ 200:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 	//u8_uartRXbuf = usart_recv(USART_CONSOLE);
+ 201:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }
+ 339              		.loc 1 201 1 is_stmt 0 view .LVU63
+ 340 0098 38BD     		pop	{r3, r4, r5, pc}
+ 341              	.LVL27:
+ 342              	.L24:
+ 343              		.loc 1 201 1 view .LVU64
+ 344 009a 00BF     		.align	2
+ 345              	.L23:
+ 346 009c 00440040 		.word	1073759232
+ 347              		.cfi_endproc
+ 348              	.LFE3:
+ 350              		.section	.text.__esos_hw_InitCommSystem,"ax",%progbits
+ 351              		.align	1
+ 352              		.global	__esos_hw_InitCommSystem
+ 353              		.syntax unified
+ 354              		.thumb
+ 355              		.thumb_func
+ 357              	__esos_hw_InitCommSystem:
+ 358              	.LFB4:
+ 202:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 203:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /* ########################################################################### */
+ 204:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 205:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 206:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /******************************************************************************
+ARM GAS  /tmp/ccD1ABIX.s 			page 11
+
+
+ 207:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Function:        void _esos_hw_InitSerialUart( void )
+ 208:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 209:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * PreCondition:    None
+ 210:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 211:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Input:           None
+ 212:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 213:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Output:          ptr to ESOS_COMM_BUFF_DSC structure with initialized ptrs
+ 214:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 215:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Side Effects:    Turns on USART hardware
+ 216:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 217:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *****************************************************************************/
+ 218:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** void __esos_hw_InitCommSystem(void) {
+ 359              		.loc 1 218 37 is_stmt 1 view -0
+ 360              		.cfi_startproc
+ 361              		@ args = 0, pretend = 0, frame = 0
+ 362              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363 0000 08B5     		push	{r3, lr}
+ 364              	.LCFI3:
+ 365              		.cfi_def_cfa_offset 8
+ 366              		.cfi_offset 3, -8
+ 367              		.cfi_offset 14, -4
+ 219:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // use the HAL-inspired code to init the RS232 comm subsystem
+ 220:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   // 8N1 @ 56k7 baud (DEFAULT_BAUDRATE) for now
+ 221:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   __esos_configUART1(DEFAULT_BAUDRATE) ;
+ 368              		.loc 1 221 3 view .LVU66
+ 369 0002 4FF46140 		mov	r0, #57600
+ 370 0006 FFF7FEFF 		bl	__esos_configUART1
+ 371              	.LVL28:
+ 222:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 223:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** }  // end __esos_hw_InitCommSystem()
+ 372              		.loc 1 223 1 is_stmt 0 view .LVU67
+ 373 000a 08BD     		pop	{r3, pc}
+ 374              		.cfi_endproc
+ 375              	.LFE4:
+ 377              		.section	.text.esos_GetCommSystemMaxInDataLen,"ax",%progbits
+ 378              		.align	1
+ 379              		.global	esos_GetCommSystemMaxInDataLen
+ 380              		.syntax unified
+ 381              		.thumb
+ 382              		.thumb_func
+ 384              	esos_GetCommSystemMaxInDataLen:
+ 385              	.LFB5:
+ 224:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 225:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 226:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /******************************************************************************
+ 227:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Function:        uint8_t esos_GetCommSystemMaxInDataLen(void)
+ 228:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 229:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * PreCondition:    None.
+ 230:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 231:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Input:           None
+ 232:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 233:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Output:          the maximum number of uint8_ts that the comm system will
+ 234:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  receive in a single buffer transfer from the host -- OR --
+ 235:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *          in the case of single uint8_t xfers (like RS232), the maximum
+ 236:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *          number of uint8_ts that can be RX-ed before the buffers
+ 237:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *          overflow
+ 238:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ARM GAS  /tmp/ccD1ABIX.s 			page 12
+
+
+ 239:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Side Effects:    None
+ 240:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 241:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Overview:        A way for a run-time determination of the maximum buffer
+ 242:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  size that the user can can expect.  This number is
+ 243:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  actually hard-coded in the USB CDC header file, but this
+ 244:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  method will allow the user code to be more generic, if
+ 245:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  it chooses to be.
+ 246:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 247:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *****************************************************************************/
+ 248:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** uint8_t esos_GetCommSystemMaxInDataLen(void) {
+ 386              		.loc 1 248 46 is_stmt 1 view -0
+ 387              		.cfi_startproc
+ 388              		@ args = 0, pretend = 0, frame = 0
+ 389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 390              		@ link register save eliminated.
+ 249:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   return ESOS_SERIAL_OUT_EP_SIZE;
+ 391              		.loc 1 249 3 view .LVU69
+ 250:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** } //end esos_GetCommSystemMaxInDataLen()
+ 392              		.loc 1 250 1 is_stmt 0 view .LVU70
+ 393 0000 4020     		movs	r0, #64
+ 394 0002 7047     		bx	lr
+ 395              		.cfi_endproc
+ 396              	.LFE5:
+ 398              		.section	.text.esos_GetCommSystemMaxOutDataLen,"ax",%progbits
+ 399              		.align	1
+ 400              		.global	esos_GetCommSystemMaxOutDataLen
+ 401              		.syntax unified
+ 402              		.thumb
+ 403              		.thumb_func
+ 405              	esos_GetCommSystemMaxOutDataLen:
+ 406              	.LFB6:
+ 251:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 252:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /******************************************************************************
+ 253:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Function:        uint8_t esos_GetCommSystemMaxOutDataLen(void)
+ 254:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 255:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * PreCondition:    None.
+ 256:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 257:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Input:           None
+ 258:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 259:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Output:          the maximum number of uint8_ts that the comm system will
+ 260:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  transfer back to the host in a single buffer  -- OR --
+ 261:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *          in the case of singe uint8_t xfers (like RS232), the maximum
+ 262:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *          number of uint8_ts in the output buffer before overflow
+ 263:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 264:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Side Effects:    None
+ 265:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 266:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Overview:        A way for a run-time determination of the maximum buffer
+ 267:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  size that the user can can send efficiently.  The USB system
+ 268:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  will send a bigger buffer than getUSBCdcTxMax() size, but
+ 269:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  will do so in several smaller getUSBCdcTxMax()-sized chunks.
+ 270:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 271:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  This number is actually hard-coded in the USB CDC header file,
+ 272:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  but this method will allow the user code to be more generic,
+ 273:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  if it chooses to be.
+ 274:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 275:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *****************************************************************************/
+ 276:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** uint8_t esos_GetCommSystemMaxOutDataLen(void) {
+ARM GAS  /tmp/ccD1ABIX.s 			page 13
+
+
+ 407              		.loc 1 276 47 is_stmt 1 view -0
+ 408              		.cfi_startproc
+ 409              		@ args = 0, pretend = 0, frame = 0
+ 410              		@ frame_needed = 0, uses_anonymous_args = 0
+ 411              		@ link register save eliminated.
+ 277:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   return  ESOS_SERIAL_IN_EP_SIZE;
+ 412              		.loc 1 277 3 view .LVU72
+ 278:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** } //end esos_GetCommSystemMaxOutDataLen()
+ 413              		.loc 1 278 1 is_stmt 0 view .LVU73
+ 414 0000 4020     		movs	r0, #64
+ 415 0002 7047     		bx	lr
+ 416              		.cfi_endproc
+ 417              	.LFE6:
+ 419              		.section	.text._esos_hw_GetSerialUartVersion,"ax",%progbits
+ 420              		.align	1
+ 421              		.global	_esos_hw_GetSerialUartVersion
+ 422              		.syntax unified
+ 423              		.thumb
+ 424              		.thumb_func
+ 426              	_esos_hw_GetSerialUartVersion:
+ 427              	.LFB7:
+ 279:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** 
+ 280:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** /******************************************************************************
+ 281:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Function:        uint8_t _esos_hw_GetUartVersion(void)
+ 282:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 283:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * PreCondition:    None.
+ 284:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 285:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Input:           None
+ 286:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 287:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Output:          Return the version number of the MSU Bulk CDC driver firmware
+ 288:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  currently running.
+ 289:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  The most-significant bit denotes we're running USB
+ 290:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  The most-significant nibble is the major revision number
+ 291:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *                  The least-significant nibble is the minor revision number
+ 292:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 293:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  * Side Effects:    None
+ 294:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *
+ 295:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****  *****************************************************************************/
+ 296:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** uint8_t _esos_hw_GetSerialUartVersion(void) {
+ 428              		.loc 1 296 45 is_stmt 1 view -0
+ 429              		.cfi_startproc
+ 430              		@ args = 0, pretend = 0, frame = 0
+ 431              		@ frame_needed = 0, uses_anonymous_args = 0
+ 432              		@ link register save eliminated.
+ 297:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c ****   return  ESOS_COMM_SYS_SERIAL_REV;
+ 433              		.loc 1 297 3 view .LVU75
+ 298:/home/ben/esos32/src/stm32l4_ocm3/esos_stm32l4_rs232.c **** } //end _esos_hw_GetUartVersion()
+ 434              		.loc 1 298 1 is_stmt 0 view .LVU76
+ 435 0000 0120     		movs	r0, #1
+ 436 0002 7047     		bx	lr
+ 437              		.cfi_endproc
+ 438              	.LFE7:
+ 440              		.global	u8_uartTXbuf
+ 441              		.global	u8_uartRXbuf
+ 442              		.section	.bss.u8_uartRXbuf,"aw",%nobits
+ 443              		.set	.LANCHOR1,. + 0
+ 446              	u8_uartRXbuf:
+ARM GAS  /tmp/ccD1ABIX.s 			page 14
+
+
+ 447 0000 00       		.space	1
+ 448              		.section	.bss.u8_uartTXbuf,"aw",%nobits
+ 449              		.set	.LANCHOR0,. + 0
+ 452              	u8_uartTXbuf:
+ 453 0000 00       		.space	1
+ 454              		.text
+ 455              	.Letext0:
+ 456              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 457              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ 458              		.file 4 "/home/ben/esos32/include/esos_cb.h"
+ 459              		.file 5 "/home/ben/libopencm3/include/libopencm3/stm32/l4/rcc.h"
+ 460              		.file 6 "/home/ben/esos32/include/esos.h"
+ 461              		.file 7 "/home/ben/esos32/include/stm32l4_ocm3/esos_stm32l4_rs232.h"
+ 462              		.file 8 "/home/ben/libopencm3/include/libopencm3/cm3/nvic.h"
+ 463              		.file 9 "/home/ben/libopencm3/include/libopencm3/stm32/common/rcc_common_all.h"
+ 464              		.file 10 "/home/ben/libopencm3/include/libopencm3/stm32/common/gpio_common_f234.h"
+ 465              		.file 11 "/home/ben/libopencm3/include/libopencm3/stm32/common/usart_common_all.h"
+ARM GAS  /tmp/ccD1ABIX.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_stm32l4_rs232.c
+     /tmp/ccD1ABIX.s:20     .text.__esos_hw_signal_start_tx:0000000000000000 $t
+     /tmp/ccD1ABIX.s:26     .text.__esos_hw_signal_start_tx:0000000000000000 __esos_hw_signal_start_tx
+     /tmp/ccD1ABIX.s:75     .text.__esos_hw_signal_start_tx:0000000000000034 $d
+     /tmp/ccD1ABIX.s:83     .text.__esos_hw_signal_stop_tx:0000000000000000 $t
+     /tmp/ccD1ABIX.s:89     .text.__esos_hw_signal_stop_tx:0000000000000000 __esos_hw_signal_stop_tx
+     /tmp/ccD1ABIX.s:106    .text.__esos_hw_signal_stop_tx:000000000000000c $d
+     /tmp/ccD1ABIX.s:111    .text.usart2_isr:0000000000000000 $t
+     /tmp/ccD1ABIX.s:117    .text.usart2_isr:0000000000000000 usart2_isr
+     /tmp/ccD1ABIX.s:221    .text.usart2_isr:0000000000000084 $d
+     /tmp/ccD1ABIX.s:231    .text.__esos_configUART1:0000000000000000 $t
+     /tmp/ccD1ABIX.s:237    .text.__esos_configUART1:0000000000000000 __esos_configUART1
+     /tmp/ccD1ABIX.s:346    .text.__esos_configUART1:000000000000009c $d
+     /tmp/ccD1ABIX.s:351    .text.__esos_hw_InitCommSystem:0000000000000000 $t
+     /tmp/ccD1ABIX.s:357    .text.__esos_hw_InitCommSystem:0000000000000000 __esos_hw_InitCommSystem
+     /tmp/ccD1ABIX.s:378    .text.esos_GetCommSystemMaxInDataLen:0000000000000000 $t
+     /tmp/ccD1ABIX.s:384    .text.esos_GetCommSystemMaxInDataLen:0000000000000000 esos_GetCommSystemMaxInDataLen
+     /tmp/ccD1ABIX.s:399    .text.esos_GetCommSystemMaxOutDataLen:0000000000000000 $t
+     /tmp/ccD1ABIX.s:405    .text.esos_GetCommSystemMaxOutDataLen:0000000000000000 esos_GetCommSystemMaxOutDataLen
+     /tmp/ccD1ABIX.s:420    .text._esos_hw_GetSerialUartVersion:0000000000000000 $t
+     /tmp/ccD1ABIX.s:426    .text._esos_hw_GetSerialUartVersion:0000000000000000 _esos_hw_GetSerialUartVersion
+     /tmp/ccD1ABIX.s:452    .bss.u8_uartTXbuf:0000000000000000 u8_uartTXbuf
+     /tmp/ccD1ABIX.s:446    .bss.u8_uartRXbuf:0000000000000000 u8_uartRXbuf
+     /tmp/ccD1ABIX.s:447    .bss.u8_uartRXbuf:0000000000000000 $d
+     /tmp/ccD1ABIX.s:453    .bss.u8_uartTXbuf:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__esos_CB_ReadUINT8
+usart_send
+usart_enable_tx_interrupt
+__esos_u32SystemFlags
+__pst_CB_Tx
+usart_disable_tx_interrupt
+usart_recv
+__esos_CB_OverwriteUINT8
+__pst_CB_Rx
+nvic_enable_irq
+rcc_periph_clock_enable
+gpio_mode_setup
+gpio_set_output_options
+gpio_set_af
+usart_set_baudrate
+usart_set_databits
+usart_set_stopbits
+usart_set_mode
+usart_set_parity
+usart_set_flow_control
+usart_enable_rx_interrupt
+usart_enable

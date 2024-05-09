@@ -1,0 +1,567 @@
+ARM GAS  /tmp/ccT1EYl3.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"esos_stm32l4_edub_sui.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.esos_hw_sui_configLED,"ax",%progbits
+  20              		.align	1
+  21              		.global	esos_hw_sui_configLED
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	esos_hw_sui_configLED:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "src/esos_stm32l4_edub_sui.c"
+   1:src/esos_stm32l4_edub_sui.c **** /*
+   2:src/esos_stm32l4_edub_sui.c ****  * "Copyright (c) 2019 J. W. Bruce ("AUTHOR(S)")"
+   3:src/esos_stm32l4_edub_sui.c ****  * All rights reserved.
+   4:src/esos_stm32l4_edub_sui.c ****  * (J. W. Bruce, jwbruce_AT_tntech.edu, Tennessee Tech University)
+   5:src/esos_stm32l4_edub_sui.c ****  *
+   6:src/esos_stm32l4_edub_sui.c ****  * Permission to use, copy, modify, and distribute this software and its
+   7:src/esos_stm32l4_edub_sui.c ****  * documentation for any purpose, without fee, and without written agreement is
+   8:src/esos_stm32l4_edub_sui.c ****  * hereby granted, provided that the above copyright notice, the following
+   9:src/esos_stm32l4_edub_sui.c ****  * two paragraphs and the authors appear in all copies of this software.
+  10:src/esos_stm32l4_edub_sui.c ****  *
+  11:src/esos_stm32l4_edub_sui.c ****  * IN NO EVENT SHALL THE "AUTHORS" BE LIABLE TO ANY PARTY FOR
+  12:src/esos_stm32l4_edub_sui.c ****  * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+  13:src/esos_stm32l4_edub_sui.c ****  * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE "AUTHORS"
+  14:src/esos_stm32l4_edub_sui.c ****  * HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  15:src/esos_stm32l4_edub_sui.c ****  *
+  16:src/esos_stm32l4_edub_sui.c ****  * THE "AUTHORS" SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+  17:src/esos_stm32l4_edub_sui.c ****  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  18:src/esos_stm32l4_edub_sui.c ****  * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+  19:src/esos_stm32l4_edub_sui.c ****  * ON AN "AS IS" BASIS, AND THE "AUTHORS" HAS NO OBLIGATION TO
+  20:src/esos_stm32l4_edub_sui.c ****  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
+  21:src/esos_stm32l4_edub_sui.c ****  *
+  22:src/esos_stm32l4_edub_sui.c ****  * Please maintain this header in its entirety when copying/modifying
+  23:src/esos_stm32l4_edub_sui.c ****  * these files.
+  24:src/esos_stm32l4_edub_sui.c ****  *
+  25:src/esos_stm32l4_edub_sui.c ****  *
+  26:src/esos_stm32l4_edub_sui.c ****  */
+  27:src/esos_stm32l4_edub_sui.c **** 
+  28:src/esos_stm32l4_edub_sui.c **** 
+  29:src/esos_stm32l4_edub_sui.c ****  /**
+ARM GAS  /tmp/ccT1EYl3.s 			page 2
+
+
+  30:src/esos_stm32l4_edub_sui.c ****   * \addtogroup ESOS_Simple_User_Interface_Service
+  31:src/esos_stm32l4_edub_sui.c ****   * @{
+  32:src/esos_stm32l4_edub_sui.c ****   */
+  33:src/esos_stm32l4_edub_sui.c **** 
+  34:src/esos_stm32l4_edub_sui.c ****   // Documentation for this file. If the \file tag isn't present,
+  35:src/esos_stm32l4_edub_sui.c ****   // this file won't be documented.
+  36:src/esos_stm32l4_edub_sui.c ****   /**
+  37:src/esos_stm32l4_edub_sui.c ****   * /** \file
+  38:src/esos_stm32l4_edub_sui.c ****   * \brief Template for creating hardware-specific support for the
+  39:src/esos_stm32l4_edub_sui.c ****   * ESOS32 watchdog service
+  40:src/esos_stm32l4_edub_sui.c ****   */
+  41:src/esos_stm32l4_edub_sui.c **** 
+  42:src/esos_stm32l4_edub_sui.c ****   /*** I N C L U D E S *************************************************/
+  43:src/esos_stm32l4_edub_sui.c **** #include "esos_stm32l4_edub_sui.h"
+  44:src/esos_stm32l4_edub_sui.c **** #include "esos_stm32l4.h"
+  45:src/esos_stm32l4_edub_sui.c **** #include "esos_sui.h"
+  46:src/esos_stm32l4_edub_sui.c **** #include "esos.h"
+  47:src/esos_stm32l4_edub_sui.c **** 
+  48:src/esos_stm32l4_edub_sui.c **** 
+  49:src/esos_stm32l4_edub_sui.c ****  /**
+  50:src/esos_stm32l4_edub_sui.c ****  * ESOS callback to user to perform hardware initialization for
+  51:src/esos_stm32l4_edub_sui.c ****  * connected LEDs
+  52:src/esos_stm32l4_edub_sui.c ****  *
+  53:src/esos_stm32l4_edub_sui.c ****  * \param h_LED ESOS_SUI_LED_HANDLE to switch that was returned to user
+  54:src/esos_stm32l4_edub_sui.c ****  * when the LED was registered
+  55:src/esos_stm32l4_edub_sui.c ****  *
+  56:src/esos_stm32l4_edub_sui.c ****  * \sa esos_sui_registerLED()
+  57:src/esos_stm32l4_edub_sui.c ****  * \sa esos_hw_sui_turnLEDOn()
+  58:src/esos_stm32l4_edub_sui.c ****  * \sa esos_hw_sui_turnLEDOff()
+  59:src/esos_stm32l4_edub_sui.c ****  * \hideinitializer
+  60:src/esos_stm32l4_edub_sui.c ****  */
+  61:src/esos_stm32l4_edub_sui.c **** void esos_hw_sui_configLED(ESOS_SUI_LED_HANDLE h_led) {
+  30              		.loc 1 61 55 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 61 55 is_stmt 0 view .LVU1
+  35 0000 38B5     		push	{r3, r4, r5, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 3, -16
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 5, -8
+  41              		.cfi_offset 14, -4
+  42 0002 0446     		mov	r4, r0
+  62:src/esos_stm32l4_edub_sui.c ****     rcc_periph_clock_enable(esos_sui_getLEDUserData1(h_led));
+  43              		.loc 1 62 5 is_stmt 1 view .LVU2
+  44              		.loc 1 62 29 is_stmt 0 view .LVU3
+  45 0004 FFF7FEFF 		bl	esos_sui_getLEDUserData1
+  46              	.LVL1:
+  47              		.loc 1 62 5 view .LVU4
+  48 0008 80B2     		uxth	r0, r0
+  49 000a FFF7FEFF 		bl	rcc_periph_clock_enable
+  50              	.LVL2:
+  63:src/esos_stm32l4_edub_sui.c ****     gpio_mode_setup(esos_sui_getLEDUserData1(h_led), GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, esos_sui_get
+  51              		.loc 1 63 5 is_stmt 1 view .LVU5
+  52 000e 2046     		mov	r0, r4
+ARM GAS  /tmp/ccT1EYl3.s 			page 3
+
+
+  53 0010 FFF7FEFF 		bl	esos_sui_getLEDUserData1
+  54              	.LVL3:
+  55 0014 0546     		mov	r5, r0
+  56              		.loc 1 63 88 is_stmt 0 view .LVU6
+  57 0016 2046     		mov	r0, r4
+  58 0018 FFF7FEFF 		bl	esos_sui_getLEDUserData2
+  59              	.LVL4:
+  60              		.loc 1 63 5 view .LVU7
+  61 001c 83B2     		uxth	r3, r0
+  62 001e 0022     		movs	r2, #0
+  63 0020 0121     		movs	r1, #1
+  64 0022 2846     		mov	r0, r5
+  65 0024 FFF7FEFF 		bl	gpio_mode_setup
+  66              	.LVL5:
+  64:src/esos_stm32l4_edub_sui.c **** }
+  67              		.loc 1 64 1 view .LVU8
+  68 0028 38BD     		pop	{r3, r4, r5, pc}
+  69              		.cfi_endproc
+  70              	.LFE0:
+  72              		.section	.text.esos_hw_sui_turnLEDOn,"ax",%progbits
+  73              		.align	1
+  74              		.global	esos_hw_sui_turnLEDOn
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  79              	esos_hw_sui_turnLEDOn:
+  80              	.LVL6:
+  81              	.LFB1:
+  65:src/esos_stm32l4_edub_sui.c **** 
+  66:src/esos_stm32l4_edub_sui.c **** /**
+  67:src/esos_stm32l4_edub_sui.c **** * ESOS callback to user to do whatever hardware gymnastics is required
+  68:src/esos_stm32l4_edub_sui.c **** * to turn "ON" a connected LED
+  69:src/esos_stm32l4_edub_sui.c **** *
+  70:src/esos_stm32l4_edub_sui.c **** * \param h_LED ESOS_SUI_LED_HANDLE to switch that was returned to user
+  71:src/esos_stm32l4_edub_sui.c **** * when the LED was registered
+  72:src/esos_stm32l4_edub_sui.c **** *
+  73:src/esos_stm32l4_edub_sui.c **** * \sa esos_sui_registerLED()
+  74:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_configLED()
+  75:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_turnLEDOff()
+  76:src/esos_stm32l4_edub_sui.c **** * \hideinitializer
+  77:src/esos_stm32l4_edub_sui.c **** */
+  78:src/esos_stm32l4_edub_sui.c **** void esos_hw_sui_turnLEDOn(ESOS_SUI_LED_HANDLE h_led) {
+  82              		.loc 1 78 55 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		.loc 1 78 55 is_stmt 0 view .LVU10
+  87 0000 38B5     		push	{r3, r4, r5, lr}
+  88              	.LCFI1:
+  89              		.cfi_def_cfa_offset 16
+  90              		.cfi_offset 3, -16
+  91              		.cfi_offset 4, -12
+  92              		.cfi_offset 5, -8
+  93              		.cfi_offset 14, -4
+  94 0002 0546     		mov	r5, r0
+  79:src/esos_stm32l4_edub_sui.c ****     gpio_set(esos_sui_getLEDUserData1(h_led), esos_sui_getLEDUserData2(h_led));
+  95              		.loc 1 79 5 is_stmt 1 view .LVU11
+ARM GAS  /tmp/ccT1EYl3.s 			page 4
+
+
+  96 0004 FFF7FEFF 		bl	esos_sui_getLEDUserData1
+  97              	.LVL7:
+  98              		.loc 1 79 5 is_stmt 0 view .LVU12
+  99 0008 0446     		mov	r4, r0
+ 100              		.loc 1 79 47 view .LVU13
+ 101 000a 2846     		mov	r0, r5
+ 102 000c FFF7FEFF 		bl	esos_sui_getLEDUserData2
+ 103              	.LVL8:
+ 104              		.loc 1 79 5 view .LVU14
+ 105 0010 81B2     		uxth	r1, r0
+ 106 0012 2046     		mov	r0, r4
+ 107 0014 FFF7FEFF 		bl	gpio_set
+ 108              	.LVL9:
+  80:src/esos_stm32l4_edub_sui.c **** }
+ 109              		.loc 1 80 1 view .LVU15
+ 110 0018 38BD     		pop	{r3, r4, r5, pc}
+ 111              		.cfi_endproc
+ 112              	.LFE1:
+ 114              		.section	.text.esos_hw_sui_toggleLED,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	esos_hw_sui_toggleLED
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	esos_hw_sui_toggleLED:
+ 122              	.LVL10:
+ 123              	.LFB2:
+  81:src/esos_stm32l4_edub_sui.c **** 
+  82:src/esos_stm32l4_edub_sui.c **** void esos_hw_sui_toggleLED(ESOS_SUI_LED_HANDLE h_led) {
+ 124              		.loc 1 82 55 is_stmt 1 view -0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 0
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		.loc 1 82 55 is_stmt 0 view .LVU17
+ 129 0000 38B5     		push	{r3, r4, r5, lr}
+ 130              	.LCFI2:
+ 131              		.cfi_def_cfa_offset 16
+ 132              		.cfi_offset 3, -16
+ 133              		.cfi_offset 4, -12
+ 134              		.cfi_offset 5, -8
+ 135              		.cfi_offset 14, -4
+ 136 0002 0546     		mov	r5, r0
+  83:src/esos_stm32l4_edub_sui.c ****     gpio_toggle(esos_sui_getLEDUserData1(h_led), esos_sui_getLEDUserData2(h_led));
+ 137              		.loc 1 83 5 is_stmt 1 view .LVU18
+ 138 0004 FFF7FEFF 		bl	esos_sui_getLEDUserData1
+ 139              	.LVL11:
+ 140              		.loc 1 83 5 is_stmt 0 view .LVU19
+ 141 0008 0446     		mov	r4, r0
+ 142              		.loc 1 83 50 view .LVU20
+ 143 000a 2846     		mov	r0, r5
+ 144 000c FFF7FEFF 		bl	esos_sui_getLEDUserData2
+ 145              	.LVL12:
+ 146              		.loc 1 83 5 view .LVU21
+ 147 0010 81B2     		uxth	r1, r0
+ 148 0012 2046     		mov	r0, r4
+ 149 0014 FFF7FEFF 		bl	gpio_toggle
+ 150              	.LVL13:
+ARM GAS  /tmp/ccT1EYl3.s 			page 5
+
+
+  84:src/esos_stm32l4_edub_sui.c **** }
+ 151              		.loc 1 84 1 view .LVU22
+ 152 0018 38BD     		pop	{r3, r4, r5, pc}
+ 153              		.cfi_endproc
+ 154              	.LFE2:
+ 156              		.section	.text.esos_hw_sui_turnLEDOff,"ax",%progbits
+ 157              		.align	1
+ 158              		.global	esos_hw_sui_turnLEDOff
+ 159              		.syntax unified
+ 160              		.thumb
+ 161              		.thumb_func
+ 163              	esos_hw_sui_turnLEDOff:
+ 164              	.LVL14:
+ 165              	.LFB3:
+  85:src/esos_stm32l4_edub_sui.c **** 
+  86:src/esos_stm32l4_edub_sui.c **** /**
+  87:src/esos_stm32l4_edub_sui.c **** * ESOS callback to user to do whatever hardware gymnastics is required
+  88:src/esos_stm32l4_edub_sui.c **** * to turn "OFF" a connected LED
+  89:src/esos_stm32l4_edub_sui.c **** *
+  90:src/esos_stm32l4_edub_sui.c **** * \param h_led ESOS_SUI_LED_HANDLE to switch that was returned to user
+  91:src/esos_stm32l4_edub_sui.c **** * when the LED was registered
+  92:src/esos_stm32l4_edub_sui.c **** *
+  93:src/esos_stm32l4_edub_sui.c **** * \sa esos_sui_registerLED()
+  94:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_configLED()
+  95:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_turnLEDOn()
+  96:src/esos_stm32l4_edub_sui.c **** * \hideinitializer
+  97:src/esos_stm32l4_edub_sui.c **** */
+  98:src/esos_stm32l4_edub_sui.c **** void esos_hw_sui_turnLEDOff(ESOS_SUI_LED_HANDLE h_led) {
+ 166              		.loc 1 98 56 is_stmt 1 view -0
+ 167              		.cfi_startproc
+ 168              		@ args = 0, pretend = 0, frame = 0
+ 169              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170              		.loc 1 98 56 is_stmt 0 view .LVU24
+ 171 0000 38B5     		push	{r3, r4, r5, lr}
+ 172              	.LCFI3:
+ 173              		.cfi_def_cfa_offset 16
+ 174              		.cfi_offset 3, -16
+ 175              		.cfi_offset 4, -12
+ 176              		.cfi_offset 5, -8
+ 177              		.cfi_offset 14, -4
+ 178 0002 0546     		mov	r5, r0
+  99:src/esos_stm32l4_edub_sui.c ****     gpio_clear(esos_sui_getLEDUserData1(h_led), esos_sui_getLEDUserData2(h_led));
+ 179              		.loc 1 99 5 is_stmt 1 view .LVU25
+ 180 0004 FFF7FEFF 		bl	esos_sui_getLEDUserData1
+ 181              	.LVL15:
+ 182              		.loc 1 99 5 is_stmt 0 view .LVU26
+ 183 0008 0446     		mov	r4, r0
+ 184              		.loc 1 99 49 view .LVU27
+ 185 000a 2846     		mov	r0, r5
+ 186 000c FFF7FEFF 		bl	esos_sui_getLEDUserData2
+ 187              	.LVL16:
+ 188              		.loc 1 99 5 view .LVU28
+ 189 0010 81B2     		uxth	r1, r0
+ 190 0012 2046     		mov	r0, r4
+ 191 0014 FFF7FEFF 		bl	gpio_clear
+ 192              	.LVL17:
+ 100:src/esos_stm32l4_edub_sui.c **** }
+ARM GAS  /tmp/ccT1EYl3.s 			page 6
+
+
+ 193              		.loc 1 100 1 view .LVU29
+ 194 0018 38BD     		pop	{r3, r4, r5, pc}
+ 195              		.cfi_endproc
+ 196              	.LFE3:
+ 198              		.section	.text.esos_hw_sui_configSwitch,"ax",%progbits
+ 199              		.align	1
+ 200              		.global	esos_hw_sui_configSwitch
+ 201              		.syntax unified
+ 202              		.thumb
+ 203              		.thumb_func
+ 205              	esos_hw_sui_configSwitch:
+ 206              	.LVL18:
+ 207              	.LFB4:
+ 101:src/esos_stm32l4_edub_sui.c **** 
+ 102:src/esos_stm32l4_edub_sui.c **** /**
+ 103:src/esos_stm32l4_edub_sui.c **** * ESOS callback to user to perform hardware initialization for
+ 104:src/esos_stm32l4_edub_sui.c **** * switches
+ 105:src/esos_stm32l4_edub_sui.c **** *
+ 106:src/esos_stm32l4_edub_sui.c **** * \param h_sw ESOS_SUI_SWITCH_HANDLE to switch that was returned to user
+ 107:src/esos_stm32l4_edub_sui.c **** * when the switch was registered
+ 108:src/esos_stm32l4_edub_sui.c **** *
+ 109:src/esos_stm32l4_edub_sui.c **** * \sa esos_sui_registerSwitch()
+ 110:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchPressed()
+ 111:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchReleased()
+ 112:src/esos_stm32l4_edub_sui.c **** * \hideinitializer
+ 113:src/esos_stm32l4_edub_sui.c **** */
+ 114:src/esos_stm32l4_edub_sui.c **** void esos_hw_sui_configSwitch(ESOS_SUI_SWITCH_HANDLE h_sw) {
+ 208              		.loc 1 114 60 is_stmt 1 view -0
+ 209              		.cfi_startproc
+ 210              		@ args = 0, pretend = 0, frame = 0
+ 211              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212              		.loc 1 114 60 is_stmt 0 view .LVU31
+ 213 0000 38B5     		push	{r3, r4, r5, lr}
+ 214              	.LCFI4:
+ 215              		.cfi_def_cfa_offset 16
+ 216              		.cfi_offset 3, -16
+ 217              		.cfi_offset 4, -12
+ 218              		.cfi_offset 5, -8
+ 219              		.cfi_offset 14, -4
+ 220 0002 0446     		mov	r4, r0
+ 115:src/esos_stm32l4_edub_sui.c ****     rcc_periph_clock_enable(esos_sui_getSwitchUserData1(h_sw));
+ 221              		.loc 1 115 5 is_stmt 1 view .LVU32
+ 222              		.loc 1 115 29 is_stmt 0 view .LVU33
+ 223 0004 FFF7FEFF 		bl	esos_sui_getSwitchUserData1
+ 224              	.LVL19:
+ 225              		.loc 1 115 5 view .LVU34
+ 226 0008 80B2     		uxth	r0, r0
+ 227 000a FFF7FEFF 		bl	rcc_periph_clock_enable
+ 228              	.LVL20:
+ 116:src/esos_stm32l4_edub_sui.c ****     gpio_mode_setup(esos_sui_getSwitchUserData1(h_sw), GPIO_MODE_INPUT, GPIO_PUPD_NONE, esos_sui_ge
+ 229              		.loc 1 116 5 is_stmt 1 view .LVU35
+ 230 000e 2046     		mov	r0, r4
+ 231 0010 FFF7FEFF 		bl	esos_sui_getSwitchUserData1
+ 232              	.LVL21:
+ 233 0014 0546     		mov	r5, r0
+ 234              		.loc 1 116 89 is_stmt 0 view .LVU36
+ 235 0016 2046     		mov	r0, r4
+ARM GAS  /tmp/ccT1EYl3.s 			page 7
+
+
+ 236 0018 FFF7FEFF 		bl	esos_sui_getSwitchUserData2
+ 237              	.LVL22:
+ 238              		.loc 1 116 5 view .LVU37
+ 239 001c 83B2     		uxth	r3, r0
+ 240 001e 0022     		movs	r2, #0
+ 241 0020 1146     		mov	r1, r2
+ 242 0022 2846     		mov	r0, r5
+ 243 0024 FFF7FEFF 		bl	gpio_mode_setup
+ 244              	.LVL23:
+ 117:src/esos_stm32l4_edub_sui.c **** }
+ 245              		.loc 1 117 1 view .LVU38
+ 246 0028 38BD     		pop	{r3, r4, r5, pc}
+ 247              		.cfi_endproc
+ 248              	.LFE4:
+ 250              		.section	.text.esos_hw_sui_isSwitchPressed,"ax",%progbits
+ 251              		.align	1
+ 252              		.global	esos_hw_sui_isSwitchPressed
+ 253              		.syntax unified
+ 254              		.thumb
+ 255              		.thumb_func
+ 257              	esos_hw_sui_isSwitchPressed:
+ 258              	.LVL24:
+ 259              	.LFB5:
+ 118:src/esos_stm32l4_edub_sui.c **** 
+ 119:src/esos_stm32l4_edub_sui.c **** /**
+ 120:src/esos_stm32l4_edub_sui.c **** * ESOS callback to user to answer whether switch is pressed
+ 121:src/esos_stm32l4_edub_sui.c **** *
+ 122:src/esos_stm32l4_edub_sui.c **** * \param h_sw ESOS_SUI_SWITCH_HANDLE to switch that was returned to user
+ 123:src/esos_stm32l4_edub_sui.c **** * when the switch was registered
+ 124:src/esos_stm32l4_edub_sui.c **** * \retval TRUE if switch is pressed, FALSE if it is not pressed
+ 125:src/esos_stm32l4_edub_sui.c **** *
+ 126:src/esos_stm32l4_edub_sui.c **** * \sa esos_sui_registerSwitch()
+ 127:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchPressed()
+ 128:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchReleased()
+ 129:src/esos_stm32l4_edub_sui.c **** * \hideinitializer
+ 130:src/esos_stm32l4_edub_sui.c **** */
+ 131:src/esos_stm32l4_edub_sui.c **** BOOL esos_hw_sui_isSwitchPressed(ESOS_SUI_SWITCH_HANDLE h_sw) {
+ 260              		.loc 1 131 63 is_stmt 1 view -0
+ 261              		.cfi_startproc
+ 262              		@ args = 0, pretend = 0, frame = 0
+ 263              		@ frame_needed = 0, uses_anonymous_args = 0
+ 264              		.loc 1 131 63 is_stmt 0 view .LVU40
+ 265 0000 38B5     		push	{r3, r4, r5, lr}
+ 266              	.LCFI5:
+ 267              		.cfi_def_cfa_offset 16
+ 268              		.cfi_offset 3, -16
+ 269              		.cfi_offset 4, -12
+ 270              		.cfi_offset 5, -8
+ 271              		.cfi_offset 14, -4
+ 272 0002 0546     		mov	r5, r0
+ 132:src/esos_stm32l4_edub_sui.c ****     if (gpio_get(esos_sui_getSwitchUserData1(h_sw), esos_sui_getSwitchUserData2(h_sw)) != 0) {
+ 273              		.loc 1 132 5 is_stmt 1 view .LVU41
+ 274              		.loc 1 132 9 is_stmt 0 view .LVU42
+ 275 0004 FFF7FEFF 		bl	esos_sui_getSwitchUserData1
+ 276              	.LVL25:
+ 277              		.loc 1 132 9 view .LVU43
+ 278 0008 0446     		mov	r4, r0
+ARM GAS  /tmp/ccT1EYl3.s 			page 8
+
+
+ 279              		.loc 1 132 53 view .LVU44
+ 280 000a 2846     		mov	r0, r5
+ 281 000c FFF7FEFF 		bl	esos_sui_getSwitchUserData2
+ 282              	.LVL26:
+ 283              		.loc 1 132 9 view .LVU45
+ 284 0010 81B2     		uxth	r1, r0
+ 285 0012 2046     		mov	r0, r4
+ 286 0014 FFF7FEFF 		bl	gpio_get
+ 287              	.LVL27:
+ 288              		.loc 1 132 8 view .LVU46
+ 289 0018 08B1     		cbz	r0, .L13
+ 133:src/esos_stm32l4_edub_sui.c ****         return TRUE;
+ 290              		.loc 1 133 16 view .LVU47
+ 291 001a 0120     		movs	r0, #1
+ 292              	.L12:
+ 134:src/esos_stm32l4_edub_sui.c ****     }
+ 135:src/esos_stm32l4_edub_sui.c ****     else {
+ 136:src/esos_stm32l4_edub_sui.c ****         return FALSE;
+ 137:src/esos_stm32l4_edub_sui.c ****     }
+ 138:src/esos_stm32l4_edub_sui.c **** }
+ 293              		.loc 1 138 1 view .LVU48
+ 294 001c 38BD     		pop	{r3, r4, r5, pc}
+ 295              	.L13:
+ 136:src/esos_stm32l4_edub_sui.c ****     }
+ 296              		.loc 1 136 16 view .LVU49
+ 297 001e 0020     		movs	r0, #0
+ 298 0020 FCE7     		b	.L12
+ 299              		.cfi_endproc
+ 300              	.LFE5:
+ 302              		.section	.text.esos_hw_sui_isSwitchReleased,"ax",%progbits
+ 303              		.align	1
+ 304              		.global	esos_hw_sui_isSwitchReleased
+ 305              		.syntax unified
+ 306              		.thumb
+ 307              		.thumb_func
+ 309              	esos_hw_sui_isSwitchReleased:
+ 310              	.LVL28:
+ 311              	.LFB6:
+ 139:src/esos_stm32l4_edub_sui.c **** 
+ 140:src/esos_stm32l4_edub_sui.c **** /**
+ 141:src/esos_stm32l4_edub_sui.c **** * ESOS callback to user to answer whether switch is pressed
+ 142:src/esos_stm32l4_edub_sui.c **** *
+ 143:src/esos_stm32l4_edub_sui.c **** * \param h_sw ESOS_SUI_SWITCH_HANDLE to switch that was returned to user
+ 144:src/esos_stm32l4_edub_sui.c **** * when the switch was registered
+ 145:src/esos_stm32l4_edub_sui.c **** * \retval TRUE if switch is released (not pressed), FALSE if it is pressed
+ 146:src/esos_stm32l4_edub_sui.c **** *
+ 147:src/esos_stm32l4_edub_sui.c **** * \sa esos_sui_registerSwitch()
+ 148:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchPressed()
+ 149:src/esos_stm32l4_edub_sui.c **** * \sa esos_hw_sui_isSwitchReleased()
+ 150:src/esos_stm32l4_edub_sui.c **** * \hideinitializer
+ 151:src/esos_stm32l4_edub_sui.c **** */
+ 152:src/esos_stm32l4_edub_sui.c **** BOOL esos_hw_sui_isSwitchReleased(ESOS_SUI_SWITCH_HANDLE h_sw) {
+ 312              		.loc 1 152 64 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 0, pretend = 0, frame = 0
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 316              		.loc 1 152 64 is_stmt 0 view .LVU51
+ARM GAS  /tmp/ccT1EYl3.s 			page 9
+
+
+ 317 0000 38B5     		push	{r3, r4, r5, lr}
+ 318              	.LCFI6:
+ 319              		.cfi_def_cfa_offset 16
+ 320              		.cfi_offset 3, -16
+ 321              		.cfi_offset 4, -12
+ 322              		.cfi_offset 5, -8
+ 323              		.cfi_offset 14, -4
+ 324 0002 0546     		mov	r5, r0
+ 153:src/esos_stm32l4_edub_sui.c ****     if (gpio_get(esos_sui_getSwitchUserData1(h_sw), esos_sui_getSwitchUserData2(h_sw)) != 0) {
+ 325              		.loc 1 153 5 is_stmt 1 view .LVU52
+ 326              		.loc 1 153 9 is_stmt 0 view .LVU53
+ 327 0004 FFF7FEFF 		bl	esos_sui_getSwitchUserData1
+ 328              	.LVL29:
+ 329              		.loc 1 153 9 view .LVU54
+ 330 0008 0446     		mov	r4, r0
+ 331              		.loc 1 153 53 view .LVU55
+ 332 000a 2846     		mov	r0, r5
+ 333 000c FFF7FEFF 		bl	esos_sui_getSwitchUserData2
+ 334              	.LVL30:
+ 335              		.loc 1 153 9 view .LVU56
+ 336 0010 81B2     		uxth	r1, r0
+ 337 0012 2046     		mov	r0, r4
+ 338 0014 FFF7FEFF 		bl	gpio_get
+ 339              	.LVL31:
+ 340              		.loc 1 153 8 view .LVU57
+ 341 0018 08B1     		cbz	r0, .L17
+ 154:src/esos_stm32l4_edub_sui.c ****         return FALSE;
+ 342              		.loc 1 154 16 view .LVU58
+ 343 001a 0020     		movs	r0, #0
+ 344              	.L16:
+ 155:src/esos_stm32l4_edub_sui.c ****     }
+ 156:src/esos_stm32l4_edub_sui.c ****     else {
+ 157:src/esos_stm32l4_edub_sui.c ****         return TRUE;
+ 158:src/esos_stm32l4_edub_sui.c ****     }
+ 159:src/esos_stm32l4_edub_sui.c **** }...
+ 345              		.loc 1 159 1 view .LVU59
+ 346 001c 38BD     		pop	{r3, r4, r5, pc}
+ 347              	.L17:
+ 157:src/esos_stm32l4_edub_sui.c ****         return TRUE;
+ 348              		.loc 1 157 16 view .LVU60
+ 349 001e 0120     		movs	r0, #1
+ 350 0020 FCE7     		b	.L16
+ 351              		.cfi_endproc
+ 352              	.LFE6:
+ 354              		.text
+ 355              	.Letext0:
+ 356              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 357              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ 358              		.file 4 "/home/ben/esos32/include/all_generic.h"
+ 359              		.file 5 "/home/ben/esos32/include/esos_sui.h"
+ 360              		.file 6 "/home/ben/libopencm3/include/libopencm3/stm32/common/gpio_common_all.h"
+ 361              		.file 7 "/home/ben/libopencm3/include/libopencm3/stm32/common/rcc_common_all.h"
+ 362              		.file 8 "/home/ben/libopencm3/include/libopencm3/stm32/common/gpio_common_f234.h"
+ARM GAS  /tmp/ccT1EYl3.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 esos_stm32l4_edub_sui.c
+     /tmp/ccT1EYl3.s:20     .text.esos_hw_sui_configLED:0000000000000000 $t
+     /tmp/ccT1EYl3.s:26     .text.esos_hw_sui_configLED:0000000000000000 esos_hw_sui_configLED
+     /tmp/ccT1EYl3.s:73     .text.esos_hw_sui_turnLEDOn:0000000000000000 $t
+     /tmp/ccT1EYl3.s:79     .text.esos_hw_sui_turnLEDOn:0000000000000000 esos_hw_sui_turnLEDOn
+     /tmp/ccT1EYl3.s:115    .text.esos_hw_sui_toggleLED:0000000000000000 $t
+     /tmp/ccT1EYl3.s:121    .text.esos_hw_sui_toggleLED:0000000000000000 esos_hw_sui_toggleLED
+     /tmp/ccT1EYl3.s:157    .text.esos_hw_sui_turnLEDOff:0000000000000000 $t
+     /tmp/ccT1EYl3.s:163    .text.esos_hw_sui_turnLEDOff:0000000000000000 esos_hw_sui_turnLEDOff
+     /tmp/ccT1EYl3.s:199    .text.esos_hw_sui_configSwitch:0000000000000000 $t
+     /tmp/ccT1EYl3.s:205    .text.esos_hw_sui_configSwitch:0000000000000000 esos_hw_sui_configSwitch
+     /tmp/ccT1EYl3.s:251    .text.esos_hw_sui_isSwitchPressed:0000000000000000 $t
+     /tmp/ccT1EYl3.s:257    .text.esos_hw_sui_isSwitchPressed:0000000000000000 esos_hw_sui_isSwitchPressed
+     /tmp/ccT1EYl3.s:303    .text.esos_hw_sui_isSwitchReleased:0000000000000000 $t
+     /tmp/ccT1EYl3.s:309    .text.esos_hw_sui_isSwitchReleased:0000000000000000 esos_hw_sui_isSwitchReleased
+
+UNDEFINED SYMBOLS
+esos_sui_getLEDUserData1
+rcc_periph_clock_enable
+esos_sui_getLEDUserData2
+gpio_mode_setup
+gpio_set
+gpio_toggle
+gpio_clear
+esos_sui_getSwitchUserData1
+esos_sui_getSwitchUserData2
+gpio_get

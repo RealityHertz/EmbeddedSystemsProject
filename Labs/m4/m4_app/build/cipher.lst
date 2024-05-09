@@ -1,0 +1,698 @@
+ARM GAS  /tmp/cc2JRFYi.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"cipher.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.ascii_to_integer,"ax",%progbits
+  20              		.align	1
+  21              		.global	ascii_to_integer
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	ascii_to_integer:
+  27              	.LVL0:
+  28              	.LFB3:
+  29              		.file 1 "src/cipher.c"
+   1:src/cipher.c  **** #include "m4.h"
+   2:src/cipher.c  **** #include "user_app.h"
+   3:src/cipher.c  **** #include <stdbool.h>
+   4:src/cipher.c  **** 
+   5:src/cipher.c  **** //Function dedicated to ASCII to integer conversion
+   6:src/cipher.c  **** uint32_t ascii_to_integer(uint8_t txt[4])
+   7:src/cipher.c  **** {
+  30              		.loc 1 7 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 7 1 is_stmt 0 view .LVU1
+  36 0000 0146     		mov	r1, r0
+   8:src/cipher.c  ****     int sum, digit, i;
+  37              		.loc 1 8 5 is_stmt 1 view .LVU2
+   9:src/cipher.c  ****     sum = 0;
+  38              		.loc 1 9 5 view .LVU3
+  39              	.LVL1:
+  10:src/cipher.c  ****     for (i = 0; i < 4; i++) {
+  40              		.loc 1 10 5 view .LVU4
+  41              		.loc 1 10 12 is_stmt 0 view .LVU5
+  42 0002 0023     		movs	r3, #0
+   9:src/cipher.c  ****     sum = 0;
+  43              		.loc 1 9 9 view .LVU6
+  44 0004 1846     		mov	r0, r3
+  45              	.LVL2:
+  46              		.loc 1 10 5 view .LVU7
+  47 0006 05E0     		b	.L2
+ARM GAS  /tmp/cc2JRFYi.s 			page 2
+
+
+  48              	.LVL3:
+  49              	.L5:
+  11:src/cipher.c  **** 		if(txt[i] != '0'){
+  12:src/cipher.c  ****         	digit = txt[i] - 0x30;
+  13:src/cipher.c  **** 		}
+  14:src/cipher.c  **** 		else{
+  15:src/cipher.c  **** 			digit = 0;
+  50              		.loc 1 15 10 view .LVU8
+  51 0008 0022     		movs	r2, #0
+  52              	.L3:
+  53              	.LVL4:
+  16:src/cipher.c  **** 		}
+  17:src/cipher.c  ****         sum = (sum * 10) + digit;
+  54              		.loc 1 17 9 is_stmt 1 discriminator 2 view .LVU9
+  55              		.loc 1 17 20 is_stmt 0 discriminator 2 view .LVU10
+  56 000a 00EB8000 		add	r0, r0, r0, lsl #2
+  57              	.LVL5:
+  58              		.loc 1 17 13 discriminator 2 view .LVU11
+  59 000e 02EB4000 		add	r0, r2, r0, lsl #1
+  60              	.LVL6:
+  10:src/cipher.c  **** 		if(txt[i] != '0'){
+  61              		.loc 1 10 24 is_stmt 1 discriminator 2 view .LVU12
+  10:src/cipher.c  **** 		if(txt[i] != '0'){
+  62              		.loc 1 10 25 is_stmt 0 discriminator 2 view .LVU13
+  63 0012 0133     		adds	r3, r3, #1
+  64              	.LVL7:
+  65              	.L2:
+  10:src/cipher.c  **** 		if(txt[i] != '0'){
+  66              		.loc 1 10 17 is_stmt 1 discriminator 1 view .LVU14
+  10:src/cipher.c  **** 		if(txt[i] != '0'){
+  67              		.loc 1 10 5 is_stmt 0 discriminator 1 view .LVU15
+  68 0014 032B     		cmp	r3, #3
+  69 0016 04DC     		bgt	.L6
+  11:src/cipher.c  **** 		if(txt[i] != '0'){
+  70              		.loc 1 11 3 is_stmt 1 view .LVU16
+  11:src/cipher.c  **** 		if(txt[i] != '0'){
+  71              		.loc 1 11 9 is_stmt 0 view .LVU17
+  72 0018 CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+  11:src/cipher.c  **** 		if(txt[i] != '0'){
+  73              		.loc 1 11 5 view .LVU18
+  74 001a 302A     		cmp	r2, #48
+  75 001c F4D0     		beq	.L5
+  12:src/cipher.c  **** 		}
+  76              		.loc 1 12 10 is_stmt 1 view .LVU19
+  12:src/cipher.c  **** 		}
+  77              		.loc 1 12 16 is_stmt 0 view .LVU20
+  78 001e 303A     		subs	r2, r2, #48
+  79              	.LVL8:
+  12:src/cipher.c  **** 		}
+  80              		.loc 1 12 16 view .LVU21
+  81 0020 F3E7     		b	.L3
+  82              	.LVL9:
+  83              	.L6:
+  18:src/cipher.c  ****     }
+  19:src/cipher.c  ****     return sum;
+  84              		.loc 1 19 5 is_stmt 1 view .LVU22
+  20:src/cipher.c  **** }
+ARM GAS  /tmp/cc2JRFYi.s 			page 3
+
+
+  85              		.loc 1 20 1 is_stmt 0 view .LVU23
+  86 0022 7047     		bx	lr
+  87              		.cfi_endproc
+  88              	.LFE3:
+  90              		.section	.text.rotate_key,"ax",%progbits
+  91              		.align	1
+  92              		.global	rotate_key
+  93              		.syntax unified
+  94              		.thumb
+  95              		.thumb_func
+  97              	rotate_key:
+  98              	.LFB4:
+  21:src/cipher.c  **** 
+  22:src/cipher.c  **** /*
+  23:src/cipher.c  **** Rotates the key left by by 1 character, this is in order to make sure
+  24:src/cipher.c  **** the cipher is enciphering by the correct key every time it gets an 
+  25:src/cipher.c  **** input from the user.
+  26:src/cipher.c  **** */
+  27:src/cipher.c  **** void rotate_key(void){
+  99              		.loc 1 27 22 is_stmt 1 view -0
+ 100              		.cfi_startproc
+ 101              		@ args = 0, pretend = 0, frame = 0
+ 102              		@ frame_needed = 0, uses_anonymous_args = 0
+ 103              		@ link register save eliminated.
+  28:src/cipher.c  ****     uint8_t u8_key_length = 21;
+ 104              		.loc 1 28 5 view .LVU25
+ 105              	.LVL10:
+  29:src/cipher.c  ****     uint8_t u8_j;
+ 106              		.loc 1 29 5 view .LVU26
+  30:src/cipher.c  ****     uint8_t temp = key[0];
+ 107              		.loc 1 30 5 view .LVU27
+ 108              		.loc 1 30 13 is_stmt 0 view .LVU28
+ 109 0000 074B     		ldr	r3, .L10
+ 110 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 111              	.LVL11:
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 112              		.loc 1 31 5 is_stmt 1 view .LVU29
+ 113              		.loc 1 31 14 is_stmt 0 view .LVU30
+ 114 0004 0023     		movs	r3, #0
+ 115              		.loc 1 31 5 view .LVU31
+ 116 0006 05E0     		b	.L8
+ 117              	.LVL12:
+ 118              	.L9:
+  32:src/cipher.c  ****         key[u8_j] = key[u8_j+1];
+ 119              		.loc 1 32 9 is_stmt 1 discriminator 3 view .LVU32
+ 120              		.loc 1 32 29 is_stmt 0 discriminator 3 view .LVU33
+ 121 0008 591C     		adds	r1, r3, #1
+ 122              		.loc 1 32 24 discriminator 3 view .LVU34
+ 123 000a 054A     		ldr	r2, .L10
+ 124 000c 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 125              		.loc 1 32 19 discriminator 3 view .LVU35
+ 126 000e D154     		strb	r1, [r2, r3]
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 127              		.loc 1 31 43 is_stmt 1 discriminator 3 view .LVU36
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 128              		.loc 1 31 47 is_stmt 0 discriminator 3 view .LVU37
+ 129 0010 0133     		adds	r3, r3, #1
+ARM GAS  /tmp/cc2JRFYi.s 			page 4
+
+
+ 130              	.LVL13:
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 131              		.loc 1 31 47 discriminator 3 view .LVU38
+ 132 0012 DBB2     		uxtb	r3, r3
+ 133              	.LVL14:
+ 134              	.L8:
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 135              		.loc 1 31 19 is_stmt 1 discriminator 1 view .LVU39
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 136              		.loc 1 31 24 is_stmt 0 discriminator 1 view .LVU40
+ 137 0014 1A46     		mov	r2, r3
+  31:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 138              		.loc 1 31 5 discriminator 1 view .LVU41
+ 139 0016 132B     		cmp	r3, #19
+ 140 0018 F6D9     		bls	.L9
+  33:src/cipher.c  ****     }
+  34:src/cipher.c  ****     key[u8_j] = temp;
+ 141              		.loc 1 34 5 is_stmt 1 view .LVU42
+ 142              		.loc 1 34 15 is_stmt 0 view .LVU43
+ 143 001a 014B     		ldr	r3, .L10
+ 144              	.LVL15:
+ 145              		.loc 1 34 15 view .LVU44
+ 146 001c 9854     		strb	r0, [r3, r2]
+  35:src/cipher.c  **** }
+ 147              		.loc 1 35 1 view .LVU45
+ 148 001e 7047     		bx	lr
+ 149              	.L11:
+ 150              		.align	2
+ 151              	.L10:
+ 152 0020 00000000 		.word	key
+ 153              		.cfi_endproc
+ 154              	.LFE4:
+ 156              		.section	.text.rotate_key2,"ax",%progbits
+ 157              		.align	1
+ 158              		.global	rotate_key2
+ 159              		.syntax unified
+ 160              		.thumb
+ 161              		.thumb_func
+ 163              	rotate_key2:
+ 164              	.LFB5:
+  36:src/cipher.c  **** 
+  37:src/cipher.c  **** void rotate_key2(void){
+ 165              		.loc 1 37 23 is_stmt 1 view -0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169              		@ link register save eliminated.
+  38:src/cipher.c  ****     uint8_t u8_key_length = 21;
+ 170              		.loc 1 38 5 view .LVU47
+ 171              	.LVL16:
+  39:src/cipher.c  ****     uint8_t u8_j;
+ 172              		.loc 1 39 5 view .LVU48
+  40:src/cipher.c  ****     uint8_t temp = key2[0];
+ 173              		.loc 1 40 5 view .LVU49
+ 174              		.loc 1 40 13 is_stmt 0 view .LVU50
+ 175 0000 074B     		ldr	r3, .L15
+ 176 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ARM GAS  /tmp/cc2JRFYi.s 			page 5
+
+
+ 177              	.LVL17:
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 178              		.loc 1 41 5 is_stmt 1 view .LVU51
+ 179              		.loc 1 41 14 is_stmt 0 view .LVU52
+ 180 0004 0023     		movs	r3, #0
+ 181              		.loc 1 41 5 view .LVU53
+ 182 0006 05E0     		b	.L13
+ 183              	.LVL18:
+ 184              	.L14:
+  42:src/cipher.c  ****         key2[u8_j] = key2[u8_j+1];
+ 185              		.loc 1 42 9 is_stmt 1 discriminator 3 view .LVU54
+ 186              		.loc 1 42 31 is_stmt 0 discriminator 3 view .LVU55
+ 187 0008 591C     		adds	r1, r3, #1
+ 188              		.loc 1 42 26 discriminator 3 view .LVU56
+ 189 000a 054A     		ldr	r2, .L15
+ 190 000c 515C     		ldrb	r1, [r2, r1]	@ zero_extendqisi2
+ 191              		.loc 1 42 20 discriminator 3 view .LVU57
+ 192 000e D154     		strb	r1, [r2, r3]
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 193              		.loc 1 41 43 is_stmt 1 discriminator 3 view .LVU58
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 194              		.loc 1 41 47 is_stmt 0 discriminator 3 view .LVU59
+ 195 0010 0133     		adds	r3, r3, #1
+ 196              	.LVL19:
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 197              		.loc 1 41 47 discriminator 3 view .LVU60
+ 198 0012 DBB2     		uxtb	r3, r3
+ 199              	.LVL20:
+ 200              	.L13:
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 201              		.loc 1 41 19 is_stmt 1 discriminator 1 view .LVU61
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 202              		.loc 1 41 24 is_stmt 0 discriminator 1 view .LVU62
+ 203 0014 1A46     		mov	r2, r3
+  41:src/cipher.c  ****     for(u8_j = 0; u8_j < u8_key_length-1; u8_j++){
+ 204              		.loc 1 41 5 discriminator 1 view .LVU63
+ 205 0016 132B     		cmp	r3, #19
+ 206 0018 F6D9     		bls	.L14
+  43:src/cipher.c  ****     }
+  44:src/cipher.c  ****     key2[u8_j] = temp;
+ 207              		.loc 1 44 5 is_stmt 1 view .LVU64
+ 208              		.loc 1 44 16 is_stmt 0 view .LVU65
+ 209 001a 014B     		ldr	r3, .L15
+ 210              	.LVL21:
+ 211              		.loc 1 44 16 view .LVU66
+ 212 001c 9854     		strb	r0, [r3, r2]
+  45:src/cipher.c  **** }
+ 213              		.loc 1 45 1 view .LVU67
+ 214 001e 7047     		bx	lr
+ 215              	.L16:
+ 216              		.align	2
+ 217              	.L15:
+ 218 0020 00000000 		.word	key2
+ 219              		.cfi_endproc
+ 220              	.LFE5:
+ 222              		.section	.text.rotate_key_left_by,"ax",%progbits
+ 223              		.align	1
+ARM GAS  /tmp/cc2JRFYi.s 			page 6
+
+
+ 224              		.global	rotate_key_left_by
+ 225              		.syntax unified
+ 226              		.thumb
+ 227              		.thumb_func
+ 229              	rotate_key_left_by:
+ 230              	.LVL22:
+ 231              	.LFB6:
+  46:src/cipher.c  **** 
+  47:src/cipher.c  **** //Rotates the key by a certain amount siginifed by the uint16_t num variable
+  48:src/cipher.c  **** void rotate_key_left_by(uint16_t num){
+ 232              		.loc 1 48 38 is_stmt 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236              		.loc 1 48 38 is_stmt 0 view .LVU69
+ 237 0000 38B5     		push	{r3, r4, r5, lr}
+ 238              	.LCFI0:
+ 239              		.cfi_def_cfa_offset 16
+ 240              		.cfi_offset 3, -16
+ 241              		.cfi_offset 4, -12
+ 242              		.cfi_offset 5, -8
+ 243              		.cfi_offset 14, -4
+ 244 0002 0546     		mov	r5, r0
+  49:src/cipher.c  ****     for(int i = 0;i < num; i++){
+ 245              		.loc 1 49 5 is_stmt 1 view .LVU70
+ 246              	.LBB2:
+ 247              		.loc 1 49 9 view .LVU71
+ 248              	.LVL23:
+ 249              		.loc 1 49 13 is_stmt 0 view .LVU72
+ 250 0004 0024     		movs	r4, #0
+ 251              		.loc 1 49 5 view .LVU73
+ 252 0006 02E0     		b	.L18
+ 253              	.LVL24:
+ 254              	.L19:
+  50:src/cipher.c  ****         rotate_key();
+ 255              		.loc 1 50 9 is_stmt 1 discriminator 3 view .LVU74
+ 256 0008 FFF7FEFF 		bl	rotate_key
+ 257              	.LVL25:
+  49:src/cipher.c  ****     for(int i = 0;i < num; i++){
+ 258              		.loc 1 49 28 discriminator 3 view .LVU75
+  49:src/cipher.c  ****     for(int i = 0;i < num; i++){
+ 259              		.loc 1 49 29 is_stmt 0 discriminator 3 view .LVU76
+ 260 000c 0134     		adds	r4, r4, #1
+ 261              	.LVL26:
+ 262              	.L18:
+  49:src/cipher.c  ****     for(int i = 0;i < num; i++){
+ 263              		.loc 1 49 19 is_stmt 1 discriminator 1 view .LVU77
+  49:src/cipher.c  ****     for(int i = 0;i < num; i++){
+ 264              		.loc 1 49 5 is_stmt 0 discriminator 1 view .LVU78
+ 265 000e A542     		cmp	r5, r4
+ 266 0010 FADC     		bgt	.L19
+ 267              	.LBE2:
+  51:src/cipher.c  ****     }
+  52:src/cipher.c  **** }
+ 268              		.loc 1 52 1 view .LVU79
+ 269 0012 38BD     		pop	{r3, r4, r5, pc}
+ 270              		.loc 1 52 1 view .LVU80
+ARM GAS  /tmp/cc2JRFYi.s 			page 7
+
+
+ 271              		.cfi_endproc
+ 272              	.LFE6:
+ 274              		.section	.text.encypher,"ax",%progbits
+ 275              		.align	1
+ 276              		.global	encypher
+ 277              		.syntax unified
+ 278              		.thumb
+ 279              		.thumb_func
+ 281              	encypher:
+ 282              	.LVL27:
+ 283              	.LFB7:
+  53:src/cipher.c  **** 
+  54:src/cipher.c  **** 
+  55:src/cipher.c  **** /*
+  56:src/cipher.c  **** Encyphers/Decyphers the input from the user using the Vigenere Cipher
+  57:src/cipher.c  **** */
+  58:src/cipher.c  **** uint8_t encypher(uint8_t u8_text_to_encrypt){
+ 284              		.loc 1 58 45 is_stmt 1 view -0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              		.loc 1 58 45 is_stmt 0 view .LVU82
+ 289 0000 10B5     		push	{r4, lr}
+ 290              	.LCFI1:
+ 291              		.cfi_def_cfa_offset 8
+ 292              		.cfi_offset 4, -8
+ 293              		.cfi_offset 14, -4
+  59:src/cipher.c  ****     
+  60:src/cipher.c  ****     uint8_t u8_output = 0;
+ 294              		.loc 1 60 5 is_stmt 1 view .LVU83
+ 295              	.LVL28:
+  61:src/cipher.c  ****     //Converts the input to upper case to make the ascii math simpler
+  62:src/cipher.c  ****     u8_text_to_encrypt = toupper(u8_text_to_encrypt); 
+ 296              		.loc 1 62 5 view .LVU84
+ 297              		.loc 1 62 26 is_stmt 0 view .LVU85
+ 298 0002 FFF7FEFF 		bl	toupper
+ 299              	.LVL29:
+  63:src/cipher.c  **** 
+  64:src/cipher.c  ****     u8_output = ((u8_text_to_encrypt + key[0]) % 26) + 'A';
+ 300              		.loc 1 64 5 is_stmt 1 view .LVU86
+ 301              		.loc 1 64 43 is_stmt 0 view .LVU87
+ 302 0006 094B     		ldr	r3, .L23
+ 303 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 304              		.loc 1 64 38 view .LVU88
+ 305 000a 53FA80F0 		uxtab	r0, r3, r0
+ 306              	.LVL30:
+ 307              		.loc 1 64 48 view .LVU89
+ 308 000e 084B     		ldr	r3, .L23+4
+ 309 0010 83FB0023 		smull	r2, r3, r3, r0
+ 310 0014 DB10     		asrs	r3, r3, #3
+ 311 0016 1A22     		movs	r2, #26
+ 312 0018 02FB1303 		mls	r3, r2, r3, r0
+ 313              		.loc 1 64 54 view .LVU90
+ 314 001c DCB2     		uxtb	r4, r3
+ 315              		.loc 1 64 15 view .LVU91
+ 316 001e 4134     		adds	r4, r4, #65
+ 317 0020 E4B2     		uxtb	r4, r4
+ARM GAS  /tmp/cc2JRFYi.s 			page 8
+
+
+ 318              	.LVL31:
+  65:src/cipher.c  ****     rotate_key();
+ 319              		.loc 1 65 5 is_stmt 1 view .LVU92
+ 320 0022 FFF7FEFF 		bl	rotate_key
+ 321              	.LVL32:
+  66:src/cipher.c  ****     return u8_output;
+ 322              		.loc 1 66 5 view .LVU93
+  67:src/cipher.c  **** 
+  68:src/cipher.c  **** }
+ 323              		.loc 1 68 1 is_stmt 0 view .LVU94
+ 324 0026 2046     		mov	r0, r4
+ 325 0028 10BD     		pop	{r4, pc}
+ 326              	.LVL33:
+ 327              	.L24:
+ 328              		.loc 1 68 1 view .LVU95
+ 329 002a 00BF     		.align	2
+ 330              	.L23:
+ 331 002c 00000000 		.word	key
+ 332 0030 4FECC44E 		.word	1321528399
+ 333              		.cfi_endproc
+ 334              	.LFE7:
+ 336              		.section	.text.decypher,"ax",%progbits
+ 337              		.align	1
+ 338              		.global	decypher
+ 339              		.syntax unified
+ 340              		.thumb
+ 341              		.thumb_func
+ 343              	decypher:
+ 344              	.LVL34:
+ 345              	.LFB8:
+  69:src/cipher.c  **** 
+  70:src/cipher.c  **** uint8_t decypher(uint8_t u8_text_to_encrypt)
+  71:src/cipher.c  **** {
+ 346              		.loc 1 71 1 is_stmt 1 view -0
+ 347              		.cfi_startproc
+ 348              		@ args = 0, pretend = 0, frame = 0
+ 349              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350              		.loc 1 71 1 is_stmt 0 view .LVU97
+ 351 0000 10B5     		push	{r4, lr}
+ 352              	.LCFI2:
+ 353              		.cfi_def_cfa_offset 8
+ 354              		.cfi_offset 4, -8
+ 355              		.cfi_offset 14, -4
+  72:src/cipher.c  ****     uint8_t u8_output = 0;
+ 356              		.loc 1 72 5 is_stmt 1 view .LVU98
+ 357              	.LVL35:
+  73:src/cipher.c  ****     //Converts the input to upper case to make the ascii math simpler
+  74:src/cipher.c  ****     u8_text_to_encrypt = toupper(u8_text_to_encrypt); 
+ 358              		.loc 1 74 5 view .LVU99
+ 359              		.loc 1 74 26 is_stmt 0 view .LVU100
+ 360 0002 FFF7FEFF 		bl	toupper
+ 361              	.LVL36:
+  75:src/cipher.c  **** 
+  76:src/cipher.c  ****     u8_output = ( ((u8_text_to_encrypt - key2[0]) + 26) % 26) + 'A';
+ 362              		.loc 1 76 5 is_stmt 1 view .LVU101
+ 363              		.loc 1 76 46 is_stmt 0 view .LVU102
+ 364 0006 0A4B     		ldr	r3, .L27
+ARM GAS  /tmp/cc2JRFYi.s 			page 9
+
+
+ 365 0008 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 366              		.loc 1 76 40 view .LVU103
+ 367 000a C3B2     		uxtb	r3, r0
+ 368 000c 9B1A     		subs	r3, r3, r2
+ 369              		.loc 1 76 51 view .LVU104
+ 370 000e 1A33     		adds	r3, r3, #26
+ 371              		.loc 1 76 57 view .LVU105
+ 372 0010 084A     		ldr	r2, .L27+4
+ 373 0012 82FB0312 		smull	r1, r2, r2, r3
+ 374 0016 D817     		asrs	r0, r3, #31
+ 375              	.LVL37:
+ 376              		.loc 1 76 57 view .LVU106
+ 377 0018 C0EBE200 		rsb	r0, r0, r2, asr #3
+ 378 001c 1A22     		movs	r2, #26
+ 379 001e 02FB1030 		mls	r0, r2, r0, r3
+ 380              		.loc 1 76 63 view .LVU107
+ 381 0022 C4B2     		uxtb	r4, r0
+ 382              		.loc 1 76 15 view .LVU108
+ 383 0024 4134     		adds	r4, r4, #65
+ 384 0026 E4B2     		uxtb	r4, r4
+ 385              	.LVL38:
+  77:src/cipher.c  ****     rotate_key2();
+ 386              		.loc 1 77 5 is_stmt 1 view .LVU109
+ 387 0028 FFF7FEFF 		bl	rotate_key2
+ 388              	.LVL39:
+  78:src/cipher.c  ****     return u8_output;
+ 389              		.loc 1 78 5 view .LVU110
+  79:src/cipher.c  **** }
+ 390              		.loc 1 79 1 is_stmt 0 view .LVU111
+ 391 002c 2046     		mov	r0, r4
+ 392 002e 10BD     		pop	{r4, pc}
+ 393              	.LVL40:
+ 394              	.L28:
+ 395              		.loc 1 79 1 view .LVU112
+ 396              		.align	2
+ 397              	.L27:
+ 398 0030 00000000 		.word	key2
+ 399 0034 4FECC44E 		.word	1321528399
+ 400              		.cfi_endproc
+ 401              	.LFE8:
+ 403              		.section	.rodata.reset_key.str1.4,"aMS",%progbits,1
+ 404              		.align	2
+ 405              	.LC0:
+ 406 0000 424F4C44 		.ascii	"BOLDFEARLESSCONFIDENT\000"
+ 406      46454152 
+ 406      4C455353 
+ 406      434F4E46 
+ 406      4944454E 
+ 407              		.section	.text.reset_key,"ax",%progbits
+ 408              		.align	1
+ 409              		.global	reset_key
+ 410              		.syntax unified
+ 411              		.thumb
+ 412              		.thumb_func
+ 414              	reset_key:
+ 415              	.LFB9:
+  80:src/cipher.c  **** 
+ARM GAS  /tmp/cc2JRFYi.s 			page 10
+
+
+  81:src/cipher.c  **** 
+  82:src/cipher.c  **** //Resets the key array to the original key
+  83:src/cipher.c  **** void reset_key(void){
+ 416              		.loc 1 83 21 is_stmt 1 view -0
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 24
+ 419              		@ frame_needed = 0, uses_anonymous_args = 0
+ 420              		@ link register save eliminated.
+ 421 0000 10B4     		push	{r4}
+ 422              	.LCFI3:
+ 423              		.cfi_def_cfa_offset 4
+ 424              		.cfi_offset 4, -4
+ 425 0002 87B0     		sub	sp, sp, #28
+ 426              	.LCFI4:
+ 427              		.cfi_def_cfa_offset 32
+  84:src/cipher.c  ****     uint8_t au8_temp_key[] = "BOLDFEARLESSCONFIDENT";
+ 428              		.loc 1 84 5 view .LVU114
+ 429              		.loc 1 84 13 is_stmt 0 view .LVU115
+ 430 0004 EC46     		mov	ip, sp
+ 431 0006 134C     		ldr	r4, .L35
+ 432 0008 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 433 000a ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 434 000e 94E80300 		ldm	r4, {r0, r1}
+ 435 0012 4CF8040B 		str	r0, [ip], #4
+ 436 0016 ACF80010 		strh	r1, [ip]	@ movhi
+  85:src/cipher.c  ****     for(int i = 0; i < 21; i++){
+ 437              		.loc 1 85 5 is_stmt 1 view .LVU116
+ 438              	.LBB3:
+ 439              		.loc 1 85 9 view .LVU117
+ 440              	.LVL41:
+ 441              		.loc 1 85 13 is_stmt 0 view .LVU118
+ 442 001a 0023     		movs	r3, #0
+ 443              		.loc 1 85 5 view .LVU119
+ 444 001c 07E0     		b	.L30
+ 445              	.LVL42:
+ 446              	.L31:
+  86:src/cipher.c  ****         key[i] = au8_temp_key[i];
+ 447              		.loc 1 86 9 is_stmt 1 discriminator 3 view .LVU120
+ 448              		.loc 1 86 30 is_stmt 0 discriminator 3 view .LVU121
+ 449 001e 03F11802 		add	r2, r3, #24
+ 450 0022 6A44     		add	r2, sp, r2
+ 451 0024 12F8181C 		ldrb	r1, [r2, #-24]	@ zero_extendqisi2
+ 452              		.loc 1 86 16 discriminator 3 view .LVU122
+ 453 0028 0B4A     		ldr	r2, .L35+4
+ 454 002a D154     		strb	r1, [r2, r3]
+  85:src/cipher.c  ****     for(int i = 0; i < 21; i++){
+ 455              		.loc 1 85 28 is_stmt 1 discriminator 3 view .LVU123
+  85:src/cipher.c  ****     for(int i = 0; i < 21; i++){
+ 456              		.loc 1 85 29 is_stmt 0 discriminator 3 view .LVU124
+ 457 002c 0133     		adds	r3, r3, #1
+ 458              	.LVL43:
+ 459              	.L30:
+  85:src/cipher.c  ****     for(int i = 0; i < 21; i++){
+ 460              		.loc 1 85 20 is_stmt 1 discriminator 1 view .LVU125
+  85:src/cipher.c  ****     for(int i = 0; i < 21; i++){
+ 461              		.loc 1 85 5 is_stmt 0 discriminator 1 view .LVU126
+ 462 002e 142B     		cmp	r3, #20
+ARM GAS  /tmp/cc2JRFYi.s 			page 11
+
+
+ 463 0030 F5DD     		ble	.L31
+ 464              	.LBE3:
+ 465              	.LBB4:
+  87:src/cipher.c  ****     }
+  88:src/cipher.c  **** 
+  89:src/cipher.c  ****     for(int i = 0; i < 22; i++){
+ 466              		.loc 1 89 13 view .LVU127
+ 467 0032 0023     		movs	r3, #0
+ 468              	.LVL44:
+ 469              		.loc 1 89 13 view .LVU128
+ 470 0034 07E0     		b	.L32
+ 471              	.LVL45:
+ 472              	.L33:
+  90:src/cipher.c  ****         key2[i] = au8_temp_key[i];
+ 473              		.loc 1 90 9 is_stmt 1 discriminator 3 view .LVU129
+ 474              		.loc 1 90 31 is_stmt 0 discriminator 3 view .LVU130
+ 475 0036 03F11802 		add	r2, r3, #24
+ 476 003a 6A44     		add	r2, sp, r2
+ 477 003c 12F8181C 		ldrb	r1, [r2, #-24]	@ zero_extendqisi2
+ 478              		.loc 1 90 17 discriminator 3 view .LVU131
+ 479 0040 064A     		ldr	r2, .L35+8
+ 480 0042 D154     		strb	r1, [r2, r3]
+  89:src/cipher.c  ****         key2[i] = au8_temp_key[i];
+ 481              		.loc 1 89 28 is_stmt 1 discriminator 3 view .LVU132
+  89:src/cipher.c  ****         key2[i] = au8_temp_key[i];
+ 482              		.loc 1 89 29 is_stmt 0 discriminator 3 view .LVU133
+ 483 0044 0133     		adds	r3, r3, #1
+ 484              	.LVL46:
+ 485              	.L32:
+  89:src/cipher.c  ****         key2[i] = au8_temp_key[i];
+ 486              		.loc 1 89 20 is_stmt 1 discriminator 1 view .LVU134
+  89:src/cipher.c  ****         key2[i] = au8_temp_key[i];
+ 487              		.loc 1 89 5 is_stmt 0 discriminator 1 view .LVU135
+ 488 0046 152B     		cmp	r3, #21
+ 489 0048 F5DD     		ble	.L33
+ 490              	.LBE4:
+  91:src/cipher.c  ****     }
+  92:src/cipher.c  **** }
+ 491              		.loc 1 92 1 view .LVU136
+ 492 004a 07B0     		add	sp, sp, #28
+ 493              	.LCFI5:
+ 494              		.cfi_def_cfa_offset 4
+ 495              		@ sp needed
+ 496 004c 5DF8044B 		ldr	r4, [sp], #4
+ 497              	.LCFI6:
+ 498              		.cfi_restore 4
+ 499              		.cfi_def_cfa_offset 0
+ 500 0050 7047     		bx	lr
+ 501              	.L36:
+ 502 0052 00BF     		.align	2
+ 503              	.L35:
+ 504 0054 00000000 		.word	.LC0
+ 505 0058 00000000 		.word	key
+ 506 005c 00000000 		.word	key2
+ 507              		.cfi_endproc
+ 508              	.LFE9:
+ 510              		.text
+ARM GAS  /tmp/cc2JRFYi.s 			page 12
+
+
+ 511              	.Letext0:
+ 512              		.file 2 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/machine/
+ 513              		.file 3 "/home/ben/Documents/ECE4140/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/sys/_std
+ 514              		.file 4 "include/m4.h"
+ 515              		.file 5 "<built-in>"
+ARM GAS  /tmp/cc2JRFYi.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 cipher.c
+     /tmp/cc2JRFYi.s:20     .text.ascii_to_integer:0000000000000000 $t
+     /tmp/cc2JRFYi.s:26     .text.ascii_to_integer:0000000000000000 ascii_to_integer
+     /tmp/cc2JRFYi.s:91     .text.rotate_key:0000000000000000 $t
+     /tmp/cc2JRFYi.s:97     .text.rotate_key:0000000000000000 rotate_key
+     /tmp/cc2JRFYi.s:152    .text.rotate_key:0000000000000020 $d
+     /tmp/cc2JRFYi.s:157    .text.rotate_key2:0000000000000000 $t
+     /tmp/cc2JRFYi.s:163    .text.rotate_key2:0000000000000000 rotate_key2
+     /tmp/cc2JRFYi.s:218    .text.rotate_key2:0000000000000020 $d
+     /tmp/cc2JRFYi.s:223    .text.rotate_key_left_by:0000000000000000 $t
+     /tmp/cc2JRFYi.s:229    .text.rotate_key_left_by:0000000000000000 rotate_key_left_by
+     /tmp/cc2JRFYi.s:275    .text.encypher:0000000000000000 $t
+     /tmp/cc2JRFYi.s:281    .text.encypher:0000000000000000 encypher
+     /tmp/cc2JRFYi.s:331    .text.encypher:000000000000002c $d
+     /tmp/cc2JRFYi.s:337    .text.decypher:0000000000000000 $t
+     /tmp/cc2JRFYi.s:343    .text.decypher:0000000000000000 decypher
+     /tmp/cc2JRFYi.s:398    .text.decypher:0000000000000030 $d
+     /tmp/cc2JRFYi.s:404    .rodata.reset_key.str1.4:0000000000000000 $d
+     /tmp/cc2JRFYi.s:408    .text.reset_key:0000000000000000 $t
+     /tmp/cc2JRFYi.s:414    .text.reset_key:0000000000000000 reset_key
+     /tmp/cc2JRFYi.s:504    .text.reset_key:0000000000000054 $d
+
+UNDEFINED SYMBOLS
+key
+key2
+toupper

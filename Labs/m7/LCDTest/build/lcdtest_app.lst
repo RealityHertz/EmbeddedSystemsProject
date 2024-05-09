@@ -1,0 +1,980 @@
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"lcdtest_app.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.rodata.lcdtest.str1.4,"aMS",%progbits,1
+  20              		.align	2
+  21              	.LC0:
+  22 0000 48454C4C 		.ascii	"HELLO\000"
+  22      4F00
+  23              		.section	.text.lcdtest,"ax",%progbits
+  24              		.align	1
+  25              		.global	lcdtest
+  26              		.syntax unified
+  27              		.thumb
+  28              		.thumb_func
+  30              	lcdtest:
+  31              	.LVL0:
+  32              	.LFB1:
+  33              		.file 1 "src/lcdtest_app.c"
+   1:src/lcdtest_app.c **** //Includes go here
+   2:src/lcdtest_app.c **** #include "esos.h"
+   3:src/lcdtest_app.c **** #include "esos_stm32l4_edub_4bit_lcd44780wo.h"
+   4:src/lcdtest_app.c **** #include "esos_lcd44780wo.h"
+   5:src/lcdtest_app.c **** #include <ctype.h>
+   6:src/lcdtest_app.c **** #include <string.h>
+   7:src/lcdtest_app.c **** 
+   8:src/lcdtest_app.c **** #ifdef __linux
+   9:src/lcdtest_app.c **** #include    "esos_pc.h"
+  10:src/lcdtest_app.c **** #include    "esos_pc_stdio.h"
+  11:src/lcdtest_app.c **** // INCLUDE these so our printf and other PC hacks work
+  12:src/lcdtest_app.c **** #include <stdio.h>
+  13:src/lcdtest_app.c **** #include <sys/select.h>
+  14:src/lcdtest_app.c **** #include <termios.h>
+  15:src/lcdtest_app.c **** #include <unistd.h>
+  16:src/lcdtest_app.c **** #include <string.h>
+  17:src/lcdtest_app.c **** #else
+  18:src/lcdtest_app.c **** #include    "esos_stm32l4.h"
+  19:src/lcdtest_app.c **** #include    "esos_stm32l4_rs232.h"
+  20:src/lcdtest_app.c **** #endif
+  21:src/lcdtest_app.c **** 
+  22:src/lcdtest_app.c **** void __user_init_hw(void);
+  23:src/lcdtest_app.c **** 
+  24:src/lcdtest_app.c **** /*Task: lcdtest
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 2
+
+
+  25:src/lcdtest_app.c **** * Description: Tests the operation of the edubase LCD,
+  26:src/lcdtest_app.c **** * the tested operations are listed below.
+  27:src/lcdtest_app.c **** * Operations: clearScreen, writeChar, writeString, DisplayVisible
+  28:src/lcdtest_app.c **** * CursorBlink, CurosrDisplay, setCursor
+  29:src/lcdtest_app.c **** */
+  30:src/lcdtest_app.c **** ESOS_USER_TASK(lcdtest)
+  31:src/lcdtest_app.c **** {
+  34              		.loc 1 31 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 8
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		.loc 1 31 1 is_stmt 0 view .LVU1
+  39 0000 30B5     		push	{r4, r5, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 12
+  42              		.cfi_offset 4, -12
+  43              		.cfi_offset 5, -8
+  44              		.cfi_offset 14, -4
+  45 0002 83B0     		sub	sp, sp, #12
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 24
+  48 0004 0446     		mov	r4, r0
+  32:src/lcdtest_app.c ****     char input[] = {'H','E','L','L','O'};
+  49              		.loc 1 32 5 is_stmt 1 view .LVU2
+  50              		.loc 1 32 10 is_stmt 0 view .LVU3
+  51 0006 444B     		ldr	r3, .L53
+  52 0008 93E80300 		ldm	r3, {r0, r1}
+  53              	.LVL1:
+  54              		.loc 1 32 10 view .LVU4
+  55 000c 0090     		str	r0, [sp]
+  56 000e 8DF80410 		strb	r1, [sp, #4]
+  33:src/lcdtest_app.c ****     uint8_t LCDPos = 0;
+  57              		.loc 1 33 5 is_stmt 1 view .LVU5
+  58              	.LVL2:
+  34:src/lcdtest_app.c **** 
+  35:src/lcdtest_app.c ****     ESOS_TASK_BEGIN();
+  59              		.loc 1 35 5 view .LVU6
+  60 0012 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+  61 0014 63F07F03 		orn	r3, r3, #127
+  62 0018 A370     		strb	r3, [r4, #2]
+  63              		.loc 1 35 5 view .LVU7
+  64 001a 2388     		ldrh	r3, [r4]
+  65 001c 392B     		cmp	r3, #57
+  66 001e 00F2AA81 		bhi	.L2
+  67 0022 DFE813F0 		tbh	[pc, r3, lsl #1]
+  68              	.L4:
+  69 0026 A600     		.2byte	(.L13-.L4)/2
+  70 0028 A801     		.2byte	(.L2-.L4)/2
+  71 002a A801     		.2byte	(.L2-.L4)/2
+  72 002c A801     		.2byte	(.L2-.L4)/2
+  73 002e A801     		.2byte	(.L2-.L4)/2
+  74 0030 A801     		.2byte	(.L2-.L4)/2
+  75 0032 A801     		.2byte	(.L2-.L4)/2
+  76 0034 A801     		.2byte	(.L2-.L4)/2
+  77 0036 A801     		.2byte	(.L2-.L4)/2
+  78 0038 A801     		.2byte	(.L2-.L4)/2
+  79 003a A801     		.2byte	(.L2-.L4)/2
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 3
+
+
+  80 003c A801     		.2byte	(.L2-.L4)/2
+  81 003e A801     		.2byte	(.L2-.L4)/2
+  82 0040 A801     		.2byte	(.L2-.L4)/2
+  83 0042 A801     		.2byte	(.L2-.L4)/2
+  84 0044 A801     		.2byte	(.L2-.L4)/2
+  85 0046 A801     		.2byte	(.L2-.L4)/2
+  86 0048 A801     		.2byte	(.L2-.L4)/2
+  87 004a A801     		.2byte	(.L2-.L4)/2
+  88 004c A801     		.2byte	(.L2-.L4)/2
+  89 004e A801     		.2byte	(.L2-.L4)/2
+  90 0050 A801     		.2byte	(.L2-.L4)/2
+  91 0052 A801     		.2byte	(.L2-.L4)/2
+  92 0054 A801     		.2byte	(.L2-.L4)/2
+  93 0056 A801     		.2byte	(.L2-.L4)/2
+  94 0058 A801     		.2byte	(.L2-.L4)/2
+  95 005a A801     		.2byte	(.L2-.L4)/2
+  96 005c A801     		.2byte	(.L2-.L4)/2
+  97 005e A801     		.2byte	(.L2-.L4)/2
+  98 0060 A801     		.2byte	(.L2-.L4)/2
+  99 0062 A801     		.2byte	(.L2-.L4)/2
+ 100 0064 A801     		.2byte	(.L2-.L4)/2
+ 101 0066 A801     		.2byte	(.L2-.L4)/2
+ 102 0068 A801     		.2byte	(.L2-.L4)/2
+ 103 006a A801     		.2byte	(.L2-.L4)/2
+ 104 006c A801     		.2byte	(.L2-.L4)/2
+ 105 006e A801     		.2byte	(.L2-.L4)/2
+ 106 0070 A801     		.2byte	(.L2-.L4)/2
+ 107 0072 A801     		.2byte	(.L2-.L4)/2
+ 108 0074 A801     		.2byte	(.L2-.L4)/2
+ 109 0076 B500     		.2byte	(.L12-.L4)/2
+ 110 0078 A801     		.2byte	(.L2-.L4)/2
+ 111 007a A801     		.2byte	(.L2-.L4)/2
+ 112 007c D800     		.2byte	(.L11-.L4)/2
+ 113 007e A801     		.2byte	(.L2-.L4)/2
+ 114 0080 A801     		.2byte	(.L2-.L4)/2
+ 115 0082 FA00     		.2byte	(.L10-.L4)/2
+ 116 0084 A801     		.2byte	(.L2-.L4)/2
+ 117 0086 1A01     		.2byte	(.L9-.L4)/2
+ 118 0088 A801     		.2byte	(.L2-.L4)/2
+ 119 008a 3901     		.2byte	(.L8-.L4)/2
+ 120 008c A801     		.2byte	(.L2-.L4)/2
+ 121 008e 5801     		.2byte	(.L7-.L4)/2
+ 122 0090 A801     		.2byte	(.L2-.L4)/2
+ 123 0092 7701     		.2byte	(.L6-.L4)/2
+ 124 0094 A801     		.2byte	(.L2-.L4)/2
+ 125 0096 7B00     		.2byte	(.L5-.L4)/2
+ 126 0098 9500     		.2byte	(.L3-.L4)/2
+ 127              		.p2align 1
+ 128              	.L46:
+  36:src/lcdtest_app.c ****     while(TRUE)
+  37:src/lcdtest_app.c ****     {
+  38:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+  39:src/lcdtest_app.c ****         esos_lcd44780_writeChar(0, LCDPos, 'A');
+  40:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 129              		.loc 1 40 9 discriminator 2 view .LVU8
+ 130 009a 0423     		movs	r3, #4
+ 131 009c A370     		strb	r3, [r4, #2]
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 4
+
+
+ 132              		.loc 1 40 9 discriminator 2 view .LVU9
+ 133 009e 0325     		movs	r5, #3
+ 134 00a0 6EE1     		b	.L15
+ 135              	.L16:
+ 136              		.loc 1 40 9 discriminator 5 view .LVU10
+ 137 00a2 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 138 00a4 43F00103 		orr	r3, r3, #1
+ 139 00a8 A370     		strb	r3, [r4, #2]
+ 140 00aa 80E0     		b	.L17
+ 141              	.L47:
+  41:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+  42:src/lcdtest_app.c ****         esos_lcd44780_writeString(0, LCDPos, input);
+  43:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 142              		.loc 1 43 9 discriminator 2 view .LVU11
+ 143 00ac 0423     		movs	r3, #4
+ 144 00ae A370     		strb	r3, [r4, #2]
+ 145              		.loc 1 43 9 discriminator 2 view .LVU12
+ 146 00b0 0325     		movs	r5, #3
+ 147 00b2 65E1     		b	.L15
+ 148              	.L19:
+ 149              		.loc 1 43 9 discriminator 5 view .LVU13
+ 150 00b4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 151 00b6 43F00103 		orr	r3, r3, #1
+ 152 00ba A370     		strb	r3, [r4, #2]
+ 153 00bc 9BE0     		b	.L20
+ 154              	.L48:
+  44:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+  45:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(FALSE);
+  46:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 155              		.loc 1 46 9 discriminator 2 view .LVU14
+ 156 00be 0423     		movs	r3, #4
+ 157 00c0 A370     		strb	r3, [r4, #2]
+ 158              		.loc 1 46 9 discriminator 2 view .LVU15
+ 159 00c2 0325     		movs	r5, #3
+ 160 00c4 5CE1     		b	.L15
+ 161              	.L22:
+ 162              		.loc 1 46 9 discriminator 5 view .LVU16
+ 163 00c6 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 164 00c8 43F00103 		orr	r3, r3, #1
+ 165 00cc A370     		strb	r3, [r4, #2]
+ 166 00ce B4E0     		b	.L23
+ 167              	.L49:
+  47:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+  48:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 168              		.loc 1 48 9 discriminator 2 view .LVU17
+ 169 00d0 0423     		movs	r3, #4
+ 170 00d2 A370     		strb	r3, [r4, #2]
+ 171              		.loc 1 48 9 discriminator 2 view .LVU18
+ 172 00d4 0325     		movs	r5, #3
+ 173 00d6 53E1     		b	.L15
+ 174              	.L25:
+ 175              		.loc 1 48 9 discriminator 5 view .LVU19
+ 176 00d8 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 177 00da 43F00103 		orr	r3, r3, #1
+ 178 00de A370     		strb	r3, [r4, #2]
+ 179 00e0 CBE0     		b	.L26
+ 180              	.L50:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 5
+
+
+  49:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+  50:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 181              		.loc 1 50 9 discriminator 2 view .LVU20
+ 182 00e2 0423     		movs	r3, #4
+ 183 00e4 A370     		strb	r3, [r4, #2]
+ 184              		.loc 1 50 9 discriminator 2 view .LVU21
+ 185 00e6 0325     		movs	r5, #3
+ 186 00e8 4AE1     		b	.L15
+ 187              	.L28:
+ 188              		.loc 1 50 9 discriminator 5 view .LVU22
+ 189 00ea A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 190 00ec 43F00103 		orr	r3, r3, #1
+ 191 00f0 A370     		strb	r3, [r4, #2]
+ 192 00f2 E1E0     		b	.L29
+ 193              	.L51:
+  51:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+  52:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 194              		.loc 1 52 9 discriminator 2 view .LVU23
+ 195 00f4 0423     		movs	r3, #4
+ 196 00f6 A370     		strb	r3, [r4, #2]
+ 197              		.loc 1 52 9 discriminator 2 view .LVU24
+ 198 00f8 0325     		movs	r5, #3
+ 199 00fa 41E1     		b	.L15
+ 200              	.L31:
+ 201              		.loc 1 52 9 discriminator 5 view .LVU25
+ 202 00fc A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 203 00fe 43F00103 		orr	r3, r3, #1
+ 204 0102 A370     		strb	r3, [r4, #2]
+ 205 0104 F7E0     		b	.L32
+ 206              	.L52:
+  53:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+  54:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 207              		.loc 1 54 9 discriminator 2 view .LVU26
+ 208 0106 0423     		movs	r3, #4
+ 209 0108 A370     		strb	r3, [r4, #2]
+ 210              		.loc 1 54 9 discriminator 2 view .LVU27
+ 211 010a 0325     		movs	r5, #3
+ 212 010c 38E1     		b	.L15
+ 213              	.L34:
+ 214              		.loc 1 54 9 discriminator 5 view .LVU28
+ 215 010e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 216 0110 43F00103 		orr	r3, r3, #1
+ 217 0114 A370     		strb	r3, [r4, #2]
+ 218 0116 0DE1     		b	.L35
+ 219              	.L54:
+ 220              		.align	2
+ 221              	.L53:
+ 222 0118 00000000 		.word	.LC0
+ 223              	.L5:
+  55:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+  56:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 224              		.loc 1 56 9 discriminator 1 view .LVU29
+ 225              		.loc 1 56 9 discriminator 1 view .LVU30
+ 226 011c A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 227 011e 15F00405 		ands	r5, r5, #4
+ 228 0122 40F01781 		bne	.L43
+ 229              		.loc 1 56 9 discriminator 3 view .LVU31
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 6
+
+
+ 230 0126 E168     		ldr	r1, [r4, #12]
+ 231 0128 A068     		ldr	r0, [r4, #8]
+ 232 012a FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 233              	.LVL3:
+ 234 012e 0028     		cmp	r0, #0
+ 235 0130 00F01481 		beq	.L37
+ 236              		.loc 1 56 9 discriminator 4 view .LVU32
+ 237 0134 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 238 0136 23F00103 		bic	r3, r3, #1
+ 239 013a A370     		strb	r3, [r4, #2]
+ 240              	.L38:
+ 241              		.loc 1 56 9 discriminator 7 view .LVU33
+ 242 013c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 243 013e 13F0010F 		tst	r3, #1
+ 244 0142 40F01D81 		bne	.L15
+ 245              		.loc 1 56 9 discriminator 9 view .LVU34
+ 246              		.loc 1 56 9 discriminator 9 view .LVU35
+ 247              		.loc 1 56 35 discriminator 9 view .LVU36
+  57:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 248              		.loc 1 57 9 discriminator 9 view .LVU37
+ 249              		.loc 1 57 9 discriminator 9 view .LVU38
+ 250 0146 03F07F03 		and	r3, r3, #127
+ 251 014a A370     		strb	r3, [r4, #2]
+ 252              		.loc 1 57 9 discriminator 9 view .LVU39
+ 253              		.loc 1 57 9 discriminator 9 view .LVU40
+ 254 014c 3923     		movs	r3, #57
+ 255 014e 2380     		strh	r3, [r4]	@ movhi
+ 256              	.L3:
+ 257              		.loc 1 57 9 discriminator 1 view .LVU41
+ 258              		.loc 1 57 9 discriminator 1 view .LVU42
+ 259 0150 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 260 0152 13F00405 		ands	r5, r3, #4
+ 261 0156 40F00681 		bne	.L44
+ 262              		.loc 1 57 9 discriminator 3 view .LVU43
+ 263 015a 13F0800F 		tst	r3, #128
+ 264 015e 40F00681 		bne	.L45
+ 265              		.loc 1 57 9 discriminator 5 view .LVU44
+ 266 0162 43F00103 		orr	r3, r3, #1
+ 267 0166 A370     		strb	r3, [r4, #2]
+ 268              	.L41:
+ 269              		.loc 1 57 9 discriminator 7 view .LVU45
+ 270 0168 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 271 016a 13F0010F 		tst	r3, #1
+ 272 016e 40F00781 		bne	.L15
+ 273              	.L13:
+  35:src/lcdtest_app.c ****     while(TRUE)
+ 274              		.loc 1 35 22 discriminator 1 view .LVU46
+  36:src/lcdtest_app.c ****     {
+ 275              		.loc 1 36 5 discriminator 1 view .LVU47
+  38:src/lcdtest_app.c ****         esos_lcd44780_writeChar(0, LCDPos, 'A');
+ 276              		.loc 1 38 9 discriminator 1 view .LVU48
+ 277 0172 FFF7FEFF 		bl	esos_lcd44780_clearScreen
+ 278              	.LVL4:
+  39:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 279              		.loc 1 39 9 discriminator 1 view .LVU49
+ 280 0176 4122     		movs	r2, #65
+ 281 0178 0021     		movs	r1, #0
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 7
+
+
+ 282 017a 0846     		mov	r0, r1
+ 283 017c FFF7FEFF 		bl	esos_lcd44780_writeChar
+ 284              	.LVL5:
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 285              		.loc 1 40 9 discriminator 1 view .LVU50
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 286              		.loc 1 40 9 discriminator 1 view .LVU51
+ 287 0180 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 288              	.LVL6:
+ 289 0184 A060     		str	r0, [r4, #8]
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 290              		.loc 1 40 9 discriminator 1 view .LVU52
+ 291 0186 4FF47A73 		mov	r3, #1000
+ 292 018a E360     		str	r3, [r4, #12]
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 293              		.loc 1 40 9 discriminator 1 view .LVU53
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 294              		.loc 1 40 9 discriminator 1 view .LVU54
+ 295 018c 2823     		movs	r3, #40
+ 296 018e 2380     		strh	r3, [r4]	@ movhi
+ 297              	.L12:
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 298              		.loc 1 40 9 discriminator 1 view .LVU55
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 299              		.loc 1 40 9 discriminator 1 view .LVU56
+ 300 0190 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 301 0192 15F00405 		ands	r5, r5, #4
+ 302 0196 80D1     		bne	.L46
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 303              		.loc 1 40 9 discriminator 3 view .LVU57
+ 304 0198 E168     		ldr	r1, [r4, #12]
+ 305 019a A068     		ldr	r0, [r4, #8]
+ 306 019c FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 307              	.LVL7:
+ 308 01a0 0028     		cmp	r0, #0
+ 309 01a2 3FF47EAF 		beq	.L16
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 310              		.loc 1 40 9 discriminator 4 view .LVU58
+ 311 01a6 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 312 01a8 23F00103 		bic	r3, r3, #1
+ 313 01ac A370     		strb	r3, [r4, #2]
+ 314              	.L17:
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 315              		.loc 1 40 9 discriminator 7 view .LVU59
+ 316 01ae A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 317 01b0 13F0010F 		tst	r3, #1
+ 318 01b4 40F0E480 		bne	.L15
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 319              		.loc 1 40 9 discriminator 9 view .LVU60
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 320              		.loc 1 40 9 discriminator 9 view .LVU61
+  40:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 321              		.loc 1 40 35 discriminator 9 view .LVU62
+  41:src/lcdtest_app.c ****         esos_lcd44780_writeString(0, LCDPos, input);
+ 322              		.loc 1 41 9 discriminator 9 view .LVU63
+ 323 01b8 FFF7FEFF 		bl	esos_lcd44780_clearScreen
+ 324              	.LVL8:
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 8
+
+
+  42:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 325              		.loc 1 42 9 discriminator 9 view .LVU64
+ 326 01bc 6A46     		mov	r2, sp
+ 327 01be 0021     		movs	r1, #0
+ 328 01c0 0846     		mov	r0, r1
+ 329 01c2 FFF7FEFF 		bl	esos_lcd44780_writeString
+ 330              	.LVL9:
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 331              		.loc 1 43 9 discriminator 9 view .LVU65
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 332              		.loc 1 43 9 discriminator 9 view .LVU66
+ 333 01c6 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 334              	.LVL10:
+ 335 01ca A060     		str	r0, [r4, #8]
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 336              		.loc 1 43 9 discriminator 9 view .LVU67
+ 337 01cc 4FF47A73 		mov	r3, #1000
+ 338 01d0 E360     		str	r3, [r4, #12]
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 339              		.loc 1 43 9 discriminator 9 view .LVU68
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 340              		.loc 1 43 9 discriminator 9 view .LVU69
+ 341 01d2 2B23     		movs	r3, #43
+ 342 01d4 2380     		strh	r3, [r4]	@ movhi
+ 343              	.L11:
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 344              		.loc 1 43 9 discriminator 1 view .LVU70
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 345              		.loc 1 43 9 discriminator 1 view .LVU71
+ 346 01d6 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 347 01d8 15F00405 		ands	r5, r5, #4
+ 348 01dc 7FF466AF 		bne	.L47
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 349              		.loc 1 43 9 discriminator 3 view .LVU72
+ 350 01e0 E168     		ldr	r1, [r4, #12]
+ 351 01e2 A068     		ldr	r0, [r4, #8]
+ 352 01e4 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 353              	.LVL11:
+ 354 01e8 0028     		cmp	r0, #0
+ 355 01ea 3FF463AF 		beq	.L19
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 356              		.loc 1 43 9 discriminator 4 view .LVU73
+ 357 01ee A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 358 01f0 23F00103 		bic	r3, r3, #1
+ 359 01f4 A370     		strb	r3, [r4, #2]
+ 360              	.L20:
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 361              		.loc 1 43 9 discriminator 7 view .LVU74
+ 362 01f6 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 363 01f8 13F0010F 		tst	r3, #1
+ 364 01fc 40F0C080 		bne	.L15
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 365              		.loc 1 43 9 discriminator 9 view .LVU75
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 366              		.loc 1 43 9 discriminator 9 view .LVU76
+  43:src/lcdtest_app.c ****         esos_lcd44780_clearScreen();
+ 367              		.loc 1 43 35 discriminator 9 view .LVU77
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 9
+
+
+  44:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(FALSE);
+ 368              		.loc 1 44 9 discriminator 9 view .LVU78
+ 369 0200 FFF7FEFF 		bl	esos_lcd44780_clearScreen
+ 370              	.LVL12:
+  45:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 371              		.loc 1 45 9 discriminator 9 view .LVU79
+ 372 0204 0020     		movs	r0, #0
+ 373 0206 FFF7FEFF 		bl	esos_lcd44780_setDisplayVisible
+ 374              	.LVL13:
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 375              		.loc 1 46 9 discriminator 9 view .LVU80
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 376              		.loc 1 46 9 discriminator 9 view .LVU81
+ 377 020a FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 378              	.LVL14:
+ 379 020e A060     		str	r0, [r4, #8]
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 380              		.loc 1 46 9 discriminator 9 view .LVU82
+ 381 0210 4FF47A73 		mov	r3, #1000
+ 382 0214 E360     		str	r3, [r4, #12]
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 383              		.loc 1 46 9 discriminator 9 view .LVU83
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 384              		.loc 1 46 9 discriminator 9 view .LVU84
+ 385 0216 2E23     		movs	r3, #46
+ 386 0218 2380     		strh	r3, [r4]	@ movhi
+ 387              	.L10:
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 388              		.loc 1 46 9 discriminator 1 view .LVU85
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 389              		.loc 1 46 9 discriminator 1 view .LVU86
+ 390 021a A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 391 021c 15F00405 		ands	r5, r5, #4
+ 392 0220 7FF44DAF 		bne	.L48
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 393              		.loc 1 46 9 discriminator 3 view .LVU87
+ 394 0224 E168     		ldr	r1, [r4, #12]
+ 395 0226 A068     		ldr	r0, [r4, #8]
+ 396 0228 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 397              	.LVL15:
+ 398 022c 0028     		cmp	r0, #0
+ 399 022e 3FF44AAF 		beq	.L22
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 400              		.loc 1 46 9 discriminator 4 view .LVU88
+ 401 0232 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 402 0234 23F00103 		bic	r3, r3, #1
+ 403 0238 A370     		strb	r3, [r4, #2]
+ 404              	.L23:
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 405              		.loc 1 46 9 discriminator 7 view .LVU89
+ 406 023a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 407 023c 13F0010F 		tst	r3, #1
+ 408 0240 40F09E80 		bne	.L15
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 409              		.loc 1 46 9 discriminator 9 view .LVU90
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 410              		.loc 1 46 9 discriminator 9 view .LVU91
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 10
+
+
+  46:src/lcdtest_app.c ****         esos_lcd44780_setDisplayVisible(TRUE);
+ 411              		.loc 1 46 35 discriminator 9 view .LVU92
+  47:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 412              		.loc 1 47 9 discriminator 9 view .LVU93
+ 413 0244 0120     		movs	r0, #1
+ 414 0246 FFF7FEFF 		bl	esos_lcd44780_setDisplayVisible
+ 415              	.LVL16:
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 416              		.loc 1 48 9 discriminator 9 view .LVU94
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 417              		.loc 1 48 9 discriminator 9 view .LVU95
+ 418 024a FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 419              	.LVL17:
+ 420 024e A060     		str	r0, [r4, #8]
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 421              		.loc 1 48 9 discriminator 9 view .LVU96
+ 422 0250 4FF47A73 		mov	r3, #1000
+ 423 0254 E360     		str	r3, [r4, #12]
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 424              		.loc 1 48 9 discriminator 9 view .LVU97
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 425              		.loc 1 48 9 discriminator 9 view .LVU98
+ 426 0256 3023     		movs	r3, #48
+ 427 0258 2380     		strh	r3, [r4]	@ movhi
+ 428              	.L9:
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 429              		.loc 1 48 9 discriminator 1 view .LVU99
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 430              		.loc 1 48 9 discriminator 1 view .LVU100
+ 431 025a A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 432 025c 15F00405 		ands	r5, r5, #4
+ 433 0260 7FF436AF 		bne	.L49
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 434              		.loc 1 48 9 discriminator 3 view .LVU101
+ 435 0264 E168     		ldr	r1, [r4, #12]
+ 436 0266 A068     		ldr	r0, [r4, #8]
+ 437 0268 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 438              	.LVL18:
+ 439 026c 0028     		cmp	r0, #0
+ 440 026e 3FF433AF 		beq	.L25
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 441              		.loc 1 48 9 discriminator 4 view .LVU102
+ 442 0272 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 443 0274 23F00103 		bic	r3, r3, #1
+ 444 0278 A370     		strb	r3, [r4, #2]
+ 445              	.L26:
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 446              		.loc 1 48 9 discriminator 7 view .LVU103
+ 447 027a A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 448 027c 13F0010F 		tst	r3, #1
+ 449 0280 7ED1     		bne	.L15
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 450              		.loc 1 48 9 discriminator 9 view .LVU104
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 451              		.loc 1 48 9 discriminator 9 view .LVU105
+  48:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(FALSE);
+ 452              		.loc 1 48 35 discriminator 9 view .LVU106
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 11
+
+
+  49:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 453              		.loc 1 49 9 discriminator 9 view .LVU107
+ 454 0282 0020     		movs	r0, #0
+ 455 0284 FFF7FEFF 		bl	esos_lcd44780_setCursorDisplay
+ 456              	.LVL19:
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 457              		.loc 1 50 9 discriminator 9 view .LVU108
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 458              		.loc 1 50 9 discriminator 9 view .LVU109
+ 459 0288 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 460              	.LVL20:
+ 461 028c A060     		str	r0, [r4, #8]
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 462              		.loc 1 50 9 discriminator 9 view .LVU110
+ 463 028e 4FF47A73 		mov	r3, #1000
+ 464 0292 E360     		str	r3, [r4, #12]
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 465              		.loc 1 50 9 discriminator 9 view .LVU111
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 466              		.loc 1 50 9 discriminator 9 view .LVU112
+ 467 0294 3223     		movs	r3, #50
+ 468 0296 2380     		strh	r3, [r4]	@ movhi
+ 469              	.L8:
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 470              		.loc 1 50 9 discriminator 1 view .LVU113
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 471              		.loc 1 50 9 discriminator 1 view .LVU114
+ 472 0298 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 473 029a 15F00405 		ands	r5, r5, #4
+ 474 029e 7FF420AF 		bne	.L50
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 475              		.loc 1 50 9 discriminator 3 view .LVU115
+ 476 02a2 E168     		ldr	r1, [r4, #12]
+ 477 02a4 A068     		ldr	r0, [r4, #8]
+ 478 02a6 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 479              	.LVL21:
+ 480 02aa 0028     		cmp	r0, #0
+ 481 02ac 3FF41DAF 		beq	.L28
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 482              		.loc 1 50 9 discriminator 4 view .LVU116
+ 483 02b0 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 484 02b2 23F00103 		bic	r3, r3, #1
+ 485 02b6 A370     		strb	r3, [r4, #2]
+ 486              	.L29:
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 487              		.loc 1 50 9 discriminator 7 view .LVU117
+ 488 02b8 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 489 02ba 13F0010F 		tst	r3, #1
+ 490 02be 5FD1     		bne	.L15
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 491              		.loc 1 50 9 discriminator 9 view .LVU118
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 492              		.loc 1 50 9 discriminator 9 view .LVU119
+  50:src/lcdtest_app.c ****         esos_lcd44780_setCursorDisplay(TRUE);
+ 493              		.loc 1 50 35 discriminator 9 view .LVU120
+  51:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 494              		.loc 1 51 9 discriminator 9 view .LVU121
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 12
+
+
+ 495 02c0 0120     		movs	r0, #1
+ 496 02c2 FFF7FEFF 		bl	esos_lcd44780_setCursorDisplay
+ 497              	.LVL22:
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 498              		.loc 1 52 9 discriminator 9 view .LVU122
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 499              		.loc 1 52 9 discriminator 9 view .LVU123
+ 500 02c6 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 501              	.LVL23:
+ 502 02ca A060     		str	r0, [r4, #8]
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 503              		.loc 1 52 9 discriminator 9 view .LVU124
+ 504 02cc 4FF47A73 		mov	r3, #1000
+ 505 02d0 E360     		str	r3, [r4, #12]
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 506              		.loc 1 52 9 discriminator 9 view .LVU125
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 507              		.loc 1 52 9 discriminator 9 view .LVU126
+ 508 02d2 3423     		movs	r3, #52
+ 509 02d4 2380     		strh	r3, [r4]	@ movhi
+ 510              	.L7:
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 511              		.loc 1 52 9 discriminator 1 view .LVU127
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 512              		.loc 1 52 9 discriminator 1 view .LVU128
+ 513 02d6 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 514 02d8 15F00405 		ands	r5, r5, #4
+ 515 02dc 7FF40AAF 		bne	.L51
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 516              		.loc 1 52 9 discriminator 3 view .LVU129
+ 517 02e0 E168     		ldr	r1, [r4, #12]
+ 518 02e2 A068     		ldr	r0, [r4, #8]
+ 519 02e4 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 520              	.LVL24:
+ 521 02e8 0028     		cmp	r0, #0
+ 522 02ea 3FF407AF 		beq	.L31
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 523              		.loc 1 52 9 discriminator 4 view .LVU130
+ 524 02ee A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 525 02f0 23F00103 		bic	r3, r3, #1
+ 526 02f4 A370     		strb	r3, [r4, #2]
+ 527              	.L32:
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 528              		.loc 1 52 9 discriminator 7 view .LVU131
+ 529 02f6 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 530 02f8 13F0010F 		tst	r3, #1
+ 531 02fc 40D1     		bne	.L15
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 532              		.loc 1 52 9 discriminator 9 view .LVU132
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 533              		.loc 1 52 9 discriminator 9 view .LVU133
+  52:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(FALSE);
+ 534              		.loc 1 52 35 discriminator 9 view .LVU134
+  53:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 535              		.loc 1 53 9 discriminator 9 view .LVU135
+ 536 02fe 0020     		movs	r0, #0
+ 537 0300 FFF7FEFF 		bl	esos_lcd44780_setCursorBlink
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 13
+
+
+ 538              	.LVL25:
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 539              		.loc 1 54 9 discriminator 9 view .LVU136
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 540              		.loc 1 54 9 discriminator 9 view .LVU137
+ 541 0304 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 542              	.LVL26:
+ 543 0308 A060     		str	r0, [r4, #8]
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 544              		.loc 1 54 9 discriminator 9 view .LVU138
+ 545 030a 4FF47A73 		mov	r3, #1000
+ 546 030e E360     		str	r3, [r4, #12]
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 547              		.loc 1 54 9 discriminator 9 view .LVU139
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 548              		.loc 1 54 9 discriminator 9 view .LVU140
+ 549 0310 3623     		movs	r3, #54
+ 550 0312 2380     		strh	r3, [r4]	@ movhi
+ 551              	.L6:
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 552              		.loc 1 54 9 discriminator 1 view .LVU141
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 553              		.loc 1 54 9 discriminator 1 view .LVU142
+ 554 0314 A578     		ldrb	r5, [r4, #2]	@ zero_extendqisi2
+ 555 0316 15F00405 		ands	r5, r5, #4
+ 556 031a 7FF4F4AE 		bne	.L52
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 557              		.loc 1 54 9 discriminator 3 view .LVU143
+ 558 031e E168     		ldr	r1, [r4, #12]
+ 559 0320 A068     		ldr	r0, [r4, #8]
+ 560 0322 FFF7FEFF 		bl	__esos_hasTickDurationPassed
+ 561              	.LVL27:
+ 562 0326 0028     		cmp	r0, #0
+ 563 0328 3FF4F1AE 		beq	.L34
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 564              		.loc 1 54 9 discriminator 4 view .LVU144
+ 565 032c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 566 032e 23F00103 		bic	r3, r3, #1
+ 567 0332 A370     		strb	r3, [r4, #2]
+ 568              	.L35:
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 569              		.loc 1 54 9 discriminator 7 view .LVU145
+ 570 0334 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 571 0336 13F0010F 		tst	r3, #1
+ 572 033a 21D1     		bne	.L15
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 573              		.loc 1 54 9 discriminator 9 view .LVU146
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 574              		.loc 1 54 9 discriminator 9 view .LVU147
+  54:src/lcdtest_app.c ****         esos_lcd44780_setCursorBlink(TRUE);
+ 575              		.loc 1 54 35 discriminator 9 view .LVU148
+  55:src/lcdtest_app.c ****         ESOS_TASK_WAIT_TICKS(1000);
+ 576              		.loc 1 55 9 discriminator 9 view .LVU149
+ 577 033c 0120     		movs	r0, #1
+ 578 033e FFF7FEFF 		bl	esos_lcd44780_setCursorBlink
+ 579              	.LVL28:
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 14
+
+
+ 580              		.loc 1 56 9 discriminator 9 view .LVU150
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 581              		.loc 1 56 9 discriminator 9 view .LVU151
+ 582 0342 FFF7FEFF 		bl	__esos_hw_GetSystemTickCount
+ 583              	.LVL29:
+ 584 0346 A060     		str	r0, [r4, #8]
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 585              		.loc 1 56 9 discriminator 9 view .LVU152
+ 586 0348 4FF47A73 		mov	r3, #1000
+ 587 034c E360     		str	r3, [r4, #12]
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 588              		.loc 1 56 9 discriminator 9 view .LVU153
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 589              		.loc 1 56 9 discriminator 9 view .LVU154
+ 590 034e 3823     		movs	r3, #56
+ 591 0350 2380     		strh	r3, [r4]	@ movhi
+ 592 0352 E3E6     		b	.L5
+ 593              	.L43:
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 594              		.loc 1 56 9 discriminator 2 view .LVU155
+ 595 0354 0423     		movs	r3, #4
+ 596 0356 A370     		strb	r3, [r4, #2]
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 597              		.loc 1 56 9 discriminator 2 view .LVU156
+ 598 0358 0325     		movs	r5, #3
+ 599 035a 11E0     		b	.L15
+ 600              	.L37:
+  56:src/lcdtest_app.c ****         ESOS_TASK_YIELD();
+ 601              		.loc 1 56 9 discriminator 5 view .LVU157
+ 602 035c A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 603 035e 43F00103 		orr	r3, r3, #1
+ 604 0362 A370     		strb	r3, [r4, #2]
+ 605 0364 EAE6     		b	.L38
+ 606              	.L44:
+ 607              		.loc 1 57 9 discriminator 2 view .LVU158
+ 608 0366 0423     		movs	r3, #4
+ 609 0368 A370     		strb	r3, [r4, #2]
+ 610              		.loc 1 57 9 discriminator 2 view .LVU159
+ 611 036a 0325     		movs	r5, #3
+ 612 036c 08E0     		b	.L15
+ 613              	.L45:
+ 614              		.loc 1 57 9 discriminator 4 view .LVU160
+ 615 036e 23F00103 		bic	r3, r3, #1
+ 616 0372 A370     		strb	r3, [r4, #2]
+ 617 0374 F8E6     		b	.L41
+ 618              	.L2:
+  58:src/lcdtest_app.c ****     }
+  59:src/lcdtest_app.c ****     ESOS_TASK_END();
+ 619              		.loc 1 59 5 view .LVU161
+ 620              		.loc 1 59 5 view .LVU162
+ 621 0376 0823     		movs	r3, #8
+ 622 0378 A370     		strb	r3, [r4, #2]
+ 623              		.loc 1 59 5 view .LVU163
+ 624 037a 0023     		movs	r3, #0
+ 625 037c 2380     		strh	r3, [r4]	@ movhi
+ 626              		.loc 1 59 5 view .LVU164
+ 627              		.loc 1 59 5 view .LVU165
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 15
+
+
+ 628              		.loc 1 59 5 view .LVU166
+ 629 037e 0325     		movs	r5, #3
+ 630              	.L15:
+ 631              		.loc 1 59 20 discriminator 1 view .LVU167
+  60:src/lcdtest_app.c **** }
+ 632              		.loc 1 60 1 is_stmt 0 discriminator 1 view .LVU168
+ 633 0380 2846     		mov	r0, r5
+ 634 0382 03B0     		add	sp, sp, #12
+ 635              	.LCFI2:
+ 636              		.cfi_def_cfa_offset 12
+ 637              		@ sp needed
+ 638 0384 30BD     		pop	{r4, r5, pc}
+ 639              		.loc 1 60 1 discriminator 1 view .LVU169
+ 640              		.cfi_endproc
+ 641              	.LFE1:
+ 643 0386 00BF     		.section	.text.__user_init_hw,"ax",%progbits
+ 644              		.align	1
+ 645              		.global	__user_init_hw
+ 646              		.syntax unified
+ 647              		.thumb
+ 648              		.thumb_func
+ 650              	__user_init_hw:
+ 651              	.LFB2:
+  61:src/lcdtest_app.c **** 
+  62:src/lcdtest_app.c **** /*Function: __user_init_hw
+  63:src/lcdtest_app.c **** * Description: Configures and initialized the LCD
+  64:src/lcdtest_app.c **** */
+  65:src/lcdtest_app.c **** void __user_init_hw(void)
+  66:src/lcdtest_app.c **** {
+ 652              		.loc 1 66 1 is_stmt 1 view -0
+ 653              		.cfi_startproc
+ 654              		@ args = 0, pretend = 0, frame = 0
+ 655              		@ frame_needed = 0, uses_anonymous_args = 0
+ 656 0000 08B5     		push	{r3, lr}
+ 657              	.LCFI3:
+ 658              		.cfi_def_cfa_offset 8
+ 659              		.cfi_offset 3, -8
+ 660              		.cfi_offset 14, -4
+  67:src/lcdtest_app.c ****     esos_lcd44780_configDisplay();
+ 661              		.loc 1 67 5 view .LVU171
+ 662 0002 FFF7FEFF 		bl	esos_lcd44780_configDisplay
+ 663              	.LVL30:
+  68:src/lcdtest_app.c ****     __esos_lcd44780_init();
+ 664              		.loc 1 68 5 view .LVU172
+ 665 0006 FFF7FEFF 		bl	__esos_lcd44780_init
+ 666              	.LVL31:
+  69:src/lcdtest_app.c **** }
+ 667              		.loc 1 69 1 is_stmt 0 view .LVU173
+ 668 000a 08BD     		pop	{r3, pc}
+ 669              		.cfi_endproc
+ 670              	.LFE2:
+ 672              		.section	.text.user_init,"ax",%progbits
+ 673              		.align	1
+ 674              		.global	user_init
+ 675              		.syntax unified
+ 676              		.thumb
+ 677              		.thumb_func
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 16
+
+
+ 679              	user_init:
+ 680              	.LFB3:
+  70:src/lcdtest_app.c **** 
+  71:src/lcdtest_app.c **** /*Function: user_init
+  72:src/lcdtest_app.c **** * Calls the __user_init_hw function and then registers
+  73:src/lcdtest_app.c **** * the lcdtest task
+  74:src/lcdtest_app.c **** */
+  75:src/lcdtest_app.c **** void user_init(void)
+  76:src/lcdtest_app.c **** {
+ 681              		.loc 1 76 1 is_stmt 1 view -0
+ 682              		.cfi_startproc
+ 683              		@ args = 0, pretend = 0, frame = 0
+ 684              		@ frame_needed = 0, uses_anonymous_args = 0
+ 685 0000 08B5     		push	{r3, lr}
+ 686              	.LCFI4:
+ 687              		.cfi_def_cfa_offset 8
+ 688              		.cfi_offset 3, -8
+ 689              		.cfi_offset 14, -4
+  77:src/lcdtest_app.c ****     __user_init_hw();
+ 690              		.loc 1 77 5 view .LVU175
+ 691 0002 FFF7FEFF 		bl	__user_init_hw
+ 692              	.LVL32:
+  78:src/lcdtest_app.c ****     esos_RegisterTask(lcdtest);
+ 693              		.loc 1 78 5 view .LVU176
+ 694 0006 0248     		ldr	r0, .L59
+ 695 0008 FFF7FEFF 		bl	esos_RegisterTask
+ 696              	.LVL33:
+  79:src/lcdtest_app.c **** }...
+ 697              		.loc 1 79 1 is_stmt 0 view .LVU177
+ 698 000c 08BD     		pop	{r3, pc}
+ 699              	.L60:
+ 700 000e 00BF     		.align	2
+ 701              	.L59:
+ 702 0010 00000000 		.word	lcdtest
+ 703              		.cfi_endproc
+ 704              	.LFE3:
+ 706              		.text
+ 707              	.Letext0:
+ 708              		.file 2 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/m
+ 709              		.file 3 "/Users/user/Desktop/Apps/Toolchain/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi/include/s
+ 710              		.file 4 "/Users/user/Desktop/esos32/include/lc-switch.h"
+ 711              		.file 5 "/Users/user/Desktop/esos32/include/esos_cb.h"
+ 712              		.file 6 "/Users/user/Desktop/esos32/include/esos_mail.h"
+ 713              		.file 7 "/Users/user/Desktop/esos32/include/esos_task.h"
+ 714              		.file 8 "/Users/user/Desktop/esos32/include/esos.h"
+ 715              		.file 9 "/Users/user/Desktop/esos32/include/esos_lcd44780wo.h"
+ 716              		.file 10 "/Users/user/Desktop/esos32/include/all_generic.h"
+ARM GAS  /var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 lcdtest_app.c
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:20     .rodata.lcdtest.str1.4:0000000000000000 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:24     .text.lcdtest:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:30     .text.lcdtest:0000000000000000 lcdtest
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:69     .text.lcdtest:0000000000000026 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:127    .text.lcdtest:000000000000009a $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:222    .text.lcdtest:0000000000000118 $d
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:226    .text.lcdtest:000000000000011c $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:644    .text.__user_init_hw:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:650    .text.__user_init_hw:0000000000000000 __user_init_hw
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:673    .text.user_init:0000000000000000 $t
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:679    .text.user_init:0000000000000000 user_init
+/var/folders/zb/bpcykl9d7sgcfb1f77n9kt9h0000gn/T//cczzWMHt.s:702    .text.user_init:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+__esos_hasTickDurationPassed
+esos_lcd44780_clearScreen
+esos_lcd44780_writeChar
+__esos_hw_GetSystemTickCount
+esos_lcd44780_writeString
+esos_lcd44780_setDisplayVisible
+esos_lcd44780_setCursorDisplay
+esos_lcd44780_setCursorBlink
+esos_lcd44780_configDisplay
+__esos_lcd44780_init
+esos_RegisterTask
